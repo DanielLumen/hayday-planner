@@ -1,0 +1,16 @@
+{
+  "name": "hayday-warehouse",
+  "version": "1.0.0",
+  "description": "卡通农场 · 货仓助手 — 测试工具",
+  "scripts": {
+    "test:data": "python3 validate.py",
+    "test:self": "start tests/run_tests.html",
+    "test:all": "python3 validate.py && echo 'Data validation passed. Open tests/run_tests.html for UI tests.'",
+    "test": "python3 validate.py"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@playwright/test": "^1.61.1",
+    "pinyin-pro": "^3.28.1"
+  }
+}

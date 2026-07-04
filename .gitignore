@@ -1,0 +1,16 @@
+﻿# Node.js
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+
+# Backup
+backup/
+
+# Temp / test files
+_test_js.js
+
+# System
+.DS_Store
+Thumbs.db
