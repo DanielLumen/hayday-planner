@@ -8917,7 +8917,7 @@ window.loadChecked=loadChecked;
 
 
 
-init(); renderAll();
+(function(){ var _oi=init; init=function(){ _oi(); if(!window._editsDone){ applyEdits(); window._editsDone=true; } }; if(localStorage.getItem("hd_edits")){ init(); renderAll(); }else{ window._loadInitDone=false; fetch("data.json").then(function(r){return r.json();}).then(function(data){ if(data.hd_edits){ localStorage.setItem("hd_edits",data.hd_edits); } }).catch(function(){}).finally(function(){ if(!window._loadInitDone){ window._loadInitDone=true; init(); renderAll(); } }); } })();
 
 
 
