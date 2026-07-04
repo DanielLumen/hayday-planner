@@ -40,7 +40,7 @@
 
 
 
-:root{--bg:#f7f5f0;--card:#fff;--text:#3b3226;--muted:#8b7d6b;--accent:#5b9e47;--warn:#e8993a;--danger:#d9463a;--border:#e0d8cc;--shadow:0 1px 3px rgba(0,0,0,.05)}
+:root{--bg:#F8FAFC;--card:#FFFFFF;--text:#0F172A;--text-secondary:#475569;--muted:#64748B;--accent:#059669;--accent-hover:#047857;--warn:#D97706;--warn-light:#FFFBEB;--danger:#DC2626;--danger-light:#FEF2F2;--border:#E2E8F0;--shadow-sm:0 1px 2px rgba(0,0,0,.04);--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--radius:8px;--radius-sm:6px;--transition:150ms ease}
 
 
 
@@ -52,13 +52,13 @@
 
 
 
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent}
+body{font-family:'Fira Sans',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent}
 
 
 
 
 
-.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:10px 16px;position:sticky;top:0;z-index:20;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:10px 16px;position:sticky;top:0;z-index:20;box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:space-between;gap:8px}
 
 
 
@@ -82,7 +82,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 
 
 
-.btn{padding:6px 12px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:3px}
+.btn{padding:6px 12px;border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;transition:all var(--transition);white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
 
 
 
@@ -94,13 +94,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 
 
 
-.btn-primary{background:var(--accent);color:#fff}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-hover)}
 
 
 
 
 
-.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}.btn-outline:hover{background:var(--bg);border-color:var(--muted)}
 
 
 
@@ -148,7 +148,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 
 
 
-.stat-card .cap-input:focus{border-bottom-color:var(--accent);background:var(--bg);border-radius:4px 4px 0 0}
+.stat-card .cap-input:focus{border-bottom-color:var(--accent);background:var(--bg);border-radius:4px 4px 0 0;outline:none;box-shadow:0 0 0 2px rgba(5,150,105,.15)}
 
 
 
@@ -232,13 +232,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 
 
 
-.panel{background:var(--card);border-radius:10px;border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.panel{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;min-height:0;box-shadow:var(--shadow-sm)}
 
 
 
 
 
-.panel-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:#fafaf8;flex-shrink:0}
+.panel-header{padding:8px 10px 0 10px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;background:var(--card);flex-shrink:0}
 
 
 
@@ -370,7 +370,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 
 
 
-.tile-input:focus{border-color:var(--accent);background:var(--card)}.tile-input::-webkit-outer-spin-button,.tile-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.tile-input[type=number]{-moz-appearance:textfield}
+.tile-input:focus{border-color:var(--accent);background:var(--card);box-shadow:0 0 0 2px rgba(5,150,105,.15);outline:none}.tile-input::-webkit-outer-spin-button,.tile-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.tile-input[type=number]{-moz-appearance:textfield}
 
 
 
@@ -505,7 +505,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .gt-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid #888;margin-top:-4px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 
 
-.gt-slider::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid #888;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.2)}.slider-row{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#fafaf8;border-bottom:1px solid var(--border)}
+.gt-slider::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid #888;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.2)}.slider-row{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--card);border-bottom:1px solid var(--border)}
 
 
 
@@ -529,7 +529,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 
 
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#3b3226;color:#fff;padding:8px 20px;border-radius:20px;font-size:13px;z-index:100;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:8px 20px;border-radius:20px;font-size:13px;z-index:100;opacity:0;transition:opacity .3s;pointer-events:none}
 
 
 
@@ -553,19 +553,19 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 
 
-.tab-bar{display:flex}
+.tab-bar{display:flex;gap:2px}
 
 
 
 
 
-.tab{flex:1;padding:10px 12px;font-size:13px;font-weight:600;text-align:center;cursor:pointer;background:var(--card);border-bottom:2px solid transparent;transition:all .12s;color:var(--muted)}
+.tab{flex:1 1 0;padding:7px 8px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;white-space:nowrap;transition:all var(--transition);color:var(--muted);user-select:none}.tab:hover{color:var(--text);background:#F1F5F9}
 
 
 
 
 
-.tab.active{color:var(--text);border-bottom-color:var(--accent);background:#fafaf8}
+.tab.active{color:var(--text);background:var(--card);border-color:var(--border);font-weight:700;box-shadow:0 -2px 0 var(--accent) inset}
 
 
 
@@ -609,7 +609,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 .plan-bld-time{font-size:10px;color:var(--muted);white-space:nowrap}
 .chain-tree{font-size:13px;line-height:1.8;padding:8px 12px;overflow-x:auto}
-.tree-prefix{font-family:'Courier New',monospace;font-size:12px;color:var(--border);user-select:none}
+.tree-prefix{font-family:'Courier New',monospace;font-size:12px;color:var(--muted);user-select:none;opacity:0.6}
 .chain-item{cursor:pointer;padding:4px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px;margin:2px 0;background:var(--card);border:1px solid var(--border);transition:all .12s;white-space:nowrap;font-weight:500;font-size:12px}
 .chain-item:hover{background:#f0f7ec;border-color:var(--accent)}
 .chain-item.raw{background:#e8f5e0;border-color:#a3d17a;color:#3b6e1e}
@@ -817,7 +817,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .buy-card .buy-rank.r5{background:rgba(255,255,255,0.15);color:#aaa}
 
 
-.buy-card .buy-rank.r6{background:rgba(255,255,255,0.1);color:#999}
+.buy-card .buy-rank.r6{background:rgba(255,255,255,0.1);color:#999}.buy-card .buy-rank.r7{background:rgba(255,255,255,0.07);color:#888}.buy-card .buy-rank.r8{background:rgba(255,255,255,0.04);color:#777}.buy-card .buy-rank.r9{background:rgba(255,255,255,0.036);color:#777777}.buy-card .buy-rank.r10{background:rgba(255,255,255,0.032);color:#727272}.buy-card .buy-rank.r11{background:rgba(255,255,255,0.028);color:#6d6d6d}.buy-card .buy-rank.r12{background:rgba(255,255,255,0.024);color:#686868}.buy-card .buy-rank.r13{background:rgba(255,255,255,0.02);color:#636363}.buy-card .buy-rank.r14{background:rgba(255,255,255,0.016);color:#5e5e5e}.buy-card .buy-rank.r15{background:rgba(255,255,255,0.012);color:#595959}.buy-card .buy-rank.r16{background:rgba(255,255,255,0.008);color:#545454}
 
 
 .buy-card .buy-detail{display:flex;flex-direction:column;gap:1px}
@@ -868,7 +868,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .buy-card .buy-rank.r5{background:rgba(255,255,255,0.15);color:#aaa}
 
 
-.buy-card .buy-rank.r6{background:rgba(255,255,255,0.1);color:#999}
+.buy-card .buy-rank.r6{background:rgba(255,255,255,0.1);color:#999}.buy-card .buy-rank.r7{background:rgba(255,255,255,0.07);color:#888}.buy-card .buy-rank.r8{background:rgba(255,255,255,0.04);color:#777}.buy-card .buy-rank.r9{background:rgba(255,255,255,0.036);color:#777777}.buy-card .buy-rank.r10{background:rgba(255,255,255,0.032);color:#727272}.buy-card .buy-rank.r11{background:rgba(255,255,255,0.028);color:#6d6d6d}.buy-card .buy-rank.r12{background:rgba(255,255,255,0.024);color:#686868}.buy-card .buy-rank.r13{background:rgba(255,255,255,0.02);color:#636363}.buy-card .buy-rank.r14{background:rgba(255,255,255,0.016);color:#5e5e5e}.buy-card .buy-rank.r15{background:rgba(255,255,255,0.012);color:#595959}.buy-card .buy-rank.r16{background:rgba(255,255,255,0.008);color:#545454}
 
 
 .buy-card .buy-detail{display:flex;flex-direction:column;gap:1px}
@@ -903,6 +903,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 
 <script src="./node_modules/pinyin-pro/dist/index.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 
@@ -986,7 +988,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   <div class="buy-label">💰 购买建议</div>
 
 
-  <div class="buy-items" id="buyItems">计算中…</div>
+  <div class="buy-items" id="buyItems"><div style="font-size:10px;color:#8899aa;margin-bottom:4px;width:100%">计算公式: 生产难度 = 本品生产时间/产能系数 + Σ原料链条时间×需求量。产能系数: 牛奶/培根/羊毛=15, 山羊奶=12, 鸡蛋=18, 羊排=10, 饲料/制糖=2</div>计算中…</div>
 
 
 </div>
@@ -1105,7 +1107,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 
 
-<div class="panel-header tabs-header"><div class="tab-bar"><span class="tab active" onclick="switchSidebarTab('priority',this)">⚡ 优先级</span><span class="tab" onclick="switchSidebarTab('plan',this)">📋 生产计划</span><span class="tab" onclick="switchSidebarTab('items',this)">📋 物品清单</span><span class="tab tab-extra" onclick="switchSidebarTab('chain',this)">🔗 链条</span></div></div>
+<div class="panel-header tabs-header"><div class="tab-bar"><span class="tab active" onclick="switchSidebarTab('priority',this)">优先级</span><span class="tab" onclick="switchSidebarTab('plan',this)">生产计划</span><span class="tab" onclick="switchSidebarTab('items',this)">物品清单</span></div></div>
 
 
 
@@ -1123,7 +1125,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 
 
-<div class="side-body" id="itemsList" style="display:none"><div style="padding:10px;color:var(--muted);font-size:12px">点击标签加载物品清单</div></div><div class="side-body" id="chainList" style="display:none"><div class="empty-state"><div class="big">🔗</div><p>点击加载生产链条</p></div></div>
+<div class="side-body" id="itemsList" style="display:none"><div style="padding:10px;color:var(--muted);font-size:12px">点击标签加载物品清单</div></div>
 
 
 
@@ -4280,6 +4282,18 @@ items:[{id:"wheat",nameCN:"小麦",emoji:"🌾",ing:[],t:120,tg:30,st:"silo_fiel
 
 
 
+
+
+
+
+
+
+var PROD_MULTIPLIERS={milk:15,bacon:15,wool:15,mutton:10,goat_milk:12,egg:18,brown_sugar:2,white_sugar:2,syrup:2,cow_feed:2,chicken_feed:2,pig_feed:2,sheep_feed:2,goat_feed:2};
+
+
+
+
+
 var P={wheat:10,corn:20,soybean:80,sugarcane:100,carrot:40,indigo:300,pumpkin:400,cotton:300,chili_pepper:250,tomato:200,strawberry:200,potato:200,rice:200,tea_leaf:200,lettuce:200,sunflower:200,apple:200,cherry:300,raspberry:300,blackberry:300,coffee_bean:300,olive:300,lemon:400,banana:400,pineapple:500,peach:300,mushroom:300,eggplant:300,lavender:300,cucumber:300,peanut:300,onion:300,ginger:1000,garlic:200,jasmine:300,asparagus:300,beetroot:200,bell_pepper:200,black_bean:300,broccoli:200,cabbage:200,chamomile:200,chickpea:300,grapes:300,lily:200,mint:150,oats:200,passion_fruit:400,peony:300,sesame:200,watermelon:400,clay:50,cacao:300,coconut:300,guava:300,mango:400,orange:300,plum:300,pomegranate:400,blueberries:300,milk:150,egg:100,wool:300,goat_milk:300,bacon:250,duck_feather:300,fish_fillet:250,lobster_tail:500,lamb_chop:300,honeycomb:400,honey:500,beeswax:400,cow_feed:50,chicken_feed:30,pig_feed:100,sheep_feed:80,goat_feed:120,lamb_feed:150,wheat_bundle:50,meat_bucket:300,bread:150,corn_bread:300,cookie:350,raspberry_muffin:400,pizza:600,spicy_pizza:700,blackberry_muffin:400,blueberry_muffin:450,potato_bread:500,frutti_pizza:800,gingerbread:700,banana_bread:600,macaroon:700,pineapple_bars:700,brown_sugar:200,white_sugar:300,syrup:400,cream:200,butter:300,cheese:400,goat_cheese:500,popcorn:200,butter_popcorn:350,chili_popcorn:400,honey_popcorn:450,chocolate_popcorn:500,snack_mix:600,pancake:350,bacon_eggs:400,hamburger:500,roasted_tomato:300,baked_potato:500,lamb_skewer:700,fish_burger:500,lobster_skewer:700,garlic_bread:400,grilled_asparagus:500,grilled_onion:400,winter_veggies:600,stuffed_peppers:600,grilled_eggplant:500,banana_pancakes:600,fish_skewer:600,carrot_pie:400,pumpkin_pie:400,apple_pie:500,bacon_pie:500,fish_pie:500,feta_pie:500,casserole:600,shepherds_pie:700,asparagus_quiche:600,chocolate_pie:700,lemon_pie:600,peach_tart:600,passion_pie:600,mushroom_pie:600,eggplant_parmesan:700,carrot_cake:500,cream_cake:600,strawberry_cake:600,berry_cake:600,cheesecake:700,blueberry_cheesecake:700,chocolate_cake:700,potato_feta_cake:700,honey_apple_cake:700,fancy_cake:800,pineapple_cake:700,lemon_cake:700,fruit_cake:700,chocolate_roll:700,pomegranate_cake:800,cotton_fabric:200,blue_sweater:400,red_scarf:300,cotton_shirt:400,blue_hat:400,flower_shawl:500,cloth_shoe:500,violet_dress:600,pillow:500,wooly_chaps:500,soothing_pad:500,blanket:600,apple_juice:400,cherry_juice:500,carrot_juice:400,tomato_juice:400,berry_juice:500,pineapple_juice:600,orange_juice:600,grape_juice:600,passion_fruit_juice:700,watermelon_juice:700,mango_juice:700,guava_juice:700,vanilla_ice_cream:400,strawberry_ice_cream:500,cherry_popsicle:400,chocolate_ice_cream:600,sesame_ice_cream:500,orange_sorbet:500,affogato:600,peach_ice_cream:600,mint_ice_cream:500,banana_split:700,coconut_ice_cream:600,fruit_sorbet:700,peanut_milkshake:600,apple_jam:500,raspberry_jam:500,blackberry_jam:500,cherry_jam:500,strawberry_jam:500,blueberry_chutney:500,marmalade:600,peach_jam:600,grape_jam:600,plum_jam:600,passion_fruit_jam:700,silver_bar:500,gold_bar:800,platinum_bar:1000,iron_bar:300,refined_coal:200,silver_ring:600,gold_bracelet:1000,diamond_ring:1500,bracelet:700,necklace:800,iron_bracelet:400,flower_pendant:600,espresso:400,latte:500,cappuccino:500,mocha:600,raspberry_mocha:600,hot_chocolate:500,caramel_latte:600,iced_banana_latte:700,tomato_soup:500,pumpkin_soup:500,mushroom_soup:600,lobster_soup:800,lamb_soup:700,asparagus_soup:600,fish_soup:600,cabbage_soup:500,onion_soup:500,noodle_soup:600,potato_soup:500,bell_pepper_soup:500,broccoli_soup:500,candle:400,flower_candle:500,strawberry_candle:500,raspberry_candle:500,lemon_candle:500,floral_candle:600,lollipop:400,toffee:500,chocolate:600,caramel_apple:500,jelly_beans:500,honey_peanuts:500,cotton_candy:500,sesame_brittle:600,olive_oil:400,soy_sauce:400,mayonnaise:400,tomato_sauce:500,bean_dip:500,lemon_curd:500,olive_dip:500,salsa:500,hummus:500,tart_dressing:500,rustic_bouquet:400,bright_bouquet:500,gracious_bouquet:600,candy_bouquet:600,birthday_bouquet:700,soft_bouquet:600,veggie_bouquet:600,sushi_roll:400,lobster_sushi:700,egg_sushi:500,big_sushi_roll:600,rice_ball:400,green_salad:400,fruit_salad:400,potato_salad:400,tomato_salad:400,carrot_salad:400,cucumber_salad:400,cheese_salad:500,beetroot_salad:400,egg_salad:500,mushroom_salad:500,broccoli_salad:400,bell_pepper_salad:400,spinach_salad:400,blt_sandwich:500,veggie_sandwich:400,egg_sandwich:400,cheese_sandwich:400,fish_sandwich:500,chicken_sandwich:600,ham_sandwich:600,roast_beef_sandwich:700,cucumber_sandwich:400,waffle:400,strawberry_waffle:500,chocolate_waffle:600,blueberry_waffle:500,breakfast_waffle:600,french_fries:400,fish_and_chips:500,onion_rings:400,tempura:600,spring_rolls:500,chili_poppers:500,tea:300,milk_tea:400,green_tea:400,honey_tea:400,apple_tea:400,lemon_tea:400,berry_tea:500,mint_tea:400,peach_tea:500,chamomile_tea:400,ginger_tea:500,fish_taco:500,chicken_taco:600,veggie_taco:400,spicy_taco:600,special_taco:700,hotdog:400,chili_hotdog:500,tofu_dog:400,corn_dog:500,onion_dog:500,berry_smoothie:500,green_smoothie:500,strawberry_smoothie:500,peach_smoothie:500,banana_smoothie:500,mango_smoothie:600,pineapple_smoothie:600,blueberry_smoothie:500,carrot_smoothie:500,lavender_oil:500,lemon_oil:500,mint_oil:500,dried_fruit:400,pickles:400,canned_fish:400,kimchi:500,guava_compote:500,donut:400,sprinkled_donut:500,chocolate_donut:600,apple_donut:500,glazed_donut:500,berry_donut:600,pasta:400,rice_noodles:300,lasagna:600,spaghetti:600,rice_noodle_dish:500,veggie_lasagna:600,cheese_pasta:700,mushroom_pasta:600,seafood_pasta:800,fudge:500,caramel:400,mint_fudge:500,chili_fudge:500,lemon_fudge:500,peanut_fudge:600,porridge:400,oatmeal:400,apple_porridge:500,sweet_porridge:400,fresh_porridge:500,milkshake:500,berry_milkshake:600,mocha_milkshake:700,fruity_milkshake:600,stir_fry:500,fried_rice:500,lamb_stir_fry:700,spicy_fish:600,peanut_noodles:500,tofu_stir_fry:500,beef_stew:700,vegetable_stew:500,chickpea_stew:500,chili_stew:600,winter_stew:700,omelet:400,bacon_omelet:500,spring_omelet:500,cheese_omelet:500,rice_omelet:500,potato_omelet:500,cheese_fondue:600,chocolate_fondue:700,bacon_fondue:700,tropical_fondue:700,fruit_yogurt:500,strawberry_yogurt:500,tropical_yogurt:600,breakfast_bowl:600,plain_yogurt:400,cupcake:500,carrot_cupcake:600,guava_cupcake:600,tropical_cupcake:600,cookie_cupcake:700,kebab:600,spicy_kebab:700,doner_supreme:800,bath_salt:500,honey_soap:600,lemon_lotion:600,face_mask:600,rich_soap:700,lotion:600,cloche_hat:600,top_hat:700,sun_hat:600,flower_crown:700,clay_pot:500,vase:600,tea_pot:600,potted_plant:600,clay_mug:500,perfume:700,cologne:700,fresh_diffuser:500,zesty_perfume:700,calming_diffuser:600,red_lure:400,green_lure:400,blue_lure:500,purple_lure:500,gold_lure:700,fishing_net:500,coal:50,iron_ore:50,silver_ore:100,gold_ore:200,platinum_ore:300,diamond:500,plank:50,duct_tape:50,bolt:50,screw:50,wood_panel:50,nail:50,hammer:50,land_deed:100,mallet:100,marker_stake:100,hand_drill:100,map_piece:100,expansion_permit:200,green_voucher:50,blue_voucher:100,purple_voucher:200,gold_voucher:500,axe:30,saw:30,pickaxe:50,dynamite:50,tnt:100,shovel:50};
 
 
@@ -6445,7 +6459,8 @@ function totalChainTime(id){
 
 
 
-  var sum = it.t || 0;
+  var mult = PROD_MULTIPLIERS[id] || 1;
+  var sum = (it.t || 0) / mult;
 
 
 
@@ -6583,7 +6598,7 @@ function calcBuyRecommendations(){
 
 
 
-  var top6 = scored.slice(0,6);
+  var top12 = scored.slice(0,12);
 
 
 
@@ -6601,7 +6616,7 @@ function calcBuyRecommendations(){
 
 
 
-  if (top6.length === 0){
+  if (top12.length === 0){
 
 
 
@@ -6625,7 +6640,7 @@ function calcBuyRecommendations(){
 
 
 
-  var rankClasses = ['r1','r2','r3','r4','r5','r6'];
+  var rankClasses = ['r1','r2','r3','r4','r5','r6','r7','r8','r9','r10','r11','r12'];
 
 
 
@@ -6637,7 +6652,7 @@ function calcBuyRecommendations(){
 
 
 
-  top6.forEach(function(r,i){
+  top12.forEach(function(r,i){
 
 
 
@@ -9302,16 +9317,16 @@ function renderHardest(){
     scored.push({id:it.id, name:it.nameCN, emoji:it.emoji, time:ct, depth:dp, score:score});
   });
   scored.sort(function(a,b){ return b.score - a.score; });
-  var top3 = scored.slice(0, 3);
+  var top8 = scored.slice(0, 8);
   var container = document.getElementById('hardestItems');
   if (!container) return;
-  if (top3.length === 0) {
+  if (top8.length === 0) {
     container.innerHTML = '<span style="color:#999">暂无数据</span>';
     return;
   }
-  var ranks = ['r1','r2','r3'];
+  var ranks = ['r1','r2','r3','r4','r5','r6','r7','r8'];
   var h = '';
-  top3.forEach(function(r, i){
+  top8.forEach(function(r, i){
     h += '<div class="hd-card">';
     h += '<span class="hd-rank ' + ranks[i] + '">' + (i+1) + '</span>';
     h += r.emoji + ' ';
