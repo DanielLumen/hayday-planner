@@ -6203,7 +6203,7 @@ function calcPriority(){
 
 
   D.items.forEach(function(it){
-    var nameCN=it.nameCN||it.id; var emoji=it.emoji||'';
+    var nameCN=(it.nameCN||it.id)||it.id; var emoji=it.emoji||'';
 
 
 
@@ -6425,7 +6425,7 @@ function calcPriority(){
 
 
 
-    h+='<div class="prio-info"><div class="prio-name">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" style="width:22px;height:22px;object-fit:contain;vertical-align:middle;border-radius:2px" loading="lazy">':it.emoji)+' '+it.nameCN+' <span style="color:'+clr+';font-weight:700">#'+rank+' 缺'+need+'个</span></div>';
+    h+='<div class="prio-info"><div class="prio-name">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" style="width:22px;height:22px;object-fit:contain;vertical-align:middle;border-radius:2px" loading="lazy">':it.emoji)+' '+(it.nameCN||it.id)+' <span style="color:'+clr+';font-weight:700">#'+rank+' 缺'+need+'个</span></div>';
 
 
 
@@ -6603,7 +6603,7 @@ function calcBuyRecommendations(){
 
 
   D.items.forEach(function(it){
-    var nameCN=it.nameCN||it.id; var emoji=it.emoji||'';
+    var nameCN=(it.nameCN||it.id)||it.id; var emoji=it.emoji||'';
 
 
 
@@ -6639,7 +6639,7 @@ function calcBuyRecommendations(){
 
 
 
-    scored.push({id:it.id, name:it.nameCN, emoji:it.emoji, need:need, chainTime:chainTime, score:score});
+    scored.push({id:it.id, name:(it.nameCN||it.id), emoji:it.emoji, need:need, chainTime:chainTime, score:score});
 
 
 
@@ -6892,7 +6892,7 @@ function updateTargetMax(){
 
 
   D.items.forEach(function(it){
-    var nameCN=it.nameCN||it.id; var emoji=it.emoji||''; if(it.st.indexOf('silo')===0) siloN++; else barnN++; });
+    var nameCN=(it.nameCN||it.id)||it.id; var emoji=it.emoji||''; if(it.st.indexOf('silo')===0) siloN++; else barnN++; });
 
 
 
@@ -7968,7 +7968,7 @@ function calcProductionPlan(){
 
 
 
-        needed.push({id:it.id,nameCN:it.nameCN,shortage:need,ownShortage:ownShort,time:it.t,ing:it.ing});
+        needed.push({id:it.id,nameCN:(it.nameCN||it.id),shortage:need,ownShortage:ownShort,time:it.t,ing:it.ing});
 
 
 
@@ -8288,7 +8288,7 @@ function renderItemsList(){
   }
   var siloFieldItems=[], siloTreeItems=[], barnItems=[];
   D.items.forEach(function(it){
-    var nameCN=it.nameCN||it.id; var emoji=it.emoji||'';
+    var nameCN=(it.nameCN||it.id)||it.id; var emoji=it.emoji||'';
     if(it.st==='silo_field') siloFieldItems.push(it);
     else if(it.st==='silo_tree') siloTreeItems.push(it);
     else if(it.st==='barn') barnItems.push(it);
@@ -8305,7 +8305,7 @@ function renderItemsList(){
   h+='<div style="overflow-y:auto;flex:1;min-height:0">';
   siloFieldItems.forEach(function(it){
     var ed=loadEdits(),ck=loadChecked();var edited=ed.mod&&ed.mod[it.id]||(ed.add||[]).some(function(a){return a.id===it.id;})||(ed.del||[]).indexOf(it.id)>=0;var checked=ck[it.id];
-    h+='<div class="plan-item" style="padding:3px 10px;cursor:pointer;border-bottom:1px solid #f0ede6" onclick="openEditModal(\''+it.id+'\')">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" style="width:16px;height:16px;vertical-align:middle;margin-right:4px">':(it.emoji||''))+'<span style="font-size:12px">'+it.nameCN+'</span>'+(edited&&!checked?' <span style="color:#22c55e;font-size:12px">✅</span>':'')+'</div>';
+    h+='<div class="plan-item" style="padding:3px 10px;cursor:pointer;border-bottom:1px solid #f0ede6" onclick="openEditModal(\''+it.id+'\')">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" style="width:16px;height:16px;vertical-align:middle;margin-right:4px">':(it.emoji||''))+'<span style="font-size:12px">'+(it.nameCN||it.id)+'</span>'+(edited&&!checked?' <span style="color:#22c55e;font-size:12px">✅</span>':'')+'</div>';
   });
   h+='</div></div>';
   
@@ -8315,7 +8315,7 @@ function renderItemsList(){
   h+='<div style="overflow-y:auto;flex:1;min-height:0">';
   barnItems.forEach(function(it){
     var ed=loadEdits(),ck=loadChecked();var edited=ed.mod&&ed.mod[it.id]||(ed.add||[]).some(function(a){return a.id===it.id;})||(ed.del||[]).indexOf(it.id)>=0;var checked=ck[it.id];
-    h+='<div class="plan-item" style="padding:3px 10px;cursor:pointer;border-bottom:1px solid #f0ede6" onclick="openEditModal(\''+it.id+'\')">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" style="width:16px;height:16px;vertical-align:middle;margin-right:4px">':(it.emoji||''))+'<span style="font-size:12px">'+it.nameCN+'</span>'+(edited&&!checked?' <span style="color:#22c55e;font-size:12px">✅</span>':'')+'</div>';
+    h+='<div class="plan-item" style="padding:3px 10px;cursor:pointer;border-bottom:1px solid #f0ede6" onclick="openEditModal(\''+it.id+'\')">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" style="width:16px;height:16px;vertical-align:middle;margin-right:4px">':(it.emoji||''))+'<span style="font-size:12px">'+(it.nameCN||it.id)+'</span>'+(edited&&!checked?' <span style="color:#22c55e;font-size:12px">✅</span>':'')+'</div>';
   });
   h+='</div></div>';
   
@@ -8393,7 +8393,7 @@ function applyEdits(){
 
 
   if(ed.mod) D.items.forEach(function(it){
-    var nameCN=it.nameCN||it.id; var emoji=it.emoji||''; if(ed.mod[it.id]){ Object.assign(it,ed.mod[it.id]); } });
+    var nameCN=(it.nameCN||it.id)||it.id; var emoji=it.emoji||''; if(ed.mod[it.id]){ Object.assign(it,ed.mod[it.id]); } });
 
 
 
@@ -8406,14 +8406,14 @@ function applyEdits(){
 
 
   im={}; D.items.forEach(function(it){
-    var nameCN=it.nameCN||it.id; var emoji=it.emoji||''; im[it.id]=it; });
+    var nameCN=(it.nameCN||it.id)||it.id; var emoji=it.emoji||''; im[it.id]=it; });
 
 
 
 
 
   dm={}; D.items.forEach(function(it){
-    var nameCN=it.nameCN||it.id; var emoji=it.emoji||''; it.ing.forEach(function(ing){ if(!dm[ing.i]) dm[ing.i]=[]; dm[ing.i].push({id:it.id,q:ing.q}); }); });
+    var nameCN=(it.nameCN||it.id)||it.id; var emoji=it.emoji||''; it.ing.forEach(function(ing){ if(!dm[ing.i]) dm[ing.i]=[]; dm[ing.i].push({id:it.id,q:ing.q}); }); });
 
 
 
@@ -8443,13 +8443,13 @@ function openEditModal(id){
 
 
 
-  document.getElementById('editModalTitle').textContent='编辑: '+it.nameCN;
+  document.getElementById('editModalTitle').textContent='编辑: '+(it.nameCN||it.id);
 
 
 
 
 
-  document.getElementById('emName').value=it.nameCN;
+  document.getElementById('emName').value=(it.nameCN||it.id);
 
 
 
@@ -8688,7 +8688,7 @@ function refreshIngUI(){
   var h='';
   // Build items with pinyin and first-char info
   var itemsWithPinyin=D.items.map(function(it){
-    var name=it.nameCN||it.id;
+    var name=(it.nameCN||it.id)||it.id;
     var firstChar=name.charAt(0);
     return {id:it.id, name:name, py:_pyFL(name), firstChar:firstChar};
   });
@@ -9304,11 +9304,11 @@ function renderChainView(){
   if(allItems.length===0){list.innerHTML='<div class="empty-state"><div class="big">🔗</div><p>无生产链条数据</p></div>';return;}
   var h='<div style="padding:4px 14px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border)">共 '+allItems.length+' 个可生产物品，按链条复杂度排序</div>';
   allItems.forEach(function(it){
-    var emoji=it.emoji||''; var nameCN=it.nameCN||it.id; var chainTime=totalChainTime(it.id); var depth=chainDepth(it.id);
+    var emoji=it.emoji||''; var nameCN=(it.nameCN||it.id)||it.id; var chainTime=totalChainTime(it.id); var depth=chainDepth(it.id);
     var timeLabel=chainTime>=3600?Math.round(chainTime/3600)+'h'+Math.round(chainTime%3600/60)+'m':Math.round(chainTime/60)+'m';
     h+='<div class="plan-item" style="cursor:pointer;border-bottom:1px solid #f0ede6" onclick="toggleChainDetail(\''+it.id+'\',this)">';
     h+='<div style="display:flex;align-items:center;justify-content:space-between;width:100%">';
-    h+='<span>'+(it.emoji||'')+' <b>'+it.nameCN+'</b><span class="chain-depth-badge">层级'+depth+'</span></span>';
+    h+='<span>'+emoji+' <b>'+nameCN+'</b><span class="chain-depth-badge">层级'+depth+'</span></span>';
     h+='<span style="font-size:11px;color:var(--accent);white-space:nowrap">⏱ '+timeLabel+' <span class="chain-toggle">▶</span></span>';
     h+='</div><div class="chain-expanded" style="display:none" id="chainDet-'+it.id+'"></div></div>';
   });
@@ -9337,7 +9337,7 @@ function buildChainTree(id,visited,qty,depth,prefix,isLast){
   if(visited[id]&&depth>0) return '<div style="white-space:nowrap"><span class="tree-prefix">'+prefix+(isLast?'└─ ':'├─ ')+'</span><span class="chain-item intermediate" style="opacity:.6">↩ 循环</span></div>';
   visited[id]=true;
   var it=im[id]; if(!it) return '<div style="white-space:nowrap"><span class="tree-prefix">'+prefix+(isLast?'└─ ':'├─ ')+'</span><span class="chain-item raw">??:'+id+'</span></div>';
-  var emoji=it.emoji||''; var name=it.nameCN||id;
+  var emoji=it.emoji||''; var name=(it.nameCN||it.id)||id;
   var cls=(depth===0)?'final':((it.ing&&it.ing.length>0)?'intermediate':'raw');
   var connector=depth===0?'':(isLast?'└─ ':'├─ ');
   var h='<div style="white-space:nowrap"><span class="tree-prefix">'+prefix+connector+'</span><span class="chain-item '+cls+'">'+emoji+' '+name;
@@ -9364,7 +9364,7 @@ function togglePlanChain(id,el){
 }
 function buildChainSummary(id){
   var it=im[id]; if(!it) return '';
-  var emoji=it.emoji||''; var nameCN=it.nameCN||id;
+  var emoji=it.emoji||''; var nameCN=nameCN||id;
   var it=im[id]; if(!it) return '';
   var totalT=totalChainTime(id); var depth=chainDepth(id);
   var h='<div class="chain-summary">';
@@ -9376,7 +9376,7 @@ function buildChainSummary(id){
 }
 function renderChainPreview(id){
   var it=im[id]; if(!it) return;
-  var nameCN=it.nameCN||id;
+  var nameCN=(it.nameCN||it.id)||id;
   var emoji=it.emoji||'';
   var preview=document.getElementById('emChainPreview');
   if(!preview) return;
@@ -9390,13 +9390,13 @@ function renderHardest(){
   _chainCache = {};
   var scored = [];
   D.items.forEach(function(it){
-    var nameCN=it.nameCN||it.id; var emoji=it.emoji||'';
+    var nameCN=(it.nameCN||it.id)||it.id; var emoji=it.emoji||'';
     if (it.st.indexOf('silo')===0) return;
     var ct = totalChainTime(it.id);
     if (ct <= 0) return;
     var dp = _chainDepth(it.id);
     var score = ct * (1 + dp * 0.3);
-    scored.push({id:it.id, name:it.nameCN, emoji:it.emoji, time:ct, depth:dp, score:score});
+    scored.push({id:it.id, name:(it.nameCN||it.id), emoji:it.emoji, time:ct, depth:dp, score:score});
   });
   scored.sort(function(a,b){ return b.score - a.score; });
   var top8 = scored.slice(0, 8);
