@@ -4391,7 +4391,8 @@ function init(){
 
 
 
-  D.items.forEach(function(it){ im[it.id]=it; if(P[it.id]) it.p=P[it.id]; if(!(it.id in S)) S[it.id]={n:0,tg:it.tg}; });
+  D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||''; im[it.id]=it; if(P[it.id]) it.p=P[it.id]; if(!(it.id in S)) S[it.id]={n:0,tg:it.tg}; });
 
 
 
@@ -4403,7 +4404,8 @@ function init(){
 
 
 
-  if(!S._v || S._v < 1){D.items.forEach(function(it){S[it.id]={n:((S[it.id]||{}).n||0),tg:it.tg}});S._v=1;sv();}
+  if(!S._v || S._v < 1){D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||'';S[it.id]={n:((S[it.id]||{}).n||0),tg:it.tg}});S._v=1;sv();}
 
 
 
@@ -4445,13 +4447,15 @@ function init(){
 
 
 
-  D.items.forEach(function(it){ dm[it.id]=[]; });
+  D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||''; dm[it.id]=[]; });
 
 
 
 
 
   D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||'';
 
 
 
@@ -4625,7 +4629,8 @@ function fillTargets(){
 
 
 
-  init(); D.items.forEach(function(it){ S[it.id]={n:it.tg,tg:it.tg}; });
+  init(); D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||''; S[it.id]={n:it.tg,tg:it.tg}; });
 
 
 
@@ -4649,7 +4654,8 @@ function resetAll(){
 
 
 
-  init(); D.items.forEach(function(it){ S[it.id]={n:0,tg:it.tg}; });
+  init(); D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||''; S[it.id]={n:0,tg:it.tg}; });
 
 
 
@@ -4721,7 +4727,8 @@ function onGTSilo(){
 
 
 
-  D.items.forEach(function(it){ if(it.st.indexOf('silo')===0) S[it.id].tg=gt; });
+  D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||''; if(it.st.indexOf('silo')===0) S[it.id].tg=gt; });
 
 
 
@@ -4787,7 +4794,8 @@ function onGTSilo(){
 
 
 
-  D.items.forEach(function(it){ if(it.st==='barn') S[it.id].tg=gt; });
+  D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||''; if(it.st==='barn') S[it.id].tg=gt; });
 
 
 
@@ -5120,6 +5128,7 @@ function renderAll(){
 
 
   D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||'';
 
 
 
@@ -5368,7 +5377,7 @@ function renderAll(){
 
 
 
-      h+='<div class="tile-top"><div class="tile-icon">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" loading="lazy">':(it.emoji||'📦'))+'</div><div class="tile-name">'+it.nameCN+'</div><input type="number" class="tile-input" value="'+gs(it.id)+'" min="0" onfocus="this.select()" onblur="ss(\''+it.id+'\',this.value)" onclick="event.stopPropagation();this.select()">/<span class="tile-target">'+gt(it.id)+'</span><button class="tile-edit" onclick="event.stopPropagation();openEditModal(\''+it.id+'\')" title="编辑">✏️'+(isEdited?'<button class="tile-edit tile-revert" title="撤销标记">✅</button>':'')+'</button></div>';;
+      h+='<div class="tile-top"><div class="tile-icon">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" loading="lazy">':(emoji||'📦'))+'</div><div class="tile-name">'+it.nameCN+'</div><input type="number" class="tile-input" value="'+gs(it.id)+'" min="0" onfocus="this.select()" onblur="ss(\''+it.id+'\',this.value)" onclick="event.stopPropagation();this.select()">/<span class="tile-target">'+gt(it.id)+'</span><button class="tile-edit" onclick="event.stopPropagation();openEditModal(\''+it.id+'\')" title="编辑">✏️'+(isEdited?'<button class="tile-edit tile-revert" title="撤销标记">✅</button>':'')+'</button></div>';;
 
 
 
@@ -5537,6 +5546,7 @@ function updateStats(){
 
 
   D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||'';
 
 
 
@@ -5579,6 +5589,7 @@ function updateStats(){
 
 
   D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||'';
 
 
 
@@ -6152,7 +6163,8 @@ function computeRecursiveNeeds(){
 
 
 
-  D.items.forEach(function(it){get(it.id);});
+  D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||'';get(it.id);});
 
 
 
@@ -6191,6 +6203,7 @@ function calcPriority(){
 
 
   D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||'';
 
 
 
@@ -6590,6 +6603,7 @@ function calcBuyRecommendations(){
 
 
   D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||'';
 
 
 
@@ -6877,7 +6891,8 @@ function updateTargetMax(){
 
 
 
-  D.items.forEach(function(it){ if(it.st.indexOf('silo')===0) siloN++; else barnN++; });
+  D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||''; if(it.st.indexOf('silo')===0) siloN++; else barnN++; });
 
 
 
@@ -8273,6 +8288,7 @@ function renderItemsList(){
   }
   var siloFieldItems=[], siloTreeItems=[], barnItems=[];
   D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||'';
     if(it.st==='silo_field') siloFieldItems.push(it);
     else if(it.st==='silo_tree') siloTreeItems.push(it);
     else if(it.st==='barn') barnItems.push(it);
@@ -8376,7 +8392,8 @@ function applyEdits(){
 
 
 
-  if(ed.mod) D.items.forEach(function(it){ if(ed.mod[it.id]){ Object.assign(it,ed.mod[it.id]); } });
+  if(ed.mod) D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||''; if(ed.mod[it.id]){ Object.assign(it,ed.mod[it.id]); } });
 
 
 
@@ -8388,13 +8405,15 @@ function applyEdits(){
 
 
 
-  im={}; D.items.forEach(function(it){ im[it.id]=it; });
+  im={}; D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||''; im[it.id]=it; });
 
 
 
 
 
-  dm={}; D.items.forEach(function(it){ it.ing.forEach(function(ing){ if(!dm[ing.i]) dm[ing.i]=[]; dm[ing.i].push({id:it.id,q:ing.q}); }); });
+  dm={}; D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||''; it.ing.forEach(function(ing){ if(!dm[ing.i]) dm[ing.i]=[]; dm[ing.i].push({id:it.id,q:ing.q}); }); });
 
 
 
@@ -9285,7 +9304,7 @@ function renderChainView(){
   if(allItems.length===0){list.innerHTML='<div class="empty-state"><div class="big">🔗</div><p>无生产链条数据</p></div>';return;}
   var h='<div style="padding:4px 14px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border)">共 '+allItems.length+' 个可生产物品，按链条复杂度排序</div>';
   allItems.forEach(function(it){
-    var chainTime=totalChainTime(it.id); var depth=chainDepth(it.id);
+    var emoji=it.emoji||''; var nameCN=it.nameCN||it.id; var chainTime=totalChainTime(it.id); var depth=chainDepth(it.id);
     var timeLabel=chainTime>=3600?Math.round(chainTime/3600)+'h'+Math.round(chainTime%3600/60)+'m':Math.round(chainTime/60)+'m';
     h+='<div class="plan-item" style="cursor:pointer;border-bottom:1px solid #f0ede6" onclick="toggleChainDetail(\''+it.id+'\',this)">';
     h+='<div style="display:flex;align-items:center;justify-content:space-between;width:100%">';
@@ -9345,6 +9364,8 @@ function togglePlanChain(id,el){
 }
 function buildChainSummary(id){
   var it=im[id]; if(!it) return '';
+  var emoji=it.emoji||''; var nameCN=it.nameCN||id;
+  var it=im[id]; if(!it) return '';
   var totalT=totalChainTime(id); var depth=chainDepth(id);
   var h='<div class="chain-summary">';
   h+='<span>⏱ 总耗时:'+(totalT>=3600?Math.round(totalT/3600)+'h'+Math.round(totalT%3600/60)+'m':Math.round(totalT/60)+'m')+'</span>';
@@ -9354,6 +9375,9 @@ function buildChainSummary(id){
   return h;
 }
 function renderChainPreview(id){
+  var it=im[id]; if(!it) return;
+  var nameCN=it.nameCN||id;
+  var emoji=it.emoji||'';
   var preview=document.getElementById('emChainPreview');
   if(!preview) return;
   var it=im[id]; if(!it||!it.ing||it.ing.length===0){preview.style.display='none';return;}
@@ -9366,6 +9390,7 @@ function renderHardest(){
   _chainCache = {};
   var scored = [];
   D.items.forEach(function(it){
+    var nameCN=it.nameCN||it.id; var emoji=it.emoji||'';
     if (it.st.indexOf('silo')===0) return;
     var ct = totalChainTime(it.id);
     if (ct <= 0) return;
