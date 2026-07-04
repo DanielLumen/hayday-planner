@@ -40,6 +40,8 @@
 
 
 
+
+/* ====== 变量与重置 ====== */
 :root{--bg:#F8FAFC;--card:#FFFFFF;--text:#0F172A;--text-secondary:#475569;--muted:#64748B;--accent:#059669;--accent-hover:#047857;--warn:#D97706;--warn-light:#FFFBEB;--danger:#DC2626;--danger-light:#FEF2F2;--border:#E2E8F0;--shadow-sm:0 1px 2px rgba(0,0,0,.04);--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--radius:8px;--radius-sm:6px;--transition:150ms ease}
 
 
@@ -82,6 +84,8 @@ body{font-family:'Fira Sans',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFa
 
 
 
+
+/* ====== 按钮 ====== */
 .btn{padding:6px 12px;border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;transition:all var(--transition);white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
 
 
@@ -220,18 +224,24 @@ body{font-family:'Fira Sans',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFa
 
 
 
+
+/* ====== 布局 ====== */
 .main-layout{display:grid;grid-template-columns:1fr minmax(280px,340px);gap:12px;padding:0 12px 20px;height:calc(100vh - 150px)}
 
 
 
 
 
+
+/* ====== 响应式 ====== */
 @media(max-width:960px){.main-layout{grid-template-columns:1fr}}
 
 
 
 
 
+
+/* ====== 面板 ====== */
 .panel{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;min-height:0;box-shadow:var(--shadow-sm)}
 
 
@@ -370,7 +380,9 @@ body{font-family:'Fira Sans',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFa
 
 
 
-.tile-input:focus{border-color:var(--accent);background:var(--card);box-shadow:0 0 0 2px rgba(5,150,105,.15);outline:none}.tile-input::-webkit-outer-spin-button,.tile-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.tile-input[type=number]{-moz-appearance:textfield}
+.tile-input:focus{border-color:var(--accent);background:var(--card);box-shadow:0 0 0 2px rgba(5,150,105,.15);outline:none}.tile-input::-webkit-outer-spin-button,.tile-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.tile-
+/* ====== 输入框 ====== */
+input[type=number]{-moz-appearance:textfield}
 
 
 
@@ -583,6 +595,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 
 
+
+/* ====== 生产计划 ====== */
 .plan-building{border-bottom:1px solid #f0ede6;padding:8px 0}
 
 
@@ -608,6 +622,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 
 .plan-bld-time{font-size:10px;color:var(--muted);white-space:nowrap}
+
+/* ====== 链条视图 ====== */
 .chain-tree{font-size:13px;line-height:1.8;padding:8px 12px;overflow-x:auto}
 .tree-prefix{font-family:'Courier New',monospace;font-size:12px;color:var(--muted);user-select:none;opacity:0.6}
 .chain-item{cursor:pointer;padding:4px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px;margin:2px 0;background:var(--card);border:1px solid var(--border);transition:all .12s;white-space:nowrap;font-weight:500;font-size:12px}
@@ -675,6 +691,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 
 
+
+/* ====== 编辑弹窗 ====== */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:center;justify-content:center}
 
 
@@ -784,6 +802,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 /* ---- 购买建议 ---- */
 
 
+
+/* ====== 购买建议 ====== */
 .buy-banner{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #2a2a4a;border-radius:8px;padding:10px 14px;margin:0 16px 8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 
 
@@ -885,6 +905,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 
 /* 最难生产排行 */
+
+/* ====== 最难生产 ====== */
 .hardest-bar{background:linear-gradient(135deg,#1a0a0a,#2d1212);border:1px solid #4a2020;border-radius:8px;padding:8px 14px;margin:0 16px 6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:11px}
 .hardest-bar .hd-label{color:#f06060;font-size:12px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:4px}
 .hardest-bar .hd-items{display:flex;gap:8px;flex-wrap:wrap;flex:1;min-width:0}
@@ -1149,12 +1171,508 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 
 
+<script></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+
+
+
+
+<body>
+
+
+
+
+
+<div class="topbar">
+
+
+
+
+
+<h1 ondblclick="toggleInfoBar()" style="cursor:pointer" title="双击收起/展开">🎪 卡通农场<span class="sub">货仓助手</span></h1>
+
+
+
+
+
+<div class="topbar-actions"><button class="btn btn-outline btn-xs" onclick="toggleInfoBar()" id="infoToggle" title="收起/展开统计区">▲</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<button class="btn btn-outline btn-xs" onclick="saveToFile()">📤 导出</button>
+<button class="btn btn-outline btn-xs" onclick="loadFromFile()">📥 导入</button>
+
+
+
+
+
+</div>
+
+
+
+
+
+</div>
+<div id="hardestBar" class="hardest-bar" ondblclick="toggleInfoBar()" title="双击收起/展开">
+  <div class="hd-label">⏱️ 最难生产</div>
+  <div class="hd-items" id="hardestItems">计算中…</div>
+</div>
+
+
+
+
+
+<div id="infoBar" class="info-bar">
+
+
+
+
+
+<div class="stats-row" id="statsRow" ondblclick="toggleInfoBar()" title="双击收起/展开"></div>
+
+
+
+
+
+<div class="buy-banner" id="buyBanner" ondblclick="toggleInfoBar()" title="双击收起/展开">
+
+
+  <div class="buy-label">💰 购买建议</div>
+
+
+  <div class="buy-items" id="buyItems"><div style="font-size:10px;color:#8899aa;margin-bottom:4px;width:100%">计算公式: 生产难度 = 本品生产时间/产能系数 + Σ原料链条时间×需求量。产能系数: 牛奶/培根/羊毛=15, 山羊奶=12, 鸡蛋=18, 羊排=10, 饲料/制糖=2</div>计算中…</div>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+<div class="toolbar">
+
+
+
+
+
+<input type="text" class="search-input" placeholder="搜索物品或设备…" oninput="renderAll()" id="searchInput">
+
+
+
+
+
+</div>
+
+
+
+
+
+<div class="filter-row" id="filterRow"></div>
+
+
+
+
+
+<div class="main-layout">
+
+
+
+
+
+<div class="panel" id="listPanel">
+
+
+
+
+
+<div class="panel-header"><h2>📦 库存清单</h2><span style="font-size:11px;color:var(--muted)" id="itemCount"></span></div>
+
+
+
+
+
+<div class="panel-body" id="listBody"></div>
+
+
+
+
+
+</div>
+
+
+
+
+
+<div class="panel side-panel">
+
+
+
+
+
+<div <div class="slider-row duo-slider">
+
+
+  <div class="slider-item">
+
+
+    <label><span style="font-size:16px">🌾</span> 粮仓</label>
+
+
+    <input type="number" min="1" max="99" value="10" id="gtSiloNum" style="width:56px;padding:3px 5px;border:1px solid var(--border);border-radius:6px;font-size:12px;text-align:center;font-weight:600;background:var(--card)" onchange="document.getElementById('gtSilo').value=this.value;onGTSilo()">
+
+
+    <input type="range" min="1" max="99" value="10" id="gtSilo" class="gt-slider" style="width:100px;flex-shrink:0" oninput="document.getElementById('gtSiloNum').value=this.value;onGTSilo()" >
+
+
+    
+
+
+  </div>
+
+  <div class="slider-item">
+
+
+    <label><span style="font-size:16px">📦</span> 货仓</label>
+
+
+    <input type="number" min="1" max="99" value="5" id="gtBarnNum" style="width:56px;padding:3px 5px;border:1px solid var(--border);border-radius:6px;font-size:12px;text-align:center;font-weight:600;background:var(--card)" onchange="document.getElementById('gtBarn').value=this.value;onGTBarn()">
+
+
+    <input type="range" min="1" max="99" value="5" id="gtBarn" class="gt-slider" style="width:100px;flex-shrink:0" oninput="document.getElementById('gtBarnNum').value=this.value;onGTBarn()" >
+
+
+    
+
+
+  </div>
+
+
+</div>
+
+
+
+
+
+<div class="panel-header tabs-header"><div class="tab-bar"><span class="tab active" onclick="switchSidebarTab('priority',this)">优先级</span><span class="tab" onclick="switchSidebarTab('plan',this)">生产计划</span><span class="tab" onclick="switchSidebarTab('items',this)">物品清单</span></div></div>
+
+
+
+
+
+<div class="side-body" id="priorityList"><div class="empty-state"><div class="big">📊</div><p>输入库存后点"刷新"查看建议</p></div></div>
+
+
+
+
+
+<div class="side-body" id="planList" style="display:none"><div class="empty-state"><div class="big">🔧</div><p>输入库存后查看生产任务</p></div></div>
+
+
+
+
+
+<div class="side-body" id="itemsList" style="display:none"><div style="padding:10px;color:var(--muted);font-size:12px">点击标签加载物品清单</div></div>
+
+
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+<div class="toast" id="toast"></div>
+
+
+
+
+
+<script></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+
+
+
+
+<body>
+
+
+
+
+
+<div class="topbar">
+
+
+
+
+
+<h1 ondblclick="toggleInfoBar()" style="cursor:pointer" title="双击收起/展开">🎪 卡通农场<span class="sub">货仓助手</span></h1>
+
+
+
+
+
+<div class="topbar-actions"><button class="btn btn-outline btn-xs" onclick="toggleInfoBar()" id="infoToggle" title="收起/展开统计区">▲</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<button class="btn btn-outline btn-xs" onclick="saveToFile()">📤 导出</button>
+<button class="btn btn-outline btn-xs" onclick="loadFromFile()">📥 导入</button>
+
+
+
+
+
+</div>
+
+
+
+
+
+</div>
+<div id="hardestBar" class="hardest-bar" ondblclick="toggleInfoBar()" title="双击收起/展开">
+  <div class="hd-label">⏱️ 最难生产</div>
+  <div class="hd-items" id="hardestItems">计算中…</div>
+</div>
+
+
+
+
+
+<div id="infoBar" class="info-bar">
+
+
+
+
+
+<div class="stats-row" id="statsRow" ondblclick="toggleInfoBar()" title="双击收起/展开"></div>
+
+
+
+
+
+<div class="buy-banner" id="buyBanner" ondblclick="toggleInfoBar()" title="双击收起/展开">
+
+
+  <div class="buy-label">💰 购买建议</div>
+
+
+  <div class="buy-items" id="buyItems"><div style="font-size:10px;color:#8899aa;margin-bottom:4px;width:100%">计算公式: 生产难度 = 本品生产时间/产能系数 + Σ原料链条时间×需求量。产能系数: 牛奶/培根/羊毛=15, 山羊奶=12, 鸡蛋=18, 羊排=10, 饲料/制糖=2</div>计算中…</div>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+<div class="toolbar">
+
+
+
+
+
+<input type="text" class="search-input" placeholder="搜索物品或设备…" oninput="renderAll()" id="searchInput">
+
+
+
+
+
+</div>
+
+
+
+
+
+<div class="filter-row" id="filterRow"></div>
+
+
+
+
+
+<div class="main-layout">
+
+
+
+
+
+<div class="panel" id="listPanel">
+
+
+
+
+
+<div class="panel-header"><h2>📦 库存清单</h2><span style="font-size:11px;color:var(--muted)" id="itemCount"></span></div>
+
+
+
+
+
+<div class="panel-body" id="listBody"></div>
+
+
+
+
+
+</div>
+
+
+
+
+
+<div class="panel side-panel">
+
+
+
+
+
+<div <div class="slider-row duo-slider">
+
+
+  <div class="slider-item">
+
+
+    <label><span style="font-size:16px">🌾</span> 粮仓</label>
+
+
+    <input type="number" min="1" max="99" value="10" id="gtSiloNum" style="width:56px;padding:3px 5px;border:1px solid var(--border);border-radius:6px;font-size:12px;text-align:center;font-weight:600;background:var(--card)" onchange="document.getElementById('gtSilo').value=this.value;onGTSilo()">
+
+
+    <input type="range" min="1" max="99" value="10" id="gtSilo" class="gt-slider" style="width:100px;flex-shrink:0" oninput="document.getElementById('gtSiloNum').value=this.value;onGTSilo()" >
+
+
+    
+
+
+  </div>
+
+  <div class="slider-item">
+
+
+    <label><span style="font-size:16px">📦</span> 货仓</label>
+
+
+    <input type="number" min="1" max="99" value="5" id="gtBarnNum" style="width:56px;padding:3px 5px;border:1px solid var(--border);border-radius:6px;font-size:12px;text-align:center;font-weight:600;background:var(--card)" onchange="document.getElementById('gtBarn').value=this.value;onGTBarn()">
+
+
+    <input type="range" min="1" max="99" value="5" id="gtBarn" class="gt-slider" style="width:100px;flex-shrink:0" oninput="document.getElementById('gtBarnNum').value=this.value;onGTBarn()" >
+
+
+    
+
+
+  </div>
+
+
+</div>
+
+
+
+
+
+<div class="panel-header tabs-header"><div class="tab-bar"><span class="tab active" onclick="switchSidebarTab('priority',this)">优先级</span><span class="tab" onclick="switchSidebarTab('plan',this)">生产计划</span><span class="tab" onclick="switchSidebarTab('items',this)">物品清单</span></div></div>
+
+
+
+
+
+<div class="side-body" id="priorityList"><div class="empty-state"><div class="big">📊</div><p>输入库存后点"刷新"查看建议</p></div></div>
+
+
+
+
+
+<div class="side-body" id="planList" style="display:none"><div class="empty-state"><div class="big">🔧</div><p>输入库存后查看生产任务</p></div></div>
+
+
+
+
+
+<div class="side-body" id="itemsList" style="display:none"><div style="padding:10px;color:var(--muted);font-size:12px">点击标签加载物品清单</div></div>
+
+
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+<div class="toast" id="toast"></div>
+
+
+
+
+
 <script>
 
 
 
 
 
+
+/* ====== Global Data ====== */
 var D={
 
 
@@ -4288,6 +4806,8 @@ items:[{id:"wheat",nameCN:"小麦",emoji:"🌾",ing:[],t:120,tg:30,st:"silo_fiel
 
 
 
+
+/* ====== Production Multipliers ====== */
 var PROD_MULTIPLIERS={milk:15,bacon:15,wool:15,mutton:10,goat_milk:12,egg:18,brown_sugar:2,white_sugar:2,syrup:2,cow_feed:2,chicken_feed:2,pig_feed:2,sheep_feed:2,goat_feed:2};
 
 
@@ -4324,6 +4844,8 @@ var S, im={}, bm={}, dm={};
 
 
 
+
+/* ====== Init ====== */
 function init(){
 
 
@@ -4792,6 +5314,8 @@ function toast(msg){
 
 
 
+
+/* ====== Utility ====== */
 function fmt(sec){
 
 
@@ -4988,6 +5512,8 @@ function refreshTileDisplays(){
 
 
 
+
+/* ====== Render All ====== */
 function renderAll(){
 
 
@@ -6129,6 +6655,8 @@ function computeRecursiveNeeds(){
 
 
 
+
+/* ====== Priority ====== */
 function calcPriority(){
 
 
@@ -6514,6 +7042,8 @@ function totalChainTime(id){
 
 
 
+
+/* ====== Buy Recommendations ====== */
 function calcBuyRecommendations(){
 
 
@@ -7828,6 +8358,8 @@ function switchSidebarTab(tab,el){
 
 
 
+
+/* ====== Production Plan ====== */
 function calcProductionPlan(){
 
 
@@ -8212,6 +8744,8 @@ function calcProductionPlan(){
 
 
 
+
+/* ====== Item List ====== */
 function renderItemsList(){
   init();
   // Sort helper: by first char group, then pinyin
@@ -8295,6 +8829,8 @@ function revertItem(id){var ck=loadChecked();ck[id]=true;saveChecked(ck);var til
 
 
 
+
+/* ====== Data Edit ====== */
 function applyEdits(){
 
 
@@ -9125,6 +9661,8 @@ function _saveToServer(k,v){
 })();
 
 // Save button - download JSON backup file
+
+/* ====== Export/Import ====== */
 function saveToFile(){
   init();
   var out={gtSilo:S._gtSilo||parseInt(document.getElementById('gtSilo').value)||10, gtBarn:S._gtBarn||parseInt(document.getElementById('gtBarn').value)||5, siloCap:S._sc||200, barnCap:S._bc||450, items:{}, edits:loadEdits(), checked:loadChecked(), filterOrder:JSON.parse(localStorage.getItem('hd_filter_order')||'null'), order:JSON.parse(localStorage.getItem('hd_order')||'null'), infobar:localStorage.getItem('hd_infobar')};
@@ -9222,6 +9760,8 @@ function _chainDepth(id, visited){
 }
 
 // ====== 生产链条可视化 ======
+
+/* ====== Chain View ====== */
 function renderChainView(){
   init(); _chainCache={};
   var allItems=D.items.slice().filter(function(it){return it.ing&&it.ing.length>0;});
@@ -9304,6 +9844,8 @@ function renderChainPreview(id){
   var it=im[id]; if(!it||!it.ing||it.ing.length===0){preview.style.display='none';return;}
   preview.style.display='block'; preview.innerHTML='<div style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:4px">🔗 生产链条</div>'+buildChainSummary(id)+'<div class="chain-tree" style="padding:4px 0">'+buildChainTree(id)+'</div>';
 }
+
+/* ====== Hardest ====== */
 function renderHardest(){
   init();
   _chainCache = {};
