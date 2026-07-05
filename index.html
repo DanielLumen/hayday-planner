@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="zh-CN">
 
@@ -8,7 +8,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
-<title>卡通农场 · 货仓助手 v2.7.1</title>
+<title>卡通农场 · 货仓助手 v2.7.2</title>
 
 <style>
 
@@ -324,18 +324,6 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 .buy-card .buy-meta{font-size:10px;color:#999}
 
-/* ---- 购买建议 ---- */
-
-.buy-banner{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #2a2a4a;border-radius:8px;padding:10px 14px;margin:0 16px 8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-
-.buy-banner .buy-label{color:#f0c040;font-size:13px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:4px}
-
-.buy-banner .buy-items{display:flex;gap:10px;flex-wrap:wrap;flex:1}
-
-.buy-card{background:rgba(255,255,255,0.06);border-radius:6px;padding:6px 10px;display:flex;align-items:center;gap:6px;font-size:12px;color:#e0e0e0;white-space:nowrap;transition:background .15s}
-
-.buy-card:hover{background:rgba(255,255,255,0.12)}
-
 /* 最难生产排行 */
 
 /* ====== 最难生产 ====== */
@@ -452,6 +440,9 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <div class="toast" id="toast"></div>
 
 <script>
+
+'use strict';
+
 
 /* ====== Global Data ====== */
 var D={
@@ -2238,7 +2229,7 @@ function calcPriority(){
 
   if(ranked.length===0){
 
-    list.innerHTML='<div class="empty-state"><div class="big">✅</div><p>所有物品库存充足！（'+totalNeeded+'件需要，'+keys.length+'设备）</p></div>';
+    list.innerHTML='<div class="empty-state"><div class="big">✅</div><p>所有物品库存充足！</p></div>';
 
     return;
 
@@ -3313,27 +3304,7 @@ function _chainDepth(id, visited){
   return maxD + 1;
 }
 
-// ====== 生产链条可视化 ======
 
-/* ====== Chain View ====== */
-function renderChainView(){
-  init(); _chainCache={};
-  var allItems=D.items.slice().filter(function(it){return it.ing&&it.ing.length>0;});
-  allItems.sort(function(a,b){return totalChainTime(b.id)-totalChainTime(a.id);});
-  var list=document.getElementById('chainList');
-  if(allItems.length===0){list.innerHTML='<div class="empty-state"><div class="big">🔗</div><p>无生产链条数据</p></div>';return;}
-  var h='<div style="padding:4px 14px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border)">共 '+allItems.length+' 个可生产物品，按链条复杂度排序</div>';
-  allItems.forEach(function(it){
-    var emoji=(it.emoji||'')||''; var nameCN=(it.nameCN||it.id)||it.id; var chainTime=totalChainTime(it.id); var depth=chainDepth(it.id);
-    var timeLabel=chainTime>=3600?Math.round(chainTime/3600)+'h'+Math.round(chainTime%3600/60)+'m':Math.round(chainTime/60)+'m';
-    h+='<div class="plan-item" style="cursor:pointer;border-bottom:1px solid #f0ede6" onclick="toggleChainDetail(\''+it.id+'\',this)">';
-    h+='<div style="display:flex;align-items:center;justify-content:space-between;width:100%">';
-    h+='<span>'+emoji+' <b>'+nameCN+'</b><span class="chain-depth-badge">层级'+depth+'</span></span>';
-    h+='<span style="font-size:11px;color:var(--accent);white-space:nowrap">⏱ '+timeLabel+' <span class="chain-toggle">▶</span></span>';
-    h+='</div><div class="chain-expanded" style="display:none" id="chainDet-'+it.id+'"></div></div>';
-  });
-  list.innerHTML=h;
-}
 function chainDepth(id,visited){
   if(!visited) visited={};
   if(visited[id]) return 0; visited[id]=true;
@@ -3341,6 +3312,11 @@ function chainDepth(id,visited){
   var maxD=0; it.ing.forEach(function(ing){maxD=Math.max(maxD,chainDepth(ing.i,visited));});
   return 1+maxD;
 }
+
+// ====== 生产链条可视化 ======
+
+/* ====== Chain View ====== */
+
 function toggleChainDetail(id,el){
   var det=document.getElementById('chainDet-'+id);
   if(!det) return;
