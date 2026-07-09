@@ -1,17 +1,14 @@
-﻿# Node.js
 node_modules/
 
-# Python
 __pycache__/
 *.pyc
 
-# Backup
 backup/
+windows-import/
+hayday-planner-*.bundle
 
-# Temp / test files
 _test_js.js
 tests/ui_snapshot.png
 
-# System
 .DS_Store
 Thumbs.db
