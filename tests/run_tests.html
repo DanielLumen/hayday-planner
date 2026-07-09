@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>卡通农场 · 自测</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#1e1e2e;color:#cdd6f4;padding:20px;max-width:900px;margin:auto}
+h1{color:#cba6f7}
+.test{border-left:3px solid #585b70;padding:6px 12px;margin:4px 0;border-radius:0 4px 4px 0}
+.pass{border-left-color:#a6e3a1;background:#1e1e2e}
+.fail{border-left-color:#f38ba8;background:#313244;padding:8px 12px}
+.summary{font-size:16px;margin:12px 0;padding:12px;border-radius:8px}
+.summary.green{background:#1e3a1e}
+.summary.red{background:#3a1e1e}
+#status{font-size:14px;color:#89b4fa}
+pre{background:#313244;padding:8px;border-radius:6px;overflow-x:auto;font-size:12px}
+</style>
+</head>
+<body>
+<h1>卡通农场 · 自动化测试</h1>
+<div id="status">加载中…</div>
+<div id="results"></div>
+<div id="summary"></div>
+
+<script>
+const results = { pass: 0, fail: 0, list: [] };
+const out = document.getElementById("results");
+const summaryEl = document.getElementById("summary");
+const statusEl = document.getElementById("status");
+
+function check(name, ok, detail) {
+    const cls = ok ? "pass" : "fail";
+    const icon = ok ? "✓" : "✗";
+    const d = detail ? ` — <code>${detail}</code>` : "";
+    out.innerHTML += `<div class="test ${cls}">${icon} ${name}${d}</div>`;
+    if (ok) results.pass++; else results.fail++;
+    results.list.push({ name, ok, detail });
+}
+
+function summary() {
+    const total = results.pass + results.fail;
+    const allPass = results.fail === 0;
+    summaryEl.innerHTML = `<div class="summary ${allPass ? "green" : "red"}">
+        <strong>${allPass ? "全部通过!" : "有测试失败"} </strong>
+        通过: ${results.pass}/${total}  失败: ${results.fail}/${total}
+    </div>`;
+    statusEl.textContent = allPass ? "✓ 所有测试通过" : "✗ 请检查失败项";
+}
+
+async function run() {
+    statusEl.textContent = "正在加载主应用…";
+    const resp = await fetch("../index.html");
+    const html = await resp.text();
+    statusEl.textContent = "运行测试中…";
+    
+    // ═══ 数据测试（从 HTML 中提取） ═══
+    const itemIds = [...html.matchAll(/\{id:"([^"]+)",nameCN:"([^"]+)"/g)].map(m => ({id:m[1], name:m[2]}));
+    const uniqueIds = new Set(itemIds.map(i => i.id));
+    
+    check("HTML 文件可加载", html.length > 10000, `${html.length} 字节`);
+    check("包含 items 数组", html.includes("items:["), "数据源");
+    check("包含 buildings 数组", html.includes("buildings:["), "建筑定义");
+    check("物品总数 ≥ 450", itemIds.length >= 450, `实际: ${itemIds.length}`);
+    check("无重复物品 ID", uniqueIds.size === itemIds.length, `重复: ${itemIds.length - uniqueIds.size}`);
+    
+    // ═══ 关键物品验证 ═══
+    const checkItem = (id, expectedTimeSec, expectedIng) => {
+        const re = new RegExp(`id:"${id}"[^}]*t:(\\d+)`);
+        const m = html.match(re);
+        if (!m) { check(`物品 ${id} 存在`, false, "未找到"); return; }
+        const t = parseInt(m[1]);
+        const ok = t === expectedTimeSec;
+        check(`${id} 生产时间 ${expectedTimeSec}s`, ok, `实际: ${t}s`);
+    };
+    
+    checkItem("syrup", 4560);
+    checkItem("brown_sugar", 1800);
+    checkItem("white_sugar", 2700);
+    checkItem("bread", 120);
+    checkItem("cream", 360);
+    checkItem("goat_cheese", 1980);
+    checkItem("wheat", 120);
+    
+    // ═══ 蜡烛配方 ═══
+    check("蜡烛有配方(beeswax)", html.includes('id:"candle"') && html.match(/candle.*beeswax/), "蜂蜡配方");
+    
+    // ═══ 重要函数检查 ═══
+    for (const fn of ["function init()", "function renderAll()", "function calcPriority()", "function ss(", "function gs(", "function gt("]) {
+        check(`函数 ${fn.split("(")[0].replace("function ","")} 存在`, html.includes(fn));
+    }
+    
+    // ═══ CSS 关键属性 ═══
+    const styleSection = html.match(/<style>([\s\S]*?)<\/style>/);
+    if (styleSection) {
+        const css = styleSection[1];
+        check("隐藏 number 输入 spinners", css.includes("-webkit-appearance:none") && css.includes("-moz-appearance:textfield"));
+        check("定义优先级面板颜色条", css.includes("prio-bar"));
+        check("定义物品 tile 样式", css.includes("item-tile"));
+    }
+    
+    // ═══ 拖拽功能 ═══
+    check("dragstart 事件处理", html.includes("dragstart"));
+    check("dragover 事件处理", html.includes("dragover"));
+    check("drop 事件处理", html.includes("saveOrder()"));
+    
+    // ═══ 回车导航 ═══
+    check("Enter 键处理", html.includes("key==='Enter'&&e.target.classList.contains('tile-input')"));
+    
+    // ═══ click-to-select ═══
+    check("输入框 onfocus select", html.includes('onfocus="this.select()"'));
+    
+    // ═══ 排序持久化 ═══
+    check("getOrder 函数", html.includes("function getOrder()"));
+    check("saveOrder 函数", html.includes("function saveOrder()"));
+    
+    // ═══ 颜色渐变 ═══
+    check("HSL 颜色计算", html.includes("hsl("));
+    check("缺货数量显示", html.includes("缺"));
+    
+    summary();
+    statusEl.textContent = results.fail === 0 ? "✓ 所有测试通过" : "✗ 请检查失败项";
+}
+
+run().catch(e => {
+    statusEl.textContent = "错误: " + e.message;
+    console.error(e);
+});
+</script>
+</body>
+</html>

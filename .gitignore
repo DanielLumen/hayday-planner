@@ -10,6 +10,7 @@ backup/
 
 # Temp / test files
 _test_js.js
+tests/ui_snapshot.png
 
 # System
 .DS_Store

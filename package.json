@@ -3,14 +3,17 @@
   "version": "1.0.0",
   "description": "卡通农场 · 货仓助手 — 测试工具",
   "scripts": {
+    "start": "./tools/run_node.sh server.js",
     "test:data": "python3 validate.py",
-    "test:self": "start tests/run_tests.html",
-    "test:all": "python3 validate.py && echo 'Data validation passed. Open tests/run_tests.html for UI tests.'",
+    "test:self": "python3 -m http.server 4173",
+    "test:ui": "./tools/run_node.sh tests/ui_tests.js",
+    "test:all": "python3 validate.py && ./tools/run_node.sh tests/ui_tests.js",
     "test": "python3 validate.py"
   },
   "license": "MIT",
   "dependencies": {
     "@playwright/test": "^1.61.1",
-    "pinyin-pro": "^3.28.1"
+    "pinyin-pro": "^3.28.1",
+    "playwright": "^1.61.1"
   }
 }

@@ -1,5 +1,5 @@
 ﻿const http=require("http"),fs=require("fs"),path=require("path");
-const base="C:/Users/CHJ/Desktop/卡通农场";
+const base=__dirname;
 const dataFile=path.join(base,"data.json");
 
 function loadData(){

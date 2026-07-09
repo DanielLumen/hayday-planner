@@ -8,7 +8,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
-<title>卡通农场 · 货仓助手 v2.7.4</title>
+<title>卡通农场 · 货仓助手 v2.7.5</title>
 
 <style>
 
@@ -1521,9 +1521,9 @@ function init(){
 
   if(!S._gtBarn) S._gtBarn=5;
 
-  updateTargetMax();
-
   if(!S._sc) S._sc=200;
+
+  updateTargetMax();
 
   dm={};
 
@@ -2416,14 +2416,16 @@ function toggleInfoBar(){
 
 function updateTargetMax(){
 
+  if(!S || !D || !D.items) return;
+
   var siloN=0, barnN=0;
 
   D.items.forEach(function(it){
     var nameCN=(it.nameCN||it.id)||it.id; var emoji=(it.emoji||'')||''; if(it.st.indexOf('silo')===0) siloN++; else barnN++; });
 
-  var siloMax=Math.max(1,Math.floor((S._sc||200)/siloN));
+  var siloMax=Math.max(1,Math.floor((S._sc||200)/Math.max(1,siloN)));
 
-  var barnMax=Math.max(1,Math.floor((S._bc||450)/barnN));
+  var barnMax=Math.max(1,Math.floor((S._bc||450)/Math.max(1,barnN)));
 
   var s=document.getElementById('gtSilo'),sn=document.getElementById('gtSiloNum');
 
@@ -3467,4 +3469,3 @@ function renderHardest(){
 </body>
 
 </html>
-

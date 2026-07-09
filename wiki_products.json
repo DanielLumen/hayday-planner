@@ -1,0 +1,1885 @@
+{
+  "Feed Mill": {
+    "products": [
+      {
+        "name": "",
+        "level": "Chicken Feed",
+        "time": "3"
+      },
+      {
+        "name": "",
+        "level": "Cow Feed",
+        "time": "6"
+      },
+      {
+        "name": "",
+        "level": "Pig Feed",
+        "time": "10"
+      },
+      {
+        "name": "",
+        "level": "Sheep Feed",
+        "time": "16"
+      },
+      {
+        "name": "",
+        "level": "Lamb Feed",
+        "time": "25"
+      },
+      {
+        "name": "",
+        "level": "Goat Feed",
+        "time": "32"
+      },
+      {
+        "name": "",
+        "level": "Wheat Bundle",
+        "time": "R3"
+      },
+      {
+        "name": "",
+        "level": "Meat Bucket",
+        "time": "R3"
+      }
+    ]
+  },
+  "Bakery": {
+    "products": [
+      {
+        "name": "",
+        "level": "Bread",
+        "time": "2"
+      },
+      {
+        "name": "",
+        "level": "Corn Bread",
+        "time": "7"
+      },
+      {
+        "name": "",
+        "level": "Cookie",
+        "time": "10"
+      },
+      {
+        "name": "",
+        "level": "Raspberry Muffin",
+        "time": "19"
+      },
+      {
+        "name": "",
+        "level": "Blackberry Muffin",
+        "time": "26"
+      },
+      {
+        "name": "",
+        "level": "Pizza",
+        "time": "33"
+      },
+      {
+        "name": "",
+        "level": "Blueberry Muffin",
+        "time": "33"
+      },
+      {
+        "name": "",
+        "level": "Spicy Pizza",
+        "time": "37"
+      },
+      {
+        "name": "",
+        "level": "Potato Bread",
+        "time": "39"
+      },
+      {
+        "name": "",
+        "level": "Frutti di Mare Pizza",
+        "time": "45"
+      },
+      {
+        "name": "",
+        "level": "Gingerbread Cookie",
+        "time": "86"
+      },
+      {
+        "name": "",
+        "level": "Banana Bread",
+        "time": "91"
+      },
+      {
+        "name": "",
+        "level": "Macaroon",
+        "time": "101"
+      },
+      {
+        "name": "",
+        "level": "Pineapple Coconut Bars",
+        "time": "120"
+      }
+    ]
+  },
+  "Sugar Mill": {
+    "products": [
+      {
+        "name": "",
+        "level": "Brown Sugar",
+        "time": "7"
+      },
+      {
+        "name": "",
+        "level": "White Sugar",
+        "time": "13"
+      },
+      {
+        "name": "",
+        "level": "Syrup",
+        "time": "18"
+      }
+    ]
+  },
+  "Dairy": {
+    "products": [
+      {
+        "name": "",
+        "level": "Cream",
+        "time": "6"
+      },
+      {
+        "name": "",
+        "level": "Butter",
+        "time": "9"
+      },
+      {
+        "name": "",
+        "level": "Cheese",
+        "time": "12"
+      },
+      {
+        "name": "",
+        "level": "Goat Cheese",
+        "time": "33"
+      }
+    ]
+  },
+  "Popcorn Pot": {
+    "products": [
+      {
+        "name": "",
+        "level": "Popcorn",
+        "time": "8"
+      },
+      {
+        "name": "",
+        "level": "Buttered Popcorn",
+        "time": "16"
+      },
+      {
+        "name": "",
+        "level": "Chili Popcorn",
+        "time": "25"
+      },
+      {
+        "name": "",
+        "level": "Honey Popcorn",
+        "time": "40"
+      },
+      {
+        "name": "",
+        "level": "Chocolate Popcorn",
+        "time": "44"
+      },
+      {
+        "name": "",
+        "level": "Snack Mix",
+        "time": "64"
+      }
+    ]
+  },
+  "BBQ Grill": {
+    "products": [
+      {
+        "name": "",
+        "level": "Pancake",
+        "time": "9"
+      },
+      {
+        "name": "",
+        "level": "Bacon and Eggs",
+        "time": "11"
+      },
+      {
+        "name": "",
+        "level": "Hamburger",
+        "time": "18"
+      },
+      {
+        "name": "",
+        "level": "Grilled Lamb Skewer",
+        "time": "25"
+      },
+      {
+        "name": "",
+        "level": "Fish Burger",
+        "time": "27"
+      },
+      {
+        "name": "",
+        "level": "Roasted Tomatoes",
+        "time": "30"
+      },
+      {
+        "name": "",
+        "level": "Baked Potato",
+        "time": "35"
+      },
+      {
+        "name": "",
+        "level": "Fish and Chips",
+        "time": "41"
+      },
+      {
+        "name": "",
+        "level": "Lobster Skewer",
+        "time": "48"
+      },
+      {
+        "name": "",
+        "level": "Garlic Bread",
+        "time": "60"
+      },
+      {
+        "name": "",
+        "level": "Grilled Asparagus",
+        "time": "67"
+      },
+      {
+        "name": "",
+        "level": "Grilled Onion",
+        "time": "68"
+      },
+      {
+        "name": "",
+        "level": "Winter Veggies",
+        "time": "72"
+      },
+      {
+        "name": "",
+        "level": "Stuffed Peppers",
+        "time": "80"
+      },
+      {
+        "name": "",
+        "level": "Grilled Eggplant",
+        "time": "90"
+      },
+      {
+        "name": "",
+        "level": "Banana Pancakes",
+        "time": "94"
+      },
+      {
+        "name": "",
+        "level": "Fish Skewer",
+        "time": "96"
+      }
+    ]
+  },
+  "Pie Oven": {
+    "products": [
+      {
+        "name": "",
+        "level": "Carrot Pie",
+        "time": "14"
+      },
+      {
+        "name": "",
+        "level": "Pumpkin Pie",
+        "time": "15"
+      },
+      {
+        "name": "",
+        "level": "Bacon Pie",
+        "time": "18"
+      },
+      {
+        "name": "",
+        "level": "Apple Pie",
+        "time": "28"
+      },
+      {
+        "name": "",
+        "level": "Fish Pie",
+        "time": "28"
+      },
+      {
+        "name": "",
+        "level": "Feta Pie",
+        "time": "34"
+      },
+      {
+        "name": "",
+        "level": "Casserole",
+        "time": "36"
+      },
+      {
+        "name": "",
+        "level": "Shepherd's Pie",
+        "time": "39"
+      },
+      {
+        "name": "",
+        "level": "Asparagus Quiche",
+        "time": "49"
+      },
+      {
+        "name": "",
+        "level": "Chocolate Pie",
+        "time": "65"
+      },
+      {
+        "name": "",
+        "level": "Lemon Pie",
+        "time": "67"
+      },
+      {
+        "name": "",
+        "level": "Peach Tart",
+        "time": "76"
+      },
+      {
+        "name": "",
+        "level": "Passion Fruit Pie",
+        "time": "92"
+      },
+      {
+        "name": "",
+        "level": "Mushroom Pot Pie",
+        "time": "97"
+      },
+      {
+        "name": "",
+        "level": "Eggplant Parmesan",
+        "time": "99"
+      }
+    ]
+  },
+  "Cake Oven": {
+    "products": [
+      {
+        "name": "",
+        "level": "Carrot Cake",
+        "time": "21"
+      },
+      {
+        "name": "",
+        "level": "Cream Cake",
+        "time": "23"
+      },
+      {
+        "name": "",
+        "level": "Red Berry Cake",
+        "time": "23"
+      },
+      {
+        "name": "",
+        "level": "Cheesecake",
+        "time": "24"
+      },
+      {
+        "name": "",
+        "level": "Blueberry Cheesecake",
+        "time": "31"
+      },
+      {
+        "name": "",
+        "level": "Strawberry Cake",
+        "time": "35"
+      },
+      {
+        "name": "",
+        "level": "Chocolate Cake",
+        "time": "36"
+      },
+      {
+        "name": "",
+        "level": "Potato Feta Cake",
+        "time": "38"
+      },
+      {
+        "name": "",
+        "level": "Honey Apple Cake",
+        "time": "42"
+      },
+      {
+        "name": "",
+        "level": "Fancy Cake",
+        "time": "54"
+      },
+      {
+        "name": "",
+        "level": "Pineapple Cake",
+        "time": "65"
+      },
+      {
+        "name": "",
+        "level": "Lemon Cake",
+        "time": "68"
+      },
+      {
+        "name": "",
+        "level": "Fruit Cake",
+        "time": "89"
+      },
+      {
+        "name": "",
+        "level": "Chocolate Roll",
+        "time": "95"
+      },
+      {
+        "name": "",
+        "level": "Pomegranate Cake",
+        "time": "108"
+      }
+    ]
+  },
+  "Loom": {
+    "products": [
+      {
+        "name": "",
+        "level": "Sweater",
+        "time": "17"
+      },
+      {
+        "name": "",
+        "level": "Cotton Fabric",
+        "time": "18"
+      },
+      {
+        "name": "",
+        "level": "Blue Woolly Hat",
+        "time": "19"
+      },
+      {
+        "name": "",
+        "level": "Blue Sweater",
+        "time": "20"
+      },
+      {
+        "name": "",
+        "level": "Red Scarf",
+        "time": "48"
+      },
+      {
+        "name": "",
+        "level": "Flower Shawl",
+        "time": "71"
+      }
+    ]
+  },
+  "Sewing Machine": {
+    "products": [
+      {
+        "name": "",
+        "level": "Cotton Shirt",
+        "time": "19"
+      },
+      {
+        "name": "",
+        "level": "Wooly Chaps",
+        "time": "21"
+      },
+      {
+        "name": "",
+        "level": "Violet Dress",
+        "time": "25"
+      },
+      {
+        "name": "",
+        "level": "Soothing Pad",
+        "time": "45"
+      },
+      {
+        "name": "",
+        "level": "Pillow",
+        "time": "51"
+      },
+      {
+        "name": "",
+        "level": "Blanket",
+        "time": "59"
+      }
+    ]
+  },
+  "Juice Press": {
+    "products": [
+      {
+        "name": "",
+        "level": "Carrot Juice",
+        "time": "26"
+      },
+      {
+        "name": "",
+        "level": "Apple Juice",
+        "time": "28"
+      },
+      {
+        "name": "",
+        "level": "Cherry Juice",
+        "time": "30"
+      },
+      {
+        "name": "",
+        "level": "Tomato Juice",
+        "time": "31"
+      },
+      {
+        "name": "",
+        "level": "Berry Juice",
+        "time": "31"
+      },
+      {
+        "name": "",
+        "level": "Pineapple Juice",
+        "time": "52"
+      },
+      {
+        "name": "",
+        "level": "Orange Juice",
+        "time": "71"
+      },
+      {
+        "name": "",
+        "level": "Grape Juice",
+        "time": "84"
+      },
+      {
+        "name": "",
+        "level": "Passion Fruit Juice",
+        "time": "88"
+      },
+      {
+        "name": "",
+        "level": "Watermelon Juice",
+        "time": "92"
+      },
+      {
+        "name": "",
+        "level": "Mango Juice",
+        "time": "97"
+      },
+      {
+        "name": "",
+        "level": "Guava Juice",
+        "time": "104"
+      }
+    ]
+  },
+  "Ice Cream Maker": {
+    "products": [
+      {
+        "name": "",
+        "level": "Vanilla Ice Cream",
+        "time": "29"
+      },
+      {
+        "name": "",
+        "level": "Cherry Popsicle",
+        "time": "33"
+      },
+      {
+        "name": "",
+        "level": "Strawberry Ice Cream",
+        "time": "34"
+      },
+      {
+        "name": "",
+        "level": "Chocolate Ice Cream",
+        "time": "39"
+      },
+      {
+        "name": "",
+        "level": "Sesame Ice Cream",
+        "time": "50"
+      },
+      {
+        "name": "",
+        "level": "Peanut Butter Milkshake",
+        "time": "68"
+      },
+      {
+        "name": "",
+        "level": "Orange Sorbet",
+        "time": "78"
+      },
+      {
+        "name": "",
+        "level": "Affogato",
+        "time": "78"
+      },
+      {
+        "name": "",
+        "level": "Peach Ice Cream",
+        "time": "83"
+      },
+      {
+        "name": "",
+        "level": "Mint Ice Cream",
+        "time": "85"
+      },
+      {
+        "name": "",
+        "level": "Banana Split",
+        "time": "96"
+      },
+      {
+        "name": "",
+        "level": "Coconut Ice Cream",
+        "time": "102"
+      },
+      {
+        "name": "",
+        "level": "Fruit Sorbet",
+        "time": "106"
+      }
+    ]
+  },
+  "Jam Maker": {
+    "products": [
+      {
+        "name": "",
+        "level": "Apple Jam",
+        "time": "35"
+      },
+      {
+        "name": "",
+        "level": "Raspberry Jam",
+        "time": "36"
+      },
+      {
+        "name": "",
+        "level": "Blackberry Jam",
+        "time": "37"
+      },
+      {
+        "name": "",
+        "level": "Cherry Jam",
+        "time": "38"
+      },
+      {
+        "name": "",
+        "level": "Strawberry Jam",
+        "time": "50"
+      },
+      {
+        "name": "",
+        "level": "Blueberry Chutney",
+        "time": "70"
+      },
+      {
+        "name": "",
+        "level": "Marmalade",
+        "time": "74"
+      },
+      {
+        "name": "",
+        "level": "Peach Jam",
+        "time": "79"
+      },
+      {
+        "name": "",
+        "level": "Grape Jam",
+        "time": "85"
+      },
+      {
+        "name": "",
+        "level": "Plum Jam",
+        "time": "94"
+      },
+      {
+        "name": "",
+        "level": "Passion Fruit Jam",
+        "time": "96"
+      }
+    ]
+  },
+  "Jeweler": {
+    "products": [
+      {
+        "name": "",
+        "level": "Bracelet",
+        "time": "38"
+      },
+      {
+        "name": "",
+        "level": "Necklace",
+        "time": "39"
+      },
+      {
+        "name": "",
+        "level": "Diamond Ring",
+        "time": "40"
+      },
+      {
+        "name": "",
+        "level": "Iron Bracelet",
+        "time": "41"
+      },
+      {
+        "name": "",
+        "level": "Flower Pendant",
+        "time": "98"
+      }
+    ]
+  },
+  "Coffee Kiosk": {
+    "products": [
+      {
+        "name": "",
+        "level": "Espresso",
+        "time": "42"
+      },
+      {
+        "name": "",
+        "level": "Caffè Latte",
+        "time": "43"
+      },
+      {
+        "name": "",
+        "level": "Caffè Mocha",
+        "time": "45"
+      },
+      {
+        "name": "",
+        "level": "Raspberry Mocha",
+        "time": "46"
+      },
+      {
+        "name": "",
+        "level": "Hot Chocolate",
+        "time": "47"
+      },
+      {
+        "name": "",
+        "level": "Caramel Latte",
+        "time": "62"
+      },
+      {
+        "name": "",
+        "level": "Iced Banana Latte",
+        "time": "88"
+      }
+    ]
+  },
+  "Soup Kitchen": {
+    "products": [
+      {
+        "name": "",
+        "level": "Lobster Soup",
+        "time": "46"
+      },
+      {
+        "name": "",
+        "level": "Lamb Soup",
+        "time": "46"
+      },
+      {
+        "name": "",
+        "level": "Tomato Soup",
+        "time": "47"
+      },
+      {
+        "name": "",
+        "level": "Pumpkin Soup",
+        "time": "49"
+      },
+      {
+        "name": "",
+        "level": "Asparagus Soup",
+        "time": "51"
+      },
+      {
+        "name": "",
+        "level": "Fish Soup",
+        "time": "53"
+      },
+      {
+        "name": "",
+        "level": "Cabbage Soup",
+        "time": "65"
+      },
+      {
+        "name": "",
+        "level": "Onion Soup",
+        "time": "72"
+      },
+      {
+        "name": "",
+        "level": "Noodle Soup",
+        "time": "73"
+      },
+      {
+        "name": "",
+        "level": "Potato Soup",
+        "time": "78"
+      },
+      {
+        "name": "",
+        "level": "Bell Pepper Soup",
+        "time": "81"
+      },
+      {
+        "name": "",
+        "level": "Broccoli Soup",
+        "time": "87"
+      },
+      {
+        "name": "",
+        "level": "Mushroom Soup",
+        "time": "104"
+      }
+    ]
+  },
+  "Candle Maker": {
+    "products": [
+      {
+        "name": "",
+        "level": "Strawberry Candle",
+        "time": "48"
+      },
+      {
+        "name": "",
+        "level": "Raspberry Candle",
+        "time": "52"
+      },
+      {
+        "name": "",
+        "level": "Lemon Candle",
+        "time": "72"
+      },
+      {
+        "name": "",
+        "level": "Colorful Candles",
+        "time": "84"
+      },
+      {
+        "name": "",
+        "level": "Floral Candle",
+        "time": "95"
+      }
+    ]
+  },
+  "Candy Machine": {
+    "products": [
+      {
+        "name": "",
+        "level": "Caramel Apple",
+        "time": "51"
+      },
+      {
+        "name": "",
+        "level": "Toffee",
+        "time": "52"
+      },
+      {
+        "name": "",
+        "level": "Chocolate",
+        "time": "54"
+      },
+      {
+        "name": "",
+        "level": "Lollipop",
+        "time": "57"
+      },
+      {
+        "name": "",
+        "level": "Jelly Beans",
+        "time": "60"
+      },
+      {
+        "name": "",
+        "level": "Honey Peanuts",
+        "time": "63"
+      },
+      {
+        "name": "",
+        "level": "Cotton Candy",
+        "time": "75"
+      },
+      {
+        "name": "",
+        "level": "Sesame Brittle",
+        "time": "78"
+      }
+    ]
+  },
+  "Sauce Maker": {
+    "products": [
+      {
+        "name": "",
+        "level": "Soy Sauce",
+        "time": "54"
+      },
+      {
+        "name": "",
+        "level": "Bean Dip",
+        "time": "54"
+      },
+      {
+        "name": "",
+        "level": "Olive Oil",
+        "time": "60"
+      },
+      {
+        "name": "",
+        "level": "Mayonnaise",
+        "time": "62"
+      },
+      {
+        "name": "",
+        "level": "Lemon Curd",
+        "time": "66"
+      },
+      {
+        "name": "",
+        "level": "Olive Dip",
+        "time": "66"
+      },
+      {
+        "name": "",
+        "level": "Tomato Sauce",
+        "time": "69"
+      },
+      {
+        "name": "",
+        "level": "Salsa",
+        "time": "77"
+      },
+      {
+        "name": "",
+        "level": "Hummus",
+        "time": "95"
+      },
+      {
+        "name": "",
+        "level": "Tart Dressing",
+        "time": "100"
+      }
+    ]
+  },
+  "Flower Shop": {
+    "products": [
+      {
+        "name": "",
+        "level": "Rustic Bouquet",
+        "time": "49"
+      },
+      {
+        "name": "",
+        "level": "Bright Bouquet",
+        "time": "65"
+      },
+      {
+        "name": "",
+        "level": "Gracious Bouquet",
+        "time": "73"
+      },
+      {
+        "name": "",
+        "level": "Candy Bouquet",
+        "time": "90"
+      },
+      {
+        "name": "",
+        "level": "Birthday Bouquet",
+        "time": "92"
+      },
+      {
+        "name": "",
+        "level": "Soft Bouquet",
+        "time": "93"
+      },
+      {
+        "name": "",
+        "level": "Veggie Bouquet",
+        "time": "106"
+      }
+    ]
+  },
+  "Sushi Bar": {
+    "products": [
+      {
+        "name": "",
+        "level": "Sushi Roll",
+        "time": "56"
+      },
+      {
+        "name": "",
+        "level": "Lobster Sushi",
+        "time": "59"
+      },
+      {
+        "name": "",
+        "level": "Egg Sushi",
+        "time": "63"
+      },
+      {
+        "name": "",
+        "level": "Big Sushi Roll",
+        "time": "76"
+      },
+      {
+        "name": "",
+        "level": "Rice Ball",
+        "time": "110"
+      }
+    ]
+  },
+  "Smoothie Mixer": {
+    "products": [
+      {
+        "name": "",
+        "level": "Berry Smoothie",
+        "time": "64"
+      },
+      {
+        "name": "",
+        "level": "Green Smoothie",
+        "time": "66"
+      },
+      {
+        "name": "",
+        "level": "Yogurt Smoothie",
+        "time": "70"
+      },
+      {
+        "name": "",
+        "level": "Cucumber Smoothie",
+        "time": "70"
+      },
+      {
+        "name": "",
+        "level": "Mixed Smoothie",
+        "time": "88"
+      },
+      {
+        "name": "",
+        "level": "Black Sesame Smoothie",
+        "time": "93"
+      },
+      {
+        "name": "",
+        "level": "Cocoa Smoothie",
+        "time": "100"
+      },
+      {
+        "name": "",
+        "level": "Plum Smoothie",
+        "time": "102"
+      },
+      {
+        "name": "",
+        "level": "Tropical Smoothie",
+        "time": "104"
+      }
+    ]
+  },
+  "Waffle Maker": {
+    "products": [
+      {
+        "name": "",
+        "level": "Plain Waffles",
+        "time": "114"
+      },
+      {
+        "name": "",
+        "level": "Berry Waffles",
+        "time": "114"
+      },
+      {
+        "name": "",
+        "level": "Chocolate Waffles",
+        "time": "117"
+      },
+      {
+        "name": "",
+        "level": "Blueberry Waffles",
+        "time": "118"
+      },
+      {
+        "name": "",
+        "level": "Breakfast Waffles",
+        "time": "119"
+      }
+    ]
+  },
+  "Salad Bar": {
+    "products": [
+      {
+        "name": "",
+        "level": "Feta Salad",
+        "time": "58"
+      },
+      {
+        "name": "",
+        "level": "Bean Salad",
+        "time": "58"
+      },
+      {
+        "name": "",
+        "level": "BLT Salad",
+        "time": "62"
+      },
+      {
+        "name": "",
+        "level": "Seafood Salad",
+        "time": "64"
+      },
+      {
+        "name": "",
+        "level": "Pasta Salad",
+        "time": "67"
+      },
+      {
+        "name": "",
+        "level": "Veggie Platter",
+        "time": "74"
+      },
+      {
+        "name": "",
+        "level": "Coleslaw",
+        "time": "75"
+      },
+      {
+        "name": "",
+        "level": "Beetroot Salad",
+        "time": "76"
+      },
+      {
+        "name": "",
+        "level": "Summer Rolls",
+        "time": "78"
+      },
+      {
+        "name": "",
+        "level": "Fruit Salad",
+        "time": "82"
+      },
+      {
+        "name": "",
+        "level": "Summer Salad",
+        "time": "84"
+      },
+      {
+        "name": "",
+        "level": "Mushroom Salad",
+        "time": "89"
+      },
+      {
+        "name": "",
+        "level": "Orange Salad",
+        "time": "117"
+      }
+    ]
+  },
+  "Sandwich Bar": {
+    "products": [
+      {
+        "name": "",
+        "level": "Veggie Bagel",
+        "time": "61"
+      },
+      {
+        "name": "",
+        "level": "Bacon Toast",
+        "time": "65"
+      },
+      {
+        "name": "",
+        "level": "Egg Sandwich",
+        "time": "66"
+      },
+      {
+        "name": "",
+        "level": "Honey Toast",
+        "time": "69"
+      },
+      {
+        "name": "",
+        "level": "Peanut Butter and Jelly Sandwich",
+        "time": "71"
+      },
+      {
+        "name": "",
+        "level": "Cucumber Sandwich",
+        "time": "79"
+      },
+      {
+        "name": "",
+        "level": "Onion Melt",
+        "time": "84"
+      },
+      {
+        "name": "",
+        "level": "Goat Cheese Toast",
+        "time": "92"
+      },
+      {
+        "name": "",
+        "level": "Hummus Wrap",
+        "time": "109"
+      }
+    ]
+  },
+  "Tea Stand": {
+    "products": [
+      {
+        "name": "",
+        "level": "Green Tea",
+        "time": "80"
+      },
+      {
+        "name": "",
+        "level": "Milk Tea",
+        "time": "81"
+      },
+      {
+        "name": "",
+        "level": "Honey Tea",
+        "time": "83"
+      },
+      {
+        "name": "",
+        "level": "Lemon Tea",
+        "time": "86"
+      },
+      {
+        "name": "",
+        "level": "Apple Ginger Tea",
+        "time": "88"
+      },
+      {
+        "name": "",
+        "level": "Orange Tea",
+        "time": "89"
+      },
+      {
+        "name": "",
+        "level": "Iced Tea",
+        "time": "92"
+      },
+      {
+        "name": "",
+        "level": "Mint Tea",
+        "time": "97"
+      },
+      {
+        "name": "",
+        "level": "Chamomile Tea",
+        "time": "100"
+      },
+      {
+        "name": "",
+        "level": "Pomegranate Tea",
+        "time": "107"
+      }
+    ]
+  },
+  "Taco Kitchen": {
+    "products": [
+      {
+        "name": "",
+        "level": "Taco",
+        "time": "77"
+      },
+      {
+        "name": "",
+        "level": "Spicy Bean Taco",
+        "time": "77"
+      },
+      {
+        "name": "",
+        "level": "Fish Taco",
+        "time": "79"
+      },
+      {
+        "name": "",
+        "level": "Quesadilla",
+        "time": "82"
+      },
+      {
+        "name": "",
+        "level": "Nachos",
+        "time": "87"
+      }
+    ]
+  },
+  "Hot Dog Stand": {
+    "products": [
+      {
+        "name": "",
+        "level": "Hot Dog",
+        "time": "75"
+      },
+      {
+        "name": "",
+        "level": "Tofu Dog",
+        "time": "76"
+      },
+      {
+        "name": "",
+        "level": "Corn Dog",
+        "time": "78"
+      },
+      {
+        "name": "",
+        "level": "Onion Dog",
+        "time": "80"
+      }
+    ]
+  },
+  "Deep Fryer": {
+    "products": [
+      {
+        "name": "",
+        "level": "Bacon Fries",
+        "time": "87"
+      },
+      {
+        "name": "",
+        "level": "Hand Pies",
+        "time": "91"
+      },
+      {
+        "name": "",
+        "level": "Chili Poppers",
+        "time": "98"
+      },
+      {
+        "name": "",
+        "level": "Falafel",
+        "time": "98"
+      },
+      {
+        "name": "",
+        "level": "Fried Candy Bar",
+        "time": "100"
+      },
+      {
+        "name": "",
+        "level": "Samosa",
+        "time": "103"
+      }
+    ]
+  },
+  "Essential Oils Lab": {
+    "products": [
+      {
+        "name": "",
+        "level": "Lemon Essential Oil",
+        "time": "68"
+      },
+      {
+        "name": "",
+        "level": "Ginger Essential Oil",
+        "time": "80"
+      },
+      {
+        "name": "",
+        "level": "Mint Essential Oil",
+        "time": "85"
+      }
+    ]
+  },
+  "Preservation Station": {
+    "products": [
+      {
+        "name": "",
+        "level": "Pickles",
+        "time": "91"
+      },
+      {
+        "name": "",
+        "level": "Canned Fish",
+        "time": "95"
+      },
+      {
+        "name": "",
+        "level": "Kimchi",
+        "time": "98"
+      },
+      {
+        "name": "",
+        "level": "Dried Fruit",
+        "time": "102"
+      },
+      {
+        "name": "",
+        "level": "Guava Compote",
+        "time": "104"
+      }
+    ]
+  },
+  "Donut Maker": {
+    "products": [
+      {
+        "name": "",
+        "level": "Plain Donut",
+        "time": "76"
+      },
+      {
+        "name": "",
+        "level": "Sprinkled Donut",
+        "time": "79"
+      },
+      {
+        "name": "",
+        "level": "Crunchy Donut",
+        "time": "82"
+      },
+      {
+        "name": "",
+        "level": "Cream Donut",
+        "time": "86"
+      },
+      {
+        "name": "",
+        "level": "Bacon Donut",
+        "time": "88"
+      },
+      {
+        "name": "",
+        "level": "Filled Donut",
+        "time": "93"
+      }
+    ]
+  },
+  "Pasta Maker": {
+    "products": [
+      {
+        "name": "",
+        "level": "Fresh Pasta",
+        "time": "67"
+      },
+      {
+        "name": "",
+        "level": "Rice Noodles",
+        "time": "73"
+      }
+    ]
+  },
+  "Pasta Kitchen": {
+    "products": [
+      {
+        "name": "",
+        "level": "Gnocchi",
+        "time": "72"
+      },
+      {
+        "name": "",
+        "level": "Veggie Lasagna",
+        "time": "74"
+      },
+      {
+        "name": "",
+        "level": "Lobster Pasta",
+        "time": "79"
+      },
+      {
+        "name": "",
+        "level": "Pasta Carbonara",
+        "time": "83"
+      },
+      {
+        "name": "",
+        "level": "Broccoli Pasta",
+        "time": "83"
+      },
+      {
+        "name": "",
+        "level": "Spicy Pasta",
+        "time": "87"
+      },
+      {
+        "name": "",
+        "level": "Mushroom Pasta",
+        "time": "101"
+      }
+    ]
+  },
+  "Fudge Shop": {
+    "products": [
+      {
+        "name": "",
+        "level": "Rich Fudge",
+        "time": "99"
+      },
+      {
+        "name": "",
+        "level": "Mint Fudge",
+        "time": "102"
+      },
+      {
+        "name": "",
+        "level": "Chili Fudge",
+        "time": "104"
+      },
+      {
+        "name": "",
+        "level": "Lemon Fudge",
+        "time": "108"
+      },
+      {
+        "name": "",
+        "level": "Peanut Fudge",
+        "time": "111"
+      }
+    ]
+  },
+  "Porridge Bar": {
+    "products": [
+      {
+        "name": "",
+        "level": "Apple Porridge",
+        "time": "119"
+      },
+      {
+        "name": "",
+        "level": "Sweet Porridge",
+        "time": "120"
+      },
+      {
+        "name": "",
+        "level": "Fresh Porridge",
+        "time": "122"
+      }
+    ]
+  },
+  "Milkshake Bar": {
+    "products": [
+      {
+        "name": "",
+        "level": "Vanilla Milkshake",
+        "time": "124"
+      },
+      {
+        "name": "",
+        "level": "Mocha Milkshake",
+        "time": "125"
+      },
+      {
+        "name": "",
+        "level": "Fruity Milkshake",
+        "time": "126"
+      }
+    ]
+  },
+  "Wok Kitchen": {
+    "products": [
+      {
+        "name": "",
+        "level": "Fried Rice",
+        "time": "69"
+      },
+      {
+        "name": "",
+        "level": "Lamb Stir Fry",
+        "time": "69"
+      },
+      {
+        "name": "",
+        "level": "Spicy Fish",
+        "time": "79"
+      },
+      {
+        "name": "",
+        "level": "Peanut Noodles",
+        "time": "86"
+      },
+      {
+        "name": "",
+        "level": "Tofu Stir Fry",
+        "time": "89"
+      }
+    ]
+  },
+  "Stew Pot": {
+    "products": [
+      {
+        "name": "",
+        "level": "Chickpea Stew",
+        "time": "106"
+      },
+      {
+        "name": "",
+        "level": "Chili Stew",
+        "time": "109"
+      },
+      {
+        "name": "",
+        "level": "Winter Stew",
+        "time": "112"
+      }
+    ]
+  },
+  "Omelet Station": {
+    "products": [
+      {
+        "name": "",
+        "level": "Colourful Omelet",
+        "time": "77"
+      },
+      {
+        "name": "",
+        "level": "Spring Omelet",
+        "time": "77"
+      },
+      {
+        "name": "",
+        "level": "Cheese Omelet",
+        "time": "79"
+      },
+      {
+        "name": "",
+        "level": "Rice Omelet",
+        "time": "83"
+      },
+      {
+        "name": "",
+        "level": "Potato Omelet",
+        "time": "87"
+      }
+    ]
+  },
+  "Fondue Pot": {
+    "products": [
+      {
+        "name": "",
+        "level": "Chocolate Fondue",
+        "time": "81"
+      },
+      {
+        "name": "",
+        "level": "Bacon Fondue",
+        "time": "86"
+      },
+      {
+        "name": "",
+        "level": "Cheese Fondue",
+        "time": "91"
+      },
+      {
+        "name": "",
+        "level": "Tropical Fondue",
+        "time": "100"
+      }
+    ]
+  },
+  "Yogurt Maker": {
+    "products": [
+      {
+        "name": "",
+        "level": "Plain Yogurt",
+        "time": "103"
+      },
+      {
+        "name": "",
+        "level": "Strawberry Yogurt",
+        "time": "105"
+      },
+      {
+        "name": "",
+        "level": "Tropical Yogurt",
+        "time": "109"
+      },
+      {
+        "name": "",
+        "level": "Breakfast Bowl",
+        "time": "119"
+      }
+    ]
+  },
+  "Cupcake Maker": {
+    "products": [
+      {
+        "name": "",
+        "level": "Plain Cupcake",
+        "time": "109"
+      },
+      {
+        "name": "",
+        "level": "Guava Cupcake",
+        "time": "109"
+      },
+      {
+        "name": "",
+        "level": "Tropical Cupcake",
+        "time": "112"
+      },
+      {
+        "name": "",
+        "level": "Cookie Cupcake",
+        "time": "114"
+      }
+    ]
+  },
+  "Doner Kebab Stand": {
+    "products": [
+      {
+        "name": "",
+        "level": "Lamb Doner Wrap",
+        "time": "32"
+      },
+      {
+        "name": "",
+        "level": "Spicy Bean Doner",
+        "time": "32"
+      },
+      {
+        "name": "",
+        "level": "Tower Doner Supreme",
+        "time": "58"
+      }
+    ]
+  },
+  "Bath Kiosk": {
+    "products": [
+      {
+        "name": "",
+        "level": "Honey Soap",
+        "time": "84"
+      },
+      {
+        "name": "",
+        "level": "Lemon Lotion",
+        "time": "84"
+      },
+      {
+        "name": "",
+        "level": "Exfoliating Soap",
+        "time": "93"
+      },
+      {
+        "name": "",
+        "level": "Honey Face Mask",
+        "time": "99"
+      },
+      {
+        "name": "",
+        "level": "Rich Soap",
+        "time": "121"
+      }
+    ]
+  },
+  "Hat Maker": {
+    "products": [
+      {
+        "name": "",
+        "level": "Cloche Hat",
+        "time": "70"
+      },
+      {
+        "name": "",
+        "level": "Top Hat",
+        "time": "72"
+      },
+      {
+        "name": "",
+        "level": "Sun Hat",
+        "time": "74"
+      },
+      {
+        "name": "",
+        "level": "Flower Crown",
+        "time": "86"
+      }
+    ]
+  },
+  "Pottery Studio": {
+    "products": [
+      {
+        "name": "",
+        "level": "Tea Pot",
+        "time": "94"
+      },
+      {
+        "name": "",
+        "level": "Potted Plant",
+        "time": "96"
+      },
+      {
+        "name": "",
+        "level": "Clay Mug",
+        "time": "99"
+      }
+    ]
+  },
+  "Perfumerie": {
+    "products": [
+      {
+        "name": "",
+        "level": "Fresh Diffuser",
+        "time": "110"
+      },
+      {
+        "name": "",
+        "level": "Zesty Perfume",
+        "time": "113"
+      },
+      {
+        "name": "",
+        "level": "Calming Diffuser",
+        "time": "116"
+      }
+    ]
+  },
+  "Lure Workbench": {
+    "error": "NO_PRODUCT_TABLE",
+    "products": []
+  },
+  "Net Maker": {
+    "error": "NO_PRODUCT_TABLE",
+    "products": []
+  },
+  "Honey Extractor": {
+    "products": [
+      {
+        "name": "",
+        "level": "Honey",
+        "time": "39"
+      },
+      {
+        "name": "",
+        "level": "Beeswax",
+        "time": "48"
+      }
+    ]
+  },
+  "Smelter": {
+    "products": [
+      {
+        "name": "",
+        "level": "Silver Bar",
+        "time": "24"
+      },
+      {
+        "name": "",
+        "level": "Gold Bar",
+        "time": "25"
+      },
+      {
+        "name": "",
+        "level": "Platinum Bar",
+        "time": "25"
+      },
+      {
+        "name": "",
+        "level": "Refined Coal",
+        "time": "33"
+      },
+      {
+        "name": "",
+        "level": "Iron Bar",
+        "time": "34"
+      }
+    ]
+  }
+}
