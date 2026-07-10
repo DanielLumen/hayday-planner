@@ -9,6 +9,7 @@ hayday-planner-*.bundle
 
 _test_js.js
 tests/ui_snapshot.png
+data.json.tmp
 
 .DS_Store
 Thumbs.db
