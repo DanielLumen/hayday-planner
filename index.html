@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>卡通农场 · 货仓助手 v2.9.0</title>
+<title>卡通农场 · 货仓助手 v2.10.0</title>
 <style>
 /* ====== 变量与重置 ====== */
 :root{--bg:#F8FAFC;--card:#FFFFFF;--text:#0F172A;--text-secondary:#475569;--muted:#64748B;--accent:#059669;--accent-hover:#047857;--warn:#D97706;--warn-light:#FFFBEB;--danger:#DC2626;--danger-light:#FEF2F2;--border:#E2E8F0;--shadow-sm:0 1px 2px rgba(0,0,0,.04);--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--radius:8px;--radius-sm:6px;--transition:150ms ease}
@@ -253,6 +253,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
 .item-tile{position:relative;min-height:70px;padding:8px 9px;border-radius:6px;border-left-width:3px;transition:border-color var(--transition),background var(--transition),box-shadow var(--transition)}
 .item-tile:hover{border-color:var(--border-strong);box-shadow:0 2px 7px rgba(16,24,40,.06)}
 .item-tile:active{transform:none}
+.item-tile[draggable="true"]{cursor:grab}
+.item-tile.dragging{opacity:.4;cursor:grabbing}
+.item-tile.drag-over{border-color:var(--info);box-shadow:inset 0 0 0 2px var(--info)}
 .item-tile.ok{border-left-color:var(--accent)}
 .item-tile.low{border-left-color:var(--warn);background:#FFFCF7}
 .item-tile.critical{border-left-color:var(--danger);background:#FFFAFA}
@@ -440,12 +443,12 @@ buildings:[
 {id:"coffee_kiosk",nameCN:"咖啡亭",slots:1},
 {id:"soup_kitchen",nameCN:"鲜汤小馆",slots:1},
 {id:"candle_maker",nameCN:"蜡烛制造机",slots:1},
-{id:"candy_maker",nameCN:"糖果工厂",slots:1},
+{id:"candy_maker",nameCN:"糖果机",slots:1},
 {id:"sauce_maker",nameCN:"酱汁机",slots:1},
 {id:"flower_shop",nameCN:"花坊",slots:1},
 {id:"sushi_bar",nameCN:"寿司吧",slots:1},
 {id:"smoothie_mixer",nameCN:"沙冰机",slots:1},
-{id:"waffle_maker",nameCN:"华夫饼机",slots:1},
+{id:"waffle_maker",nameCN:"华夫饼摊",slots:1},
 {id:"salad_bar",nameCN:"沙拉吧",slots:1},
 {id:"sandwich_bar",nameCN:"三明治店",slots:1},
 {id:"tea_stand",nameCN:"茶馆",slots:1},
@@ -459,20 +462,20 @@ buildings:[
 {id:"pasta_kitchen",nameCN:"意面厨房",slots:1},
 {id:"fudge_shop",nameCN:"法奇软糖店",slots:1},
 {id:"porridge_bar",nameCN:"麦片粥小摊",slots:1},
-{id:"milkshake_bar",nameCN:"奶昔吧",slots:1},
+{id:"milkshake_bar",nameCN:"奶昔店",slots:1},
 {id:"wok_kitchen",nameCN:"中式厨房",slots:1},
 {id:"stew_pot",nameCN:"炖煮小灶",slots:1},
-{id:"omelet_station",nameCN:"煎蛋站",slots:1},
+{id:"omelet_station",nameCN:"欧姆蛋小摊",slots:1},
 {id:"fondue_pot",nameCN:"西式火锅店",slots:1},
 {id:"yogurt_maker",nameCN:"酸奶机",slots:1},
 {id:"cupcake_maker",nameCN:"纸杯蛋糕机",slots:1},
 {id:"kebab_stand",nameCN:"土耳其烤肉摊",slots:1},
 {id:"bath_kiosk",nameCN:"洗护用品铺",slots:1},
 {id:"hat_maker",nameCN:"制帽机",slots:1},
-{id:"pottery_studio",nameCN:"陶艺坊",slots:1},
+{id:"pottery_studio",nameCN:"制陶室",slots:1},
 {id:"perfumerie",nameCN:"调香坊",slots:1},
-{id:"lure_workbench",nameCN:"鱼饵工作台",slots:1},
-{id:"net_maker",nameCN:"渔网编织机",slots:1},
+{id:"lure_workbench",nameCN:"鱼饵机",slots:1},
+{id:"net_maker",nameCN:"织网机",slots:1},
 {id:"honey_extractor",nameCN:"摇蜜机",slots:1}
 ],
 items:[{id:"wheat",nameCN:"小麦",emoji:"🌾",ing:[],t:120,tg:30,st:"silo_field"},
@@ -1113,6 +1116,38 @@ function refreshTileDisplays(){
     }
   });
 }
+function itemGroupKey(it){
+  if(it.st.indexOf('silo')===0) return it.st;
+  if(it.bld) return it.bld;
+  var id=it.id;
+  if(/^(axe|saw|pickaxe|dynamite|tnt|shovel)$/.test(id)) return 'barn_tools';
+  if(/^(coal|iron_ore|silver_ore|gold_ore|platinum_ore|diamond)$/.test(id)) return 'barn_ores';
+  if(/^(plank|duct_tape|bolt|screw|wood_panel|nail|hammer|land_deed|mallet|marker_stake|hand_drill|map_piece|expansion_permit)$/.test(id)) return 'barn_expand';
+  if(/^(milk|egg|wool|goat_milk|bacon|duck_feather|fish_fillet|lobster_tail|lamb_chop|honeycomb|cow_feed|chicken_feed|pig_feed|sheep_feed|goat_feed)$/.test(id)) return 'barn_animal';
+  return 'barn_other';
+}
+function loadItemOrders(){
+  var orders=readStoredJson('hd_item_orders',{});
+  return orders&&typeof orders==='object'&&!Array.isArray(orders)?orders:{};
+}
+function getItemOrder(group,defaultIds){
+  var saved=loadItemOrders()[group];
+  var result=[];
+  if(Array.isArray(saved)) saved.forEach(function(id){if(defaultIds.indexOf(id)>=0&&result.indexOf(id)<0)result.push(id);});
+  defaultIds.forEach(function(id){if(result.indexOf(id)<0)result.push(id);});
+  return result;
+}
+function saveVisibleItemOrder(grid){
+  var group=grid.dataset.grp;
+  var visible=Array.from(grid.querySelectorAll('.item-tile')).map(function(tile){return tile.dataset.id;});
+  var allIds=D.items.filter(function(it){return itemGroupKey(it)===group;}).map(function(it){return it.id;});
+  var current=getItemOrder(group,allIds);
+  var visibleSet={}; visible.forEach(function(id){visibleSet[id]=true;});
+  var cursor=0;
+  current=current.map(function(id){return visibleSet[id]?visible[cursor++]:id;});
+  var orders=loadItemOrders(); orders[group]=current;
+  persistJson('hd_item_orders',orders);
+}
 /* ====== Render All ====== */
 function renderAll(){
   init();
@@ -1129,19 +1164,14 @@ function renderAll(){
   var groupMap={};
   order.forEach(function(g){ groupMap[g]=[]; });
   D.items.forEach(function(it){
-    var grp;
-  if(it.st.indexOf('silo')===0) grp=it.st;
-  else if(!it.bld){
-    var n=it.id;
-    if(/^(axe|saw|pickaxe|dynamite|tnt|shovel)$/.test(n)) grp='barn_tools';
-    else if(/^(coal|iron_ore|silver_ore|gold_ore|platinum_ore|diamond)$/.test(n)) grp='barn_ores';
-    else if(/^(plank|duct_tape|bolt|screw|wood_panel|nail|hammer|land_deed|mallet|marker_stake|hand_drill|map_piece|expansion_permit)$/.test(n)) grp='barn_expand';
-    else if(/^(milk|egg|wool|goat_milk|bacon|duck_feather|fish_fillet|lobster_tail|lamb_chop|honeycomb|cow_feed|chicken_feed|pig_feed|sheep_feed|goat_feed)$/.test(n)) grp='barn_animal';
-    else grp='barn_other';
-  }
-  else grp=it.bld;
+    var grp=itemGroupKey(it);
     if(!groupMap[grp]) groupMap[grp]=[];
     groupMap[grp].push(it);
+  });
+  Object.keys(groupMap).forEach(function(grp){
+    var itemOrder=getItemOrder(grp,groupMap[grp].map(function(it){return it.id;}));
+    var positions={}; itemOrder.forEach(function(id,index){positions[id]=index;});
+    groupMap[grp].sort(function(a,b){return positions[a.id]-positions[b.id];});
   });
   // filter items
   var total=0;
@@ -1170,12 +1200,12 @@ function renderAll(){
   var checked=loadChecked();
   groups.forEach(function(grp,i){
     h+='<div class="section-header" data-grp="'+grp.key+'" draggable="true" onclick="var b=this.nextElementSibling;b.classList.toggle(\'hidden\');this.classList.toggle(\'collapsed\')"><h3>'+grp.label+' <span style="font-size:11px;color:var(--muted);font-weight:400">'+grp.items.length+'项</span></h3><span class="arrow">▼</span></div>';
-    h+='<div class="section-body"><div class="item-grid">';
+    h+='<div class="section-body"><div class="item-grid" data-grp="'+grp.key+'">';
     grp.items.forEach(function(it){
       var sts=status(it.id);
       var isEdited=((edits.mod&&edits.mod[it.id])||(edits.add&&edits.add.some(function(a){return a.id===it.id;}))) && !checked[it.id];
       var shortage=needs[it.id]||0;
-      h+='<div class="item-tile '+sts+(isEdited?' edited':'')+'" data-id="'+it.id+'" onclick="toggleDetail(\''+it.id+'\')">';
+      h+='<div class="item-tile '+sts+(isEdited?' edited':'')+'" data-id="'+it.id+'" draggable="true" onclick="if(!_itemDragMoved)toggleDetail(\''+it.id+'\')">';
       h+='<div class="tile-top"><div class="tile-icon">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" loading="lazy" alt="">':esc(it.emoji||'□'))+'</div><div class="tile-name">'+esc(it.nameCN||it.id)+'</div><div class="tile-stock"><input type="number" class="tile-input" value="'+gs(it.id)+'" min="0" aria-label="'+esc(it.nameCN||it.id)+'库存" onfocus="this.select()" onblur="ss(\''+it.id+'\',this.value)" onclick="event.stopPropagation();this.select()"><span class="tile-target">/ '+gt(it.id)+'</span></div><button class="tile-edit" onclick="event.stopPropagation();openEditModal(\''+it.id+'\')" title="编辑" aria-label="编辑'+esc(it.nameCN||it.id)+'">✎</button>'+(isEdited?'<button class="tile-edit tile-revert" title="标记为已核对" aria-label="标记为已核对">✓</button>':'')+'</div>';
       h+='<div class="tile-meta"><span class="tile-meta-main">'+esc((it.bld&&bm[it.bld]?bm[it.bld].nameCN+' · ':'')+fmt(it.t))+'</span>'+(shortage>0?'<span class="tile-gap">需产'+shortage+'个</span>':'')+'</div>';
       h+='<div class="tile-detail" id="det_'+it.id+'">';
@@ -1291,6 +1321,15 @@ function saveFilterOrder() {
 }
 function loadFilterOrder() {
   try { return JSON.parse(localStorage.getItem('hd_filter_order') || 'null'); } catch(e) { return null; }
+}
+var FILTER_ORDER_V2=['sauce_maker','bakery','dairy','cake_oven','sushi_bar','sugar_mill','pie_oven','bbq_grill','pasta_maker','feed_mill','soup_kitchen','waffle_maker','loom','honey_extractor','smelter','flower_shop','essential_oils','pasta_kitchen','smoothie_mixer','jam_maker','ice_cream_maker','salad_bar','sandwich_bar','donut_maker','candy_maker','deep_fryer','tea_stand','wok_kitchen','fudge_shop','hotdog_stand','milkshake_bar','coffee_kiosk','stew_pot','omelet_station','sewing_machine','juice_press','bath_kiosk','taco_kitchen','preservation','porridge_bar','yogurt_maker','hat_maker','jewelry_maker','cupcake_maker','pottery_studio','fondue_pot','popcorn_pot','candle_maker','perfumerie','kebab_stand','lure_workbench','net_maker'];
+function migrateFilterOrderV2(){
+  if(localStorage.getItem('hd_filter_order_version')==='2') return;
+  var filterOrder=[{st:'',bld:''},{st:'silo',bld:''}].concat(FILTER_ORDER_V2.map(function(id){return {st:'',bld:id};}));
+  var sectionOrder=['silo'].concat(FILTER_ORDER_V2,['barn_tools','barn_ores','barn_expand','barn_animal','barn_other']);
+  localStorage.setItem('hd_filter_order',JSON.stringify(filterOrder));
+  localStorage.setItem('hd_order',JSON.stringify(sectionOrder));
+  localStorage.setItem('hd_filter_order_version','2');
 }
 function applyFilterOrderToBuildings() {
   var order = loadFilterOrder();
@@ -1465,7 +1504,7 @@ function calcBuyRecommendations(){
   container.innerHTML = h;
 }
 function getOrder(){
-  var defaults=['silo_field','silo_tree','feed_mill','bakery','sugar_mill','dairy','popcorn_pot','bbq_grill','pie_oven','cake_oven','loom','sewing_machine','juice_press','ice_cream_maker','jam_maker','smelter','jewelry_maker','coffee_kiosk','soup_kitchen','candle_maker','candy_maker','sauce_maker','flower_shop','sushi_bar','salad_bar','sandwich_bar','waffle_maker','tea_stand','taco_kitchen','hotdog_stand','deep_fryer','smoothie_mixer','essential_oils','preservation','honey_extractor','donut_maker','pasta_maker','pasta_kitchen','fudge_shop','porridge_bar','milkshake_bar','wok_kitchen','stew_pot','omelet_station','fondue_pot','yogurt_maker','cupcake_maker','kebab_stand','bath_kiosk','hat_maker','pottery_studio','perfumerie','lure_workbench','net_maker','barn_animal','barn_tools','barn_ores','barn_expand','barn_other'];
+  var defaults=['silo_field','silo_tree'].concat(FILTER_ORDER_V2,['barn_animal','barn_tools','barn_ores','barn_expand','barn_other']);
   var saved=localStorage.getItem('hd_order');
   var requested=[];
   if(saved)try{var parsed=JSON.parse(saved);if(Array.isArray(parsed))requested=parsed;}catch(e){}
@@ -1522,20 +1561,50 @@ function saveOrder(){
     if(chip) row.appendChild(chip);
   });
 }
-var dragSrc=null;
+var dragSrc=null,itemDragSrc=null,_itemDragMoved=false;
 document.addEventListener('dragstart',function(e){
+  var tile=e.target.closest('.item-tile');
+  if(tile){
+    itemDragSrc=tile;_itemDragMoved=true;
+    tile.classList.add('dragging');
+    e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',tile.dataset.id);
+    return;
+  }
   var h=e.target.closest('.section-header');
   if(h){dragSrc=h;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain','');h.style.opacity='0.4';}
 });
 document.addEventListener('dragend',function(e){
+  if(itemDragSrc){
+    itemDragSrc.classList.remove('dragging');
+    document.querySelectorAll('.item-tile.drag-over').forEach(function(tile){tile.classList.remove('drag-over');});
+    itemDragSrc=null;
+    setTimeout(function(){_itemDragMoved=false;},0);
+  }
   if(dragSrc){dragSrc.style.opacity='';dragSrc=null;}
 });
 document.addEventListener('dragover',function(e){
+  var tile=e.target.closest('.item-tile');
+  if(tile&&itemDragSrc&&tile!==itemDragSrc&&tile.parentNode===itemDragSrc.parentNode){
+    e.preventDefault();e.dataTransfer.dropEffect='move';
+    document.querySelectorAll('.item-tile.drag-over').forEach(function(item){item.classList.remove('drag-over');});
+    tile.classList.add('drag-over');
+    return;
+  }
   var h=e.target.closest('.section-header');
   if(h&&dragSrc&&h!==dragSrc){e.preventDefault();e.dataTransfer.dropEffect='move';}
 });
 document.addEventListener('drop',function(e){
   e.preventDefault();
+  var tile=e.target.closest('.item-tile');
+  if(tile&&itemDragSrc&&tile!==itemDragSrc&&tile.parentNode===itemDragSrc.parentNode){
+    var grid=tile.parentNode;
+    var tiles=Array.from(grid.querySelectorAll('.item-tile'));
+    if(tiles.indexOf(itemDragSrc)<tiles.indexOf(tile)) grid.insertBefore(itemDragSrc,tile.nextElementSibling);
+    else grid.insertBefore(itemDragSrc,tile);
+    tile.classList.remove('drag-over');
+    saveVisibleItemOrder(grid);
+    return;
+  }
   var h=e.target.closest('.section-header');
   if(!h||!dragSrc||h===dragSrc)return;
   var ds=dragSrc.nextElementSibling;
@@ -2145,6 +2214,7 @@ function scheduleFileBackupReminder(){
 }
 async function bootstrap(){
   await hydrateStoredData();
+  migrateFilterOrderV2();
   init();
   var search=document.getElementById('searchInput');
   if(search) search.value=localStorage.getItem('hd_ui_search')||'';
@@ -2223,7 +2293,7 @@ function _saveToServer(key,value){
 /* ====== Export/Import ====== */
 function saveToFile(){
   init();
-  var out={gtSilo:S._gtSilo||10, gtBarn:S._gtBarn||5, siloCap:S._sc||200, barnCap:S._bc||450, items:{}, edits:loadEdits(), checked:loadChecked(), filterOrder:readStoredJson('hd_filter_order',null), order:readStoredJson('hd_order',null), infobar:localStorage.getItem('hd_infobar')};
+  var out={gtSilo:S._gtSilo||10, gtBarn:S._gtBarn||5, siloCap:S._sc||200, barnCap:S._bc||450, items:{}, edits:loadEdits(), checked:loadChecked(), filterOrder:readStoredJson('hd_filter_order',null), order:readStoredJson('hd_order',null), itemOrders:loadItemOrders(), infobar:localStorage.getItem('hd_infobar')};
   D.items.forEach(function(item){ out.items[item.id]={n:gs(item.id),tg:gt(item.id)}; });
   var json=JSON.stringify(out,null,2);
   var blob=new Blob([json],{type:'application/json'});
@@ -2261,6 +2331,7 @@ function loadFromFile(){
         if(data.checked!=null) saveChecked(data.checked);
         if(data.filterOrder!=null) persistJson('hd_filter_order',data.filterOrder);
         if(data.order!=null) persistJson('hd_order',data.order);
+        if(data.itemOrders!=null) persistJson('hd_item_orders',data.itemOrders);
         if(data.infobar!=null) persistText('hd_infobar',String(data.infobar));
         sv(); applyEdits(); renderAll(); calcPriority();
         if(typeof renderItemsList==='function') renderItemsList();

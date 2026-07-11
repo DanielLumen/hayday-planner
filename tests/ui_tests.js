@@ -92,6 +92,24 @@ async function run() {
     const dragHeaders = await page.$$(".section-header[draggable='true']");
     check("分组标题可拖拽", dragHeaders.length >= 30);
 
+    const productDrag = await page.evaluate(() => {
+      const grid = Array.from(document.querySelectorAll(".item-grid"))
+        .find((candidate) => candidate.querySelectorAll(".item-tile").length >= 2);
+      if (!grid) return null;
+      const ids = Array.from(grid.querySelectorAll(".item-tile")).slice(0, 2).map((tile) => tile.dataset.id);
+      return { group: grid.dataset.grp, first: ids[0], second: ids[1] };
+    });
+    check("产品卡片可拖拽", productDrag !== null && (await page.$$(".item-tile[draggable='true']")).length >= 200);
+    if (productDrag) {
+      await page.locator(`[data-id="${productDrag.first}"]`).dragTo(page.locator(`[data-id="${productDrag.second}"]`));
+      await page.reload({ waitUntil: "networkidle" });
+      await page.waitForTimeout(300);
+      const persistedFirstTwo = await page.$$eval(`.item-grid[data-grp="${productDrag.group}"] .item-tile`,
+        (tiles) => tiles.slice(0, 2).map((tile) => tile.dataset.id));
+      check("产品拖动顺序刷新后保留", persistedFirstTwo[0] === productDrag.second && persistedFirstTwo[1] === productDrag.first,
+        persistedFirstTwo.join(","));
+    }
+
     const onfocusAttr = await page.$eval(".tile-input", (el) => el.getAttribute("onfocus"));
     check("输入框 onfocus 包含 select()", onfocusAttr && onfocusAttr.includes("select"));
 
