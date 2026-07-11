@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>卡通农场 · 货仓助手 v2.10.0</title>
+<title>卡通农场 · 货仓助手 v2.11.0</title>
 <style>
 /* ====== 变量与重置 ====== */
 :root{--bg:#F8FAFC;--card:#FFFFFF;--text:#0F172A;--text-secondary:#475569;--muted:#64748B;--accent:#059669;--accent-hover:#047857;--warn:#D97706;--warn-light:#FFFBEB;--danger:#DC2626;--danger-light:#FEF2F2;--border:#E2E8F0;--shadow-sm:0 1px 2px rgba(0,0,0,.04);--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--radius:8px;--radius-sm:6px;--transition:150ms ease}
@@ -277,7 +277,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
 .critical .tile-gap{background:var(--danger-light);color:var(--danger)}
 .tile-detail{font-size:12px;line-height:1.65}
 .tile-detail.show{padding-top:7px;margin-top:6px}
-.side-panel{position:sticky;top:58px;max-height:calc(100vh - 70px)}
+.side-panel{position:sticky;top:58px;max-height:calc(100vh - 70px);display:flex;flex-direction:column;overflow:hidden}
 .slider-row{padding:7px 10px}
 .duo-slider{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .slider-item{display:grid;grid-template-columns:auto 54px;align-items:center;gap:4px 7px;min-width:0}
@@ -321,7 +321,12 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
 .plan-state.blocked{color:var(--danger);background:var(--danger-light)}
 .plan-item-action .btn:disabled{background:#E7EBEF;color:#8A94A3;cursor:not-allowed}
 .chain-depth-badge{border-radius:4px;background:#E8ECF1}
+.chain-tree{padding:5px 0}
+.chain-tree-row{position:relative;display:flex;align-items:center;min-height:22px;padding-left:calc(var(--chain-depth) * 18px);white-space:nowrap}
+.chain-tree-row[data-depth]:not([data-depth="0"])::before{content:"";width:8px;height:8px;margin-right:5px;border-left:1px solid #C9D1D9;border-bottom:1px solid #C9D1D9;transform:translateY(-3px);flex:0 0 auto}
+.chain-item{display:inline-flex;align-items:center;gap:3px}
 .items-columns{display:grid;grid-template-columns:1fr 1fr;gap:7px;height:100%;min-height:0}
+#itemsList{min-height:0;overflow:hidden}
 .items-column{display:flex;flex-direction:column;min-height:0;border:1px solid var(--border);border-radius:6px;overflow:hidden}
 .items-column-title{padding:7px 9px;font-size:12px;font-weight:700;color:var(--text-secondary);background:#F8FAFC;border-bottom:1px solid var(--border)}
 .items-column-title span{float:right;color:var(--muted);font-weight:500}
@@ -359,10 +364,17 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
 .modal-actions{margin:0;padding:11px 18px;border-top:1px solid var(--border);background:#FAFBFC;display:flex;align-items:center;gap:7px;position:sticky;bottom:0}
 .modal-actions .modal-spacer{flex:1}
 .modal-actions .btn:disabled{opacity:.45;cursor:not-allowed}
+.plan-mode-row{display:flex;align-items:center;gap:8px;padding:9px 10px;border-bottom:1px solid var(--border);background:#FAFBFC;font-size:12px}
+.plan-mode-label{font-weight:700;color:var(--text-secondary)}
+.plan-mode-tabs{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--card)}
+.plan-mode-btn{height:28px;padding:0 12px;border:0;border-right:1px solid var(--border);background:transparent;color:var(--text-secondary);font-size:12px;cursor:pointer}
+.plan-mode-btn:last-child{border-right:0}.plan-mode-btn.active{background:var(--accent);color:#fff;font-weight:700}
+.offline-hours{display:none;align-items:center;gap:5px;margin-left:auto}.offline-hours.show{display:flex}.offline-hours input{width:54px;height:28px;padding:3px 6px;border:1px solid var(--border);border-radius:6px;text-align:center;background:var(--card)}
+.plan-mode-note{padding:7px 10px;background:#F4F8F5;border-bottom:1px solid var(--border);color:var(--text-secondary);font-size:11px;line-height:1.5}
 .toast{bottom:24px;border-radius:7px;padding:9px 12px;font-size:12px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px}
 .toast-action{border:0;background:transparent;color:#8ED7B5;font-size:12px;font-weight:700;cursor:pointer;padding:2px 4px}
 @media(max-width:1100px){.hardest-bar .hd-items,.buy-banner .buy-items{grid-template-columns:repeat(3,minmax(0,1fr))}.hardest-bar .hd-card:nth-child(n+4),.buy-banner .buy-card:nth-child(n+4){display:none}.hardest-bar.expanded .hd-card,.buy-banner.expanded .buy-card{display:flex}}
-@media(max-width:960px){.main-layout{grid-template-columns:1fr}.side-panel{position:static;max-height:none}.hardest-bar .hd-items,.buy-banner .buy-items{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:960px){.main-layout{grid-template-columns:1fr}.side-panel{position:static;max-height:none;overflow:visible}.hardest-bar .hd-items,.buy-banner .buy-items{grid-template-columns:repeat(2,minmax(0,1fr))}#itemsList{height:70vh;overflow:hidden}}
 @media(max-width:640px){.topbar{padding:6px 10px}.brand-icon{width:25px;height:25px}.topbar h1{font-size:15px}.topbar .sub{display:none}.save-status{display:none}.btn-label{display:none}.overview-section,.hardest-bar,.buy-banner,.stats-row{margin-left:8px;margin-right:8px}.hardest-bar,.buy-banner{display:grid;grid-template-columns:1fr 30px}.hardest-bar .hd-label,.buy-banner .buy-label{width:auto}.hardest-bar .hd-items,.buy-banner .buy-items{grid-column:1/-1}.stats-row{grid-template-columns:repeat(2,1fr)}.stat-card{border-right:0;border-bottom:1px solid var(--border)}.stat-card:last-child{grid-column:1/-1;border-bottom:0}.toolbar{padding:7px 8px;grid-template-columns:1fr}.filter-row{padding:0 8px 7px}.main-layout{padding:0 6px 14px}.item-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:5px}.item-tile{padding:7px;min-height:72px}.tile-icon,.tile-icon img{width:24px;height:24px}.tile-name{font-size:12px}.tile-input{width:36px}.tile-edit{display:none}.duo-slider{grid-template-columns:1fr}.modal-overlay{padding:0}.modal-box{width:100vw;max-width:none;max-height:100vh;height:100vh;border-radius:0}.modal-scroll{padding:12px}.modal-box h3,.modal-actions{padding-left:12px;padding-right:12px}.modal-row{grid-template-columns:68px minmax(0,1fr)}.modal-ing{grid-template-columns:minmax(80px,1fr) 120px auto 42px 26px}}
 </style>
 <script src="./node_modules/pinyin-pro/dist/index.js"></script>
@@ -413,7 +425,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
 </div>
 <div class="panel-header tabs-header"><div class="tab-bar"><span class="tab active" data-tab="priority" tabindex="0" onclick="switchSidebarTab('priority',this)">优先级</span><span class="tab" data-tab="plan" tabindex="0" onclick="switchSidebarTab('plan',this)">生产计划</span><span class="tab" data-tab="items" tabindex="0" onclick="switchSidebarTab('items',this)">物品清单</span></div></div>
 <div class="side-body" id="priorityList"><div class="empty-state"><div class="big">📊</div><p>输入库存后点"刷新"查看建议</p></div></div>
-<div class="side-body" id="planList" style="display:none"><div class="empty-state"><div class="big">🔧</div><p>输入库存后查看生产任务</p></div></div>
+<div class="side-body" id="planList" style="display:none"><div class="plan-mode-row"><span class="plan-mode-label">安排方式</span><div class="plan-mode-tabs"><button class="plan-mode-btn active" data-mode="online" onclick="setPlanMode('online')">在线</button><button class="plan-mode-btn" data-mode="offline" onclick="setPlanMode('offline')">离线</button></div><label class="offline-hours" id="offlineHoursWrap"><input id="offlineHours" type="number" min="1" max="24" value="8" onchange="setOfflineHours(this.value)">小时</label></div><div class="plan-mode-note" id="planModeNote"></div><div id="planResults"><div class="empty-state"><div class="big">🔧</div><p>输入库存后查看生产任务</p></div></div></div>
 <div class="side-body" id="itemsList" style="display:none"><div style="padding:10px;color:var(--muted);font-size:12px">点击标签加载物品清单</div></div>
 </div>
 </div>
@@ -1410,20 +1422,9 @@ function computeRecursiveNeeds(){
 /* ====== Priority ====== */
 function calcPriority(){
   init();
-  var needs=computeRecursiveNeeds();
-  var scores={};
-  D.items.forEach(function(it){
-    var stock=gs(it.id), target=gt(it.id);
-    var ownShortage=Math.max(0,target-stock);
-    var need=needs[it.id]||0;
-    var downstreamNeed=Math.max(0,need-ownShortage);
-    var minutes=Math.max((it.t||0)/60,1);
-    scores[it.id]=(ownShortage*2+downstreamNeed*3)/Math.sqrt(minutes);
-  });
-  var ranked=D.items.map(function(it){ return{id:it.id,score:scores[it.id],item:it}; })
-    .filter(function(r){ return r.score>0; });
-  ranked.sort(function(a,b){ return b.score-a.score; });
-  ranked=ranked.slice(0,50);
+  var state={};
+  D.items.forEach(function(item){state[item.id]={stock:gs(item.id),target:gt(item.id)};});
+  var ranked=HayDayPlannerCore.rankShortages(D.items,state).slice(0,50).map(function(r){r.item=im[r.id];return r;});
   var list=document.getElementById('priorityList');
   if(ranked.length===0){
     list.innerHTML='<div class="empty-state"><div class="big">✅</div><p>所有物品库存充足！</p></div>';
@@ -1432,13 +1433,14 @@ function calcPriority(){
   var h='';
   ranked.forEach(function(r,i){
     var it=r.item;
-    var stk=gs(it.id),tgt=gt(it.id),need=needs[it.id]||0;
+    var need=r.totalNeed;
     var rank=i+1;
     var level=i<5?'urgent':(i<20?'soon':'steady');
     var stateLabel=i<5?'立即补充':(i<20?'安排生产':'持续补货');
     var detail='';
-    if(it.bld && bm[it.bld]) detail=bm[it.bld].nameCN;
-    if(it.ing.length>0) detail+=(detail?' · ':'')+'原料 '+it.ing.map(function(ing){ var ii=im[ing.i]; return esc(ii?ii.nameCN:ing.i); }).join('、');
+    if(r.ownShortage>0) detail='安全库存缺 '+r.ownShortage;
+    if(r.downstreamNeed>0) detail+=(detail?' · ':'')+'生产链需 '+r.downstreamNeed;
+    if(r.useCount>0) detail+=(detail?' · ':'')+'用于 '+r.useCount+' 种产品';
     h+='<div class="prio-item '+level+'">';
     h+='<div class="prio-bar"></div>';
     h+='<div class="prio-info"><div class="prio-name">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" loading="lazy" alt="">':esc(it.emoji||''))+'<span>'+esc(it.nameCN||it.id)+'</span><span class="prio-status '+level+'">#'+rank+' '+stateLabel+'</span></div>';
@@ -1681,6 +1683,20 @@ function switchSidebarTab(tab,el){
   if(tab==='plan') calcProductionPlan();
 }
 /* ====== Production Plan ====== */
+function getPlanMode(){return localStorage.getItem('hd_plan_mode')==='offline'?'offline':'online';}
+function getOfflineHours(){return Math.min(24,Math.max(1,nonNegativeInt(localStorage.getItem('hd_offline_hours'),8)));}
+function setPlanMode(mode){
+  persistText('hd_plan_mode',mode==='offline'?'offline':'online');
+  updatePlanModeControls();calcProductionPlan();
+}
+function setOfflineHours(value){persistText('hd_offline_hours',String(Math.min(24,Math.max(1,nonNegativeInt(value,8)))));updatePlanModeControls();calcProductionPlan();}
+function updatePlanModeControls(){
+  var mode=getPlanMode(),hours=getOfflineHours();
+  document.querySelectorAll('.plan-mode-btn').forEach(function(button){button.classList.toggle('active',button.dataset.mode===mode);});
+  var wrap=document.getElementById('offlineHoursWrap');if(wrap)wrap.classList.toggle('show',mode==='offline');
+  var input=document.getElementById('offlineHours');if(input)input.value=hours;
+  var note=document.getElementById('planModeNote');if(note)note.textContent=mode==='online'?'优先显示可立即开工、缺口大且生产较短的任务，适合频繁收取。':'按约 '+hours+' 小时离线窗口优先安排长时产品，减少设备过早空转。';
+}
 function completeProduction(id,quantity){
   init();
   var item=im[id];
@@ -1707,6 +1723,8 @@ function completeProduction(id,quantity){
 function calcProductionPlan(){
   try{
   init();
+  updatePlanModeControls();
+  var planMode=getPlanMode(),offlineSeconds=getOfflineHours()*3600;
   var needs=computeRecursiveNeeds();
   var plan={},totalNeeded=0;
   var groupMap={};
@@ -1745,11 +1763,19 @@ function calcProductionPlan(){
       var totalTime=0;
       needed.forEach(function(ni){totalTime+=ni.shortage*ni.time;});
       var readinessOrder={ready:0,partial:1,blocked:2};
-      needed.sort(function(a,b){return readinessOrder[a.readiness]-readinessOrder[b.readiness]||(b.shortage*b.time-a.shortage*a.time);});
+      needed.sort(function(a,b){
+        var readinessDiff=readinessOrder[a.readiness]-readinessOrder[b.readiness];if(readinessDiff)return readinessDiff;
+        if(planMode==='offline'){
+          var aFit=a.time<=offlineSeconds?a.time:-Math.abs(a.time-offlineSeconds);
+          var bFit=b.time<=offlineSeconds?b.time:-Math.abs(b.time-offlineSeconds);
+          return bFit-aFit||(b.shortage*b.time-a.shortage*a.time);
+        }
+        return a.time-b.time||b.shortage-a.shortage;
+      });
       plan[groupId]={nameCN:bld.nameCN,slots:slots,items:needed,totalTime:totalTime,totalTimeWithSlots:totalTime/slots};
     }
   });
-  var list=document.getElementById('planList');
+  var list=document.getElementById('planResults');
   var keys=Object.keys(plan).sort(function(a,b){return plan[b].totalTimeWithSlots-plan[a].totalTimeWithSlots;});
   if(keys.length===0){
     list.innerHTML='<div class="empty-state"><div class="big">✅</div><p>所有物品库存充足！（'+totalNeeded+'件需要，'+keys.length+'设备）</p></div>';
@@ -2367,19 +2393,18 @@ function toggleChainDetail(id,el){
 }
 function buildChainTree(id,visited,qty,depth,prefix,isLast){
   if(!visited) visited={};
-  if(visited[id]&&depth>0) return '<div style="white-space:nowrap"><span class="tree-prefix">'+prefix+(isLast?'└─ ':'├─ ')+'</span><span class="chain-item intermediate" style="opacity:.6">↩ 循环</span></div>';
+  if(depth==null) depth=0;
+  if(visited[id]&&depth>0) return '<div class="chain-tree-row" data-depth="'+depth+'" style="--chain-depth:'+depth+'"><span class="chain-item intermediate" style="opacity:.6">循环依赖</span></div>';
   visited[id]=true;
-  var it=im[id]; if(!it) return '<div style="white-space:nowrap"><span class="tree-prefix">'+prefix+(isLast?'└─ ':'├─ ')+'</span><span class="chain-item raw">??:'+id+'</span></div>';
+  var it=im[id]; if(!it) return '<div class="chain-tree-row" data-depth="'+depth+'" style="--chain-depth:'+depth+'"><span class="chain-item raw">未知物品：'+esc(id)+'</span></div>';
   var emoji=(it.emoji||'')||''; var name=(it.nameCN||it.id)||id;
   var cls=(depth===0)?'final':((it.ing&&it.ing.length>0)?'intermediate':'raw');
-  var connector=depth===0?'':(isLast?'└─ ':'├─ ');
-  var h='<div style="white-space:nowrap"><span class="tree-prefix">'+prefix+connector+'</span><span class="chain-item '+cls+'">'+esc(emoji)+' '+esc(name);
+  var h='<div class="chain-tree-row" data-depth="'+depth+'" style="--chain-depth:'+depth+'"><span class="chain-item '+cls+'">'+esc(emoji)+' '+esc(name);
   if(qty) h+='<span class="chain-qty">×'+qty+'</span>';
   h+='</span></div>';
   if(it.ing&&it.ing.length>0){
-    var newPrefix=prefix+(depth>0?(isLast?'   ':'│  '):'');
     it.ing.forEach(function(ing,idx){
-      h+=buildChainTree(ing.i,Object.assign({},visited),ing.q,depth+1,newPrefix,idx===it.ing.length-1);
+      h+=buildChainTree(ing.i,Object.assign({},visited),ing.q,depth+1,'',idx===it.ing.length-1);
     });
   }
   return h;

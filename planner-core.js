@@ -63,5 +63,37 @@
     );
   }
 
-  return { calculateNeeds, createsCycle, normalizeIngredients };
+  function rankShortages(items, state) {
+    const needs = calculateNeeds(items, state);
+    const useCounts = new Map(items.map((item) => [item.id, 0]));
+    for (const item of items) {
+      for (const ingredient of item.ing || []) {
+        useCounts.set(ingredient.i, (useCounts.get(ingredient.i) || 0) + 1);
+      }
+    }
+
+    return items
+      .map((item) => {
+        const itemState = state[item.id] || {};
+        const stock = Math.max(0, Number.parseInt(itemState.stock, 10) || 0);
+        const target = Math.max(1, Number.parseInt(itemState.target, 10) || 1);
+        const ownShortage = Math.max(0, target - stock);
+        const totalNeed = needs[item.id] || 0;
+        const downstreamNeed = Math.max(0, totalNeed - ownShortage);
+        const useCount = useCounts.get(item.id) || 0;
+        const impact = 1 + Math.log2(useCount + 1);
+        const score = totalNeed * impact + downstreamNeed * 2;
+        return { id: item.id, totalNeed, ownShortage, downstreamNeed, useCount, score };
+      })
+      .filter((item) => item.totalNeed > 0)
+      .sort(
+        (a, b) =>
+          b.score - a.score ||
+          b.downstreamNeed - a.downstreamNeed ||
+          b.useCount - a.useCount ||
+          b.totalNeed - a.totalNeed,
+      );
+  }
+
+  return { calculateNeeds, createsCycle, normalizeIngredients, rankShortages };
 });

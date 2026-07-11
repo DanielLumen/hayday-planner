@@ -85,6 +85,43 @@ async function run() {
 
     const priorityHtml = await page.$eval("#priorityList", (el) => el.innerHTML);
     check("不显示优先级评分数值", !/score|评分|分数/i.test(priorityHtml));
+    check("优先级解释生产链缺口", /安全库存缺|生产链需|用于 \d+ 种产品/.test(priorityText), priorityText.substring(0, 90));
+
+    await page.click('.tab[data-tab="plan"]');
+    const chainToggle = page.locator('#planResults .chain-depth-badge').filter({ hasText: /层级 [2-9]/ }).first();
+    if (await chainToggle.count()) {
+      await chainToggle.click();
+      const chainState = await chainToggle.evaluate((toggle) => {
+        const tree = toggle.parentElement.querySelector('.chain-expanded');
+        const rows = Array.from(tree.querySelectorAll('.chain-tree-row'));
+        return {
+          hasUndefined: tree.textContent.includes('undefined'),
+          depths: rows.map((row) => Number(row.dataset.depth)),
+          lefts: rows.map((row) => row.getBoundingClientRect().left),
+        };
+      });
+      check("生产链不显示 undefined", !chainState.hasUndefined, JSON.stringify(chainState));
+      const alignedByDepth = chainState.depths.every((depth, index) =>
+        chainState.lefts[index] === chainState.lefts[chainState.depths.indexOf(depth)]);
+      check("生产链同级对齐并逐级缩进", alignedByDepth && chainState.depths.some((depth) => depth > 0), JSON.stringify(chainState));
+    }
+    await page.click('.plan-mode-btn[data-mode="offline"]');
+    await page.fill('#offlineHours', '10');
+    await page.locator('#offlineHours').blur();
+    await page.waitForTimeout(200);
+    check("离线模式显示时间窗口", (await page.textContent('#planModeNote')).includes('10 小时'));
+    check("生产模式保存在本地", await page.evaluate(() => localStorage.getItem('hd_plan_mode') === 'offline' && localStorage.getItem('hd_offline_hours') === '10'));
+    await page.click('.tab[data-tab="items"]');
+    const itemListLayout = await page.evaluate(() => {
+      const tab = document.querySelector('.tab[data-tab="items"]').getBoundingClientRect();
+      const list = document.querySelector('#itemsList').getBoundingClientRect();
+      const panel = document.querySelector('.side-panel').getBoundingClientRect();
+      const columns = getComputedStyle(document.querySelector('.items-columns')).gridTemplateColumns.split(' ');
+      return { sameSide: list.left >= panel.left && list.right <= panel.right, belowTab: list.top >= tab.bottom - 1, columns: columns.length };
+    });
+    check("物品清单在右侧标签正下方", itemListLayout.sameSide && itemListLayout.belowTab, JSON.stringify(itemListLayout));
+    check("物品清单保持粮仓货仓两栏", itemListLayout.columns === 2, JSON.stringify(itemListLayout));
+    await page.click('.tab[data-tab="priority"]');
 
     const tileMetaTexts = await page.$$eval(".tile-meta", (els) => els.map((el) => el.textContent));
     check("物品 tile 显示需求数量", tileMetaTexts.some((text) => /需产?\d+个/.test(text)));
