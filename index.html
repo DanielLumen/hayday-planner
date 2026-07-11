@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>卡通农场 · 货仓助手 v2.8.0</title>
+<title>卡通农场 · 货仓助手 v2.9.0</title>
 <style>
 /* ====== 变量与重置 ====== */
 :root{--bg:#F8FAFC;--card:#FFFFFF;--text:#0F172A;--text-secondary:#475569;--muted:#64748B;--accent:#059669;--accent-hover:#047857;--warn:#D97706;--warn-light:#FFFBEB;--danger:#DC2626;--danger-light:#FEF2F2;--border:#E2E8F0;--shadow-sm:0 1px 2px rgba(0,0,0,.04);--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--radius:8px;--radius-sm:6px;--transition:150ms ease}
@@ -187,37 +187,212 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .hardest-bar .hd-rank.r3{background:#c09030}
 .hardest-bar .hd-name{color:#f0d0d0;font-weight:600;font-size:11px}
 .hardest-bar .hd-time{color:#a08080;font-size:10px}
-.hardest-bar .hd-depth{color:#806060;font-size:9px}</style>
+.hardest-bar .hd-depth{color:#806060;font-size:9px}
+
+/* ====== v2.9 compact workspace visual system ====== */
+:root{--bg:#F5F7FA;--card:#FFFFFF;--text:#20242C;--text-secondary:#475467;--muted:#667085;--accent:#16845B;--accent-hover:#116A49;--accent-light:#EAF6F0;--warn:#B76A0B;--warn-light:#FFF6E8;--danger:#C43D3D;--danger-light:#FFF0F0;--info:#376FD0;--info-light:#EDF3FF;--border:#DDE2E8;--border-strong:#C9D0D8;--shadow-sm:0 1px 2px rgba(16,24,40,.04);--shadow:0 4px 14px rgba(16,24,40,.08);--radius:8px;--radius-sm:6px;--transition:140ms ease}
+html{font-size:14px}
+body{font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.45;font-variant-numeric:tabular-nums}
+button,input,select{font:inherit;color:inherit;letter-spacing:0}
+button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visible,.tab:focus-visible{outline:2px solid rgba(55,111,208,.55);outline-offset:2px}
+.topbar{min-height:48px;padding:7px 16px;box-shadow:none}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}
+.brand-icon{width:28px;height:28px;object-fit:contain;flex:0 0 auto}
+.topbar h1{font-size:17px;line-height:22px;display:flex;align-items:baseline;gap:7px}
+.topbar .sub{font-size:12px;margin:0;color:var(--muted)}
+.topbar-actions{align-items:center;gap:5px}
+.save-status{font-size:11px;color:var(--accent);min-width:42px;text-align:right;opacity:0;transition:opacity var(--transition)}
+.save-status.show{opacity:1}
+.btn{min-height:32px;padding:5px 11px;border-radius:6px;font-size:12px;justify-content:center}
+.btn-xs{min-height:30px;padding:4px 8px;font-size:11px}
+.btn-sm{min-height:32px;padding:5px 10px;font-size:12px}
+.btn-outline{background:var(--card);border-color:var(--border)}
+.btn-outline:hover{background:#F8FAFC;border-color:var(--border-strong)}
+.btn-danger{color:var(--danger)!important;background:transparent!important;border:1px solid #E9B7B7!important}
+.btn-danger:hover{background:var(--danger-light)!important}
+.info-bar{display:block}
+.info-collapsed .hardest-bar{display:none}
+.overview-section,.hardest-bar,.buy-banner{margin:8px 16px 0;padding:9px 11px;background:var(--card);border:1px solid var(--border);border-radius:8px;display:flex;align-items:flex-start;gap:10px;box-shadow:var(--shadow-sm);color:var(--text)}
+.hardest-bar{border-left:3px solid var(--danger)}
+.buy-banner{border-left:3px solid var(--info);margin-top:0}
+.hardest-bar .hd-label,.buy-banner .buy-label{width:86px;padding-top:5px;color:var(--text);font-size:12px;font-weight:700;gap:5px}
+.hardest-bar .hd-items,.buy-banner .buy-items{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;min-width:0;width:100%}
+.hardest-bar .hd-card,.buy-card{min-width:0;padding:5px 7px;background:#F8FAFC;border:1px solid #E9EDF2;border-radius:6px;color:var(--text);gap:6px;white-space:normal}
+.hardest-bar .hd-card:nth-child(n+6),.buy-banner .buy-card:nth-child(n+6){display:none}
+.hardest-bar.expanded .hd-card,.buy-banner.expanded .buy-card{display:flex}
+.hardest-bar.expanded .hd-items,.buy-banner.expanded .buy-items{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+.hardest-bar .hd-rank,.buy-card .buy-rank{width:18px;height:18px;border-radius:5px;font-size:10px;background:#E8ECF1!important;color:var(--muted)!important}
+.hardest-bar .hd-rank.r1,.buy-card .buy-rank.r1{background:var(--danger-light)!important;color:var(--danger)!important}
+.hardest-bar .hd-rank.r2,.buy-card .buy-rank.r2{background:var(--warn-light)!important;color:var(--warn)!important}
+.hardest-bar .hd-rank.r3,.buy-card .buy-rank.r3{background:var(--info-light)!important;color:var(--info)!important}
+.overview-icon{width:21px;height:21px;object-fit:contain;flex:0 0 auto}
+.hardest-bar .hd-name,.buy-card .buy-name{color:var(--text);font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hardest-bar .hd-time,.hardest-bar .hd-depth,.buy-card .buy-meta{color:var(--muted);font-size:10px;line-height:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.buy-card .buy-detail{min-width:0}
+.overview-toggle{width:30px;height:30px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--muted);cursor:pointer;flex:0 0 auto}
+.overview-toggle:hover{color:var(--text);background:#F8FAFC}
+.stats-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;padding:7px 10px;margin:8px 16px;border-radius:8px}
+.stat-card{min-width:0;padding:4px 10px;border:0;border-right:1px solid var(--border);border-radius:0;background:transparent}
+.stat-card:last-child{border-right:0}
+.stat-card .v{font-size:17px;line-height:21px}
+.stat-card .l,.stat-card .cap-label{font-size:10px;line-height:16px}
+.stat-card .cap-input{font-size:15px;width:54px}
+.toolbar{padding:8px 16px 7px;display:block}
+.search-input,.filter-select{height:36px;padding:7px 11px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:13px;outline:none}
+.search-input:focus,.filter-select:focus{border-color:var(--info);box-shadow:0 0 0 3px rgba(55,111,208,.1)}
+.filter-row{padding:0 16px 8px;gap:5px;flex-wrap:wrap;overflow-x:visible}
+.chip{padding:5px 11px;border-radius:6px;font-size:12px;cursor:pointer!important}
+.chip.active{background:var(--accent-light);color:var(--accent);border-color:#A9D8C2;font-weight:600}
+.main-layout{grid-template-columns:minmax(0,1fr) minmax(360px,430px);gap:10px;padding:0 12px 18px}
+.panel{box-shadow:none}
+.panel-header{min-height:39px;padding:8px 11px 7px;align-items:center}
+.panel-header h2{font-size:14px;font-weight:700}
+.section-header{padding:8px 12px;background:#F8FAFC}
+.section-header h3{font-size:13px}
+.item-grid{grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:6px;padding:6px}
+.item-tile{position:relative;min-height:70px;padding:8px 9px;border-radius:6px;border-left-width:3px;transition:border-color var(--transition),background var(--transition),box-shadow var(--transition)}
+.item-tile:hover{border-color:var(--border-strong);box-shadow:0 2px 7px rgba(16,24,40,.06)}
+.item-tile:active{transform:none}
+.item-tile.ok{border-left-color:var(--accent)}
+.item-tile.low{border-left-color:var(--warn);background:#FFFCF7}
+.item-tile.critical{border-left-color:var(--danger);background:#FFFAFA}
+.tile-top{gap:7px;margin-bottom:5px;min-height:28px}
+.tile-icon,.tile-icon img{width:27px;height:27px}
+.tile-name{font-size:13px;line-height:18px}
+.tile-stock{display:flex;align-items:center;gap:4px;flex:0 0 auto}
+.tile-input{width:42px;height:28px;padding:3px;border-radius:5px;font-size:13px;background:var(--card)}
+.tile-target{margin:0;font-size:11px}
+.tile-edit{position:absolute;left:4px;top:4px;width:22px;height:22px;border-radius:5px;opacity:0;color:var(--muted);font-size:13px;background:var(--card)}
+.tile-revert{left:28px;top:4px;width:20px;height:20px;font-size:11px;opacity:0}
+.item-tile.edited::after{content:"";position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--card)}
+.item-tile:hover .tile-edit,.tile-edit:focus-visible{opacity:1}
+.tile-edit:hover{background:#EEF2F6;opacity:1}
+.tile-revert{color:var(--accent)}
+.tile-meta{display:flex;align-items:center;gap:5px;min-height:18px;font-size:11px;line-height:16px;color:var(--muted)}
+.tile-meta-main{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.tile-gap{margin-left:auto;padding:1px 5px;border-radius:4px;background:var(--warn-light);color:var(--warn);font-weight:600;white-space:nowrap}
+.critical .tile-gap{background:var(--danger-light);color:var(--danger)}
+.tile-detail{font-size:12px;line-height:1.65}
+.tile-detail.show{padding-top:7px;margin-top:6px}
+.side-panel{position:sticky;top:58px;max-height:calc(100vh - 70px)}
+.slider-row{padding:7px 10px}
+.duo-slider{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.slider-item{display:grid;grid-template-columns:auto 54px;align-items:center;gap:4px 7px;min-width:0}
+.slider-item>input[type=range]{grid-column:1/-1;width:100%!important}
+.tab-bar{gap:0;width:100%}
+.tab{padding:9px 8px;border:0;border-right:1px solid var(--border);border-radius:0;background:#F8FAFC;font-size:12px}
+.tab:last-child{border-right:0}
+.tab.active{background:var(--card);color:var(--accent);box-shadow:0 -2px 0 var(--accent) inset}
+.side-body{padding:7px 10px}
+.prio-item{gap:8px;padding:8px 4px;border-bottom-color:#EDF0F3}
+.prio-bar{width:3px;margin-right:2px}
+.prio-item.urgent .prio-bar{background:var(--danger)}
+.prio-item.soon .prio-bar{background:var(--warn)}
+.prio-item.steady .prio-bar{background:var(--accent)}
+.prio-item.urgent .prio-right{color:var(--danger)}
+.prio-item.soon .prio-right{color:var(--warn)}
+.prio-item.steady .prio-right{color:var(--accent)}
+.prio-name{display:flex;align-items:center;gap:6px;font-size:13px}
+.prio-name img{width:24px!important;height:24px!important}
+.prio-status{font-size:10px;padding:2px 5px;border-radius:4px;font-weight:600}
+.prio-status.urgent{color:var(--danger);background:var(--danger-light)}
+.prio-status.soon{color:var(--warn);background:var(--warn-light)}
+.prio-status.steady{color:var(--accent);background:var(--accent-light)}
+.prio-detail{font-size:11px;padding-left:30px}
+.prio-right .num{font-size:12px;font-weight:700}
+.plan-summary{padding:7px 10px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);background:#F8FAFC}
+.plan-building{padding:7px 0;border-bottom-color:var(--border)}
+.plan-bld-header{padding:4px 7px 7px}
+.plan-bld-name{font-size:13px}
+.plan-bld-meta{display:block;font-size:10px;color:var(--muted);font-weight:400;margin-top:1px}
+.plan-bld-time{font-size:11px;padding:3px 6px;border-radius:5px;background:var(--info-light);color:var(--info);font-weight:600}
+.plan-item{padding:7px 8px;margin:3px 0;border:1px solid transparent;border-radius:6px;background:#F8FAFC;align-items:flex-start}
+.plan-item.ready{background:var(--accent-light);border-color:#CBE7D9}
+.plan-item.partial{background:var(--warn-light);border-color:#F0D7AD}
+.plan-item.blocked{background:#F8FAFC;border-color:#E8ECF0}
+.plan-item-name{font-size:12px;line-height:18px;flex-wrap:wrap}
+.plan-item-detail{font-size:10px;line-height:15px}
+.plan-state{font-size:10px;padding:1px 5px;border-radius:4px;font-weight:600}
+.plan-state.ready{color:var(--accent);background:#D9EFE4}
+.plan-state.partial{color:var(--warn);background:#F8E5C4}
+.plan-state.blocked{color:var(--danger);background:var(--danger-light)}
+.plan-item-action .btn:disabled{background:#E7EBEF;color:#8A94A3;cursor:not-allowed}
+.chain-depth-badge{border-radius:4px;background:#E8ECF1}
+.items-columns{display:grid;grid-template-columns:1fr 1fr;gap:7px;height:100%;min-height:0}
+.items-column{display:flex;flex-direction:column;min-height:0;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.items-column-title{padding:7px 9px;font-size:12px;font-weight:700;color:var(--text-secondary);background:#F8FAFC;border-bottom:1px solid var(--border)}
+.items-column-title span{float:right;color:var(--muted);font-weight:500}
+.items-column-body{overflow-y:auto;min-height:0}
+.items-list-row{width:100%;min-height:32px;padding:5px 8px;border:0;border-bottom:1px solid #EDF0F3;background:var(--card);display:flex;align-items:center;gap:7px;text-align:left;font-size:12px;cursor:pointer}
+.items-list-row:hover{background:#F7FAF8}
+.items-list-row img{width:19px;height:19px;object-fit:contain}
+.items-list-row span:nth-child(2){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.items-edited{margin-left:auto;padding:1px 4px;border-radius:4px;background:var(--accent-light);color:var(--accent);font-size:9px;white-space:nowrap}
+.modal-overlay{padding:16px;background:rgba(17,24,39,.48)}
+.modal-box{width:min(560px,96vw);max-width:560px;max-height:min(760px,92vh);padding:0;border-radius:8px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 45px rgba(16,24,40,.2)}
+.modal-box h3{font-size:16px;line-height:22px;margin:0;padding:15px 18px 12px;border-bottom:1px solid var(--border)}
+.modal-scroll{padding:13px 18px 5px;overflow-y:auto;min-height:0}
+.modal-section-title{font-size:11px;font-weight:700;color:var(--muted);margin:2px 0 8px;text-transform:none}
+.modal-section-title:not(:first-child){margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.modal-row{display:grid;grid-template-columns:74px minmax(0,1fr);align-items:center;gap:9px;margin-bottom:8px}
+.modal-row label{min-width:0;font-size:12px;line-height:18px;color:var(--text-secondary)}
+.modal-row input,.modal-row select{height:34px;padding:6px 9px;background:var(--card)}
+.bld-wrap{position:relative;margin:0;padding:6px;background:#F8FAFC;border:1px solid #E9EDF2}
+.bld-wrap .ing-filter{height:32px;margin-bottom:5px;background:var(--card)}
+.bld-wrap .ing-suggestions{left:6px;right:6px;top:43px}
+.modal-ing{display:grid;grid-template-columns:minmax(90px,1fr) 148px auto 48px 26px;gap:5px;padding:5px;margin:4px 0;border:1px solid #E8ECF0;background:#F8FAFC}
+.modal-ing .ing-filter{width:100%;height:30px;margin:0;background:var(--card)}
+.modal-ing select{width:100%;height:30px;padding:4px 6px}
+.modal-ing{position:relative}
+.ing-suggestions{display:none;position:absolute;z-index:40;left:5px;right:5px;top:39px;max-height:192px;overflow-y:auto;background:var(--card);border:1px solid var(--accent);border-radius:6px;box-shadow:0 8px 20px rgba(15,23,42,.16);padding:3px}
+.ing-suggestions.show{display:block}
+.ing-suggestion{display:block;width:100%;height:31px;padding:5px 9px;border:0;border-radius:4px;background:transparent;color:var(--text);font-size:13px;line-height:21px;text-align:left;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ing-suggestion:hover,.ing-suggestion:focus-visible{background:var(--accent-light);color:var(--accent);outline:none}
+.modal-ing input[type=number]{width:48px;height:30px;background:var(--card)}
+.modal-ing .btn-rm{width:26px;height:30px;border-radius:5px;font-size:15px}
+.modal-ing .btn-rm:hover{background:var(--danger-light)}
+.modal-error{display:none;margin:8px 0 2px;padding:7px 9px;border:1px solid #E9B7B7;border-radius:6px;background:var(--danger-light);color:var(--danger);font-size:11px}
+.modal-error.show{display:block}
+.modal-actions{margin:0;padding:11px 18px;border-top:1px solid var(--border);background:#FAFBFC;display:flex;align-items:center;gap:7px;position:sticky;bottom:0}
+.modal-actions .modal-spacer{flex:1}
+.modal-actions .btn:disabled{opacity:.45;cursor:not-allowed}
+.toast{bottom:24px;border-radius:7px;padding:9px 12px;font-size:12px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px}
+.toast-action{border:0;background:transparent;color:#8ED7B5;font-size:12px;font-weight:700;cursor:pointer;padding:2px 4px}
+@media(max-width:1100px){.hardest-bar .hd-items,.buy-banner .buy-items{grid-template-columns:repeat(3,minmax(0,1fr))}.hardest-bar .hd-card:nth-child(n+4),.buy-banner .buy-card:nth-child(n+4){display:none}.hardest-bar.expanded .hd-card,.buy-banner.expanded .buy-card{display:flex}}
+@media(max-width:960px){.main-layout{grid-template-columns:1fr}.side-panel{position:static;max-height:none}.hardest-bar .hd-items,.buy-banner .buy-items{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.topbar{padding:6px 10px}.brand-icon{width:25px;height:25px}.topbar h1{font-size:15px}.topbar .sub{display:none}.save-status{display:none}.btn-label{display:none}.overview-section,.hardest-bar,.buy-banner,.stats-row{margin-left:8px;margin-right:8px}.hardest-bar,.buy-banner{display:grid;grid-template-columns:1fr 30px}.hardest-bar .hd-label,.buy-banner .buy-label{width:auto}.hardest-bar .hd-items,.buy-banner .buy-items{grid-column:1/-1}.stats-row{grid-template-columns:repeat(2,1fr)}.stat-card{border-right:0;border-bottom:1px solid var(--border)}.stat-card:last-child{grid-column:1/-1;border-bottom:0}.toolbar{padding:7px 8px;grid-template-columns:1fr}.filter-row{padding:0 8px 7px}.main-layout{padding:0 6px 14px}.item-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:5px}.item-tile{padding:7px;min-height:72px}.tile-icon,.tile-icon img{width:24px;height:24px}.tile-name{font-size:12px}.tile-input{width:36px}.tile-edit{display:none}.duo-slider{grid-template-columns:1fr}.modal-overlay{padding:0}.modal-box{width:100vw;max-width:none;max-height:100vh;height:100vh;border-radius:0}.modal-scroll{padding:12px}.modal-box h3,.modal-actions{padding-left:12px;padding-right:12px}.modal-row{grid-template-columns:68px minmax(0,1fr)}.modal-ing{grid-template-columns:minmax(80px,1fr) 120px auto 42px 26px}}
+</style>
 <script src="./node_modules/pinyin-pro/dist/index.js"></script>
 <script src="./planner-core.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="topbar">
-<h1 ondblclick="toggleInfoBar()" style="cursor:pointer" title="双击收起/展开">🎪 卡通农场<span class="sub">货仓助手</span></h1>
-<div class="topbar-actions"><button class="btn btn-outline btn-xs" onclick="toggleInfoBar()" id="infoToggle" title="收起/展开统计区">▲</button>
-<button class="btn btn-outline btn-xs" onclick="saveToFile()">📤 导出</button>
-<button class="btn btn-outline btn-xs" onclick="loadFromFile()">📥 导入</button>
+<div class="brand"><img class="brand-icon" src="icons/ui_barn.png" alt=""><h1 ondblclick="toggleInfoBar()" style="cursor:pointer" title="双击收起或展开概览">卡通农场<span class="sub">库存规划</span></h1></div>
+<div class="topbar-actions"><span class="save-status" id="saveStatus">已保存</span><button class="btn btn-outline btn-xs" onclick="toggleInfoBar()" id="infoToggle" title="收起或展开概览" aria-label="收起或展开概览">▲</button>
+<button class="btn btn-outline btn-xs" onclick="saveToFile()"><span aria-hidden="true">⇩</span><span class="btn-label">导出</span></button>
+<button class="btn btn-outline btn-xs" onclick="loadFromFile()"><span aria-hidden="true">⇧</span><span class="btn-label">导入</span></button>
 </div>
-</div>
-<div id="hardestBar" class="hardest-bar" ondblclick="toggleInfoBar()" title="双击收起/展开">
-  <div class="hd-label">⏱️ 最难生产</div>
-  <div class="hd-items" id="hardestItems">计算中…</div>
 </div>
 <div id="infoBar" class="info-bar">
 <div class="stats-row" id="statsRow" ondblclick="toggleInfoBar()" title="双击收起/展开"></div>
 <div class="buy-banner" id="buyBanner" ondblclick="toggleInfoBar()" title="双击收起/展开">
-  <div class="buy-label">💰 购买建议</div>
-  <div class="buy-items" id="buyItems"><div style="font-size:10px;color:#8899aa;margin-bottom:4px;width:100%">计算公式: 生产难度 = 本品生产时间/产能系数 + Σ原料链条时间×需求量。产能系数: 牛奶/培根/羊毛=15, 山羊奶=12, 鸡蛋=18, 羊排=10, 饲料/制糖=2</div>计算中…</div>
+  <div class="buy-label">购买建议</div>
+  <div class="buy-items" id="buyItems">计算中…</div>
+  <button class="overview-toggle" onclick="event.stopPropagation();toggleOverviewSection('buyBanner',this)" title="展开完整建议" aria-label="展开完整建议">＋</button>
+</div>
+<div id="hardestBar" class="hardest-bar" ondblclick="toggleInfoBar()" title="双击收起/展开">
+  <div class="hd-label">最难生产</div>
+  <div class="hd-items" id="hardestItems">计算中…</div>
+  <button class="overview-toggle" onclick="event.stopPropagation();toggleOverviewSection('hardestBar',this)" title="展开完整排行" aria-label="展开完整排行">＋</button>
 </div>
 </div>
 <div class="toolbar">
-<input type="text" class="search-input" placeholder="搜索物品或设备…" oninput="renderAll()" id="searchInput">
+<input type="text" class="search-input" placeholder="搜索物品、设备或原料" oninput="onSearchInput()" id="searchInput">
 </div>
 <div class="filter-row" id="filterRow"></div>
 <div class="main-layout">
 <div class="panel" id="listPanel">
-<div class="panel-header"><h2>📦 库存清单</h2><span style="font-size:11px;color:var(--muted)" id="itemCount"></span></div>
+<div class="panel-header"><h2>库存清单</h2><span style="font-size:11px;color:var(--muted)" id="itemCount"></span></div>
 <div class="panel-body" id="listBody"></div>
 </div>
 <div class="panel side-panel">
@@ -233,7 +408,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     <input type="range" min="1" max="99" value="5" id="gtBarn" class="gt-slider" style="width:100px;flex-shrink:0" oninput="document.getElementById('gtBarnNum').value=this.value;onGTBarn()" >
   </div>
 </div>
-<div class="panel-header tabs-header"><div class="tab-bar"><span class="tab active" onclick="switchSidebarTab('priority',this)">优先级</span><span class="tab" onclick="switchSidebarTab('plan',this)">生产计划</span><span class="tab" onclick="switchSidebarTab('items',this)">物品清单</span></div></div>
+<div class="panel-header tabs-header"><div class="tab-bar"><span class="tab active" data-tab="priority" tabindex="0" onclick="switchSidebarTab('priority',this)">优先级</span><span class="tab" data-tab="plan" tabindex="0" onclick="switchSidebarTab('plan',this)">生产计划</span><span class="tab" data-tab="items" tabindex="0" onclick="switchSidebarTab('items',this)">物品清单</span></div></div>
 <div class="side-body" id="priorityList"><div class="empty-state"><div class="big">📊</div><p>输入库存后点"刷新"查看建议</p></div></div>
 <div class="side-body" id="planList" style="display:none"><div class="empty-state"><div class="big">🔧</div><p>输入库存后查看生产任务</p></div></div>
 <div class="side-body" id="itemsList" style="display:none"><div style="padding:10px;color:var(--muted);font-size:12px">点击标签加载物品清单</div></div>
@@ -623,7 +798,7 @@ items:[{id:"wheat",nameCN:"小麦",emoji:"🌾",ing:[],t:120,tg:30,st:"silo_fiel
 {id:"sesame",nameCN:"芝麻",emoji:"🟤",ing:[],t:7200,tg:5,st:"silo_field"},
 {id:"watermelon",nameCN:"西瓜",emoji:"🍉",ing:[],t:28800,tg:5,st:"silo_field"},
 {id:"clay",nameCN:"黏土",emoji:"🟫",ing:[],t:1800,tg:5,st:"silo_field"},
-{id:"cacao",nameCN:"可可果",emoji:"便",ing:[],t:0,tg:3,st:"silo_tree"},
+{id:"cacao",nameCN:"可可果",emoji:"🍫",ing:[],t:0,tg:3,st:"silo_tree"},
 {id:"coconut",nameCN:"椰子",emoji:"🥥",ing:[],t:0,tg:3,st:"silo_tree"},
 {id:"guava",nameCN:"番石榴",emoji:"🟢",ing:[],t:0,tg:3,st:"silo_tree"},
 {id:"mango",nameCN:"芒果",emoji:"🥭",ing:[],t:0,tg:3,st:"silo_tree"},
@@ -780,8 +955,18 @@ function readStoredJson(key,fallback){
 function persistText(key,value){
   localStorage.setItem(key,value);
   _saveToServer(key,value);
+  showSaveStatus(location.protocol==='file:'?'已保存':'正在同步');
 }
 function persistJson(key,value){ persistText(key,JSON.stringify(value)); }
+var _saveStatusTimer=null;
+function showSaveStatus(text){
+  var status=document.getElementById('saveStatus');
+  if(!status) return;
+  status.textContent=text||'已保存';
+  status.classList.add('show');
+  clearTimeout(_saveStatusTimer);
+  _saveStatusTimer=setTimeout(function(){status.classList.remove('show');},1800);
+}
 function nonNegativeInt(value,fallback){
   var parsed=parseInt(value,10);
   return Number.isFinite(parsed)?Math.max(0,parsed):fallback;
@@ -819,21 +1004,31 @@ function gs(id){ return S[id]?nonNegativeInt(S[id].n,0):0; }
 function gt(id){ return (S[id]&&S[id].tg)||(im[id]&&im[id].tg)||5; }
 function ss(id,v){
   if(!S[id]) S[id]={n:0,tg:(im[id]&&im[id].tg)||5};
-  S[id].n=nonNegativeInt(v,0);
+  var previous=gs(id),next=nonNegativeInt(v,0);
+  S[id].n=next;
   sv();
   refreshTileDisplays();
   updateStats();
   calcPriority(); if(typeof renderItemsList==='function') renderItemsList();
   if(document.getElementById('planList').style.display!=='none') calcProductionPlan();
+  if(previous!==next) toast((im[id]?im[id].nameCN:id)+'库存已改为 '+next,'撤销',function(){
+    S[id].n=previous;sv();refreshTileDisplays();updateStats();calcPriority();
+    if(document.getElementById('planList').style.display!=='none') calcProductionPlan();
+    toast('已撤销库存修改');
+  });
 }
 function st(id,v){
   if(!S[id]) S[id]={n:0,tg:(im[id]&&im[id].tg)||5};
-  S[id].tg = Math.max(1,parseInt(v)||1);
+  var previous=gt(id),next=Math.max(1,parseInt(v)||1);
+  S[id].tg = next;
   sv();
   refreshTileDisplays();
   updateStats();
   calcPriority(); if(typeof renderItemsList==='function') renderItemsList();
   if(document.getElementById('planList').style.display!=='none') calcProductionPlan();
+  if(previous!==next) toast((im[id]?im[id].nameCN:id)+'目标已改为 '+next,'撤销',function(){
+    S[id].tg=previous;sv();renderAll();toast('已撤销目标修改');
+  });
 }
 function fillTargets(){
   init(); D.items.forEach(function(it){ S[it.id]={n:it.tg,tg:it.tg}; });
@@ -867,9 +1062,18 @@ function onGTBarn(){
   D.items.forEach(function(it){ if(it.st==='barn') S[it.id].tg=gt; });
   sv(); renderAll(); calcPriority();
 }
-function toast(msg){
-  var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); },2000);
+var _toastTimer=null,_toastAction=null;
+function toast(msg,actionLabel,action){
+  var t=document.getElementById('toast');
+  t.textContent='';
+  var message=document.createElement('span');message.textContent=msg;t.appendChild(message);
+  _toastAction=typeof action==='function'?action:null;
+  if(_toastAction){
+    var button=document.createElement('button');button.type='button';button.className='toast-action';button.textContent=actionLabel||'撤销';
+    button.onclick=function(){var callback=_toastAction;_toastAction=null;if(callback)callback();};t.appendChild(button);
+  }
+  t.classList.add('show');clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(function(){t.classList.remove('show');_toastAction=null;},_toastAction?4500:2200);
 }
 /* ====== Utility ====== */
 function esc(value){
@@ -904,10 +1108,8 @@ function refreshTileDisplays(){
     var meta=tile.querySelector('.tile-meta');
     if(meta){
       var it=im[id];
-      var txt=(it&&it.bld&&bm[it.bld]?bm[it.bld].nameCN+' · ':'')+fmt(it?it.t:0);
       var need=needs[id]||0;
-      if(need>0)txt+=' · 需产'+need+'个';
-      meta.textContent=txt;
+      meta.innerHTML='<span class="tile-meta-main">'+esc((it&&it.bld&&bm[it.bld]?bm[it.bld].nameCN+' · ':'')+fmt(it?it.t:0))+'</span>'+(need>0?'<span class="tile-gap">需产'+need+'个</span>':'');
     }
   });
 }
@@ -916,8 +1118,8 @@ function renderAll(){
   init();
   var needs=computeRecursiveNeeds();
   var search = (document.getElementById('searchInput').value||'').toLowerCase();
-  var filter = (document.querySelector('.chip.active')||{}).dataset||{};
-  var fBld = filter.bld || '';
+  var filter = readStoredJson('hd_ui_filter',{st:'',bld:''});
+  var fBld = filter.bld||'';
   var fSt = filter.st || '';
   // group items
   var groups=[];
@@ -946,8 +1148,14 @@ function renderAll(){
   order.forEach(function(g){
     var items=groupMap[g]; if(!items||items.length===0) return;
     var filtered=items.filter(function(it){
-      if(search && (it.nameCN||it.id).toLowerCase().indexOf(search)===-1 && it.id.toLowerCase().indexOf(search)===-1 && (!it.bld||!bm[it.bld]||bm[it.bld].nameCN.toLowerCase().indexOf(search)===-1)) return false;
-      if(fSt && it.st!==fSt) return false;
+      if(search){
+        var name=(it.nameCN||it.id).toLowerCase();
+        var buildingName=it.bld&&bm[it.bld]?bm[it.bld].nameCN.toLowerCase():'';
+        var ingredientMatch=(it.ing||[]).some(function(ing){var ingredient=im[ing.i];return ingredient&&((ingredient.nameCN||ingredient.id).toLowerCase().indexOf(search)>=0||_pyFL(ingredient.nameCN||ingredient.id).indexOf(search)>=0);});
+        if(name.indexOf(search)===-1&&it.id.toLowerCase().indexOf(search)===-1&&_pyFL(name).indexOf(search)===-1&&buildingName.indexOf(search)===-1&&!ingredientMatch) return false;
+      }
+      if(fSt==='silo' && it.st.indexOf('silo_')!==0) return false;
+      if(fSt && fSt!=='silo' && it.st!==fSt) return false;
       if(fBld && it.bld!==fBld) return false;
       return true;
     });
@@ -966,19 +1174,18 @@ function renderAll(){
     grp.items.forEach(function(it){
       var sts=status(it.id);
       var isEdited=((edits.mod&&edits.mod[it.id])||(edits.add&&edits.add.some(function(a){return a.id===it.id;}))) && !checked[it.id];
-      h+='<div class="item-tile '+sts+'" data-id="'+it.id+'" onclick="toggleDetail(\''+it.id+'\')">';
-      h+='<div class="tile-top"><div class="tile-icon">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" loading="lazy">':esc(it.emoji||'📦'))+'</div><div class="tile-name">'+esc(it.nameCN||it.id)+'</div><input type="number" class="tile-input" value="'+gs(it.id)+'" min="0" onfocus="this.select()" onblur="ss(\''+it.id+'\',this.value)" onclick="event.stopPropagation();this.select()">/<span class="tile-target">'+gt(it.id)+'</span><button class="tile-edit" onclick="event.stopPropagation();openEditModal(\''+it.id+'\')" title="编辑">✏️</button>'+(isEdited?'<button class="tile-edit tile-revert" title="标记为已核对">✅</button>':'')+'</div>';
-      h+='<div class="tile-meta">'+(it.bld&&bm[it.bld]?bm[it.bld].nameCN+' · ':'')+fmt(it.t);
-  var sh_=needs[it.id]||0;if(sh_>0)h+=' · 需产'+sh_+'个';
-  h+='</div>';
+      var shortage=needs[it.id]||0;
+      h+='<div class="item-tile '+sts+(isEdited?' edited':'')+'" data-id="'+it.id+'" onclick="toggleDetail(\''+it.id+'\')">';
+      h+='<div class="tile-top"><div class="tile-icon">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" loading="lazy" alt="">':esc(it.emoji||'□'))+'</div><div class="tile-name">'+esc(it.nameCN||it.id)+'</div><div class="tile-stock"><input type="number" class="tile-input" value="'+gs(it.id)+'" min="0" aria-label="'+esc(it.nameCN||it.id)+'库存" onfocus="this.select()" onblur="ss(\''+it.id+'\',this.value)" onclick="event.stopPropagation();this.select()"><span class="tile-target">/ '+gt(it.id)+'</span></div><button class="tile-edit" onclick="event.stopPropagation();openEditModal(\''+it.id+'\')" title="编辑" aria-label="编辑'+esc(it.nameCN||it.id)+'">✎</button>'+(isEdited?'<button class="tile-edit tile-revert" title="标记为已核对" aria-label="标记为已核对">✓</button>':'')+'</div>';
+      h+='<div class="tile-meta"><span class="tile-meta-main">'+esc((it.bld&&bm[it.bld]?bm[it.bld].nameCN+' · ':'')+fmt(it.t))+'</span>'+(shortage>0?'<span class="tile-gap">需产'+shortage+'个</span>':'')+'</div>';
       h+='<div class="tile-detail" id="det_'+it.id+'">';
-      h+='⏱ '+fmt(it.t)+'<br>';
+      h+='<span class="lbl">生产时间：</span>'+fmt(it.t)+'<br>';
       if(it.ing.length>0){
-        h+='<span class="lbl">📋 配方：</span>'+it.ing.map(function(ing){var ii=im[ing.i];return esc(ii?ii.nameCN:ing.i)+'×'+ing.q;}).join(' + ')+'<br>';
+        h+='<span class="lbl">配方：</span>'+it.ing.map(function(ing){var ii=im[ing.i];return esc(ii?ii.nameCN:ing.i)+'×'+ing.q;}).join(' + ')+'<br>';
       }
-      var down=(dm[it.id]||[]).map(function(d){ var di=im[d.id]; return esc(di?(di.emoji||'')+di.nameCN:d.id)+' ×'+d.q; });
-      if(down.length>0) h+='<span class="lbl">⬆️ 用于生产：</span>'+down.join('、')+'<br>';
-      h+='<span class="lbl">🎯 目标：</span><input type="number" value="'+gt(it.id)+'" min="1" max="99" onchange="st(\''+it.id+'\',this.value);toggleDetail(\''+it.id+'\')" onclick="event.stopPropagation();this.select()"> 个';
+      var down=(dm[it.id]||[]).map(function(d){ var di=im[d.id]; return esc(di?di.nameCN:d.id)+' ×'+d.q; });
+      if(down.length>0) h+='<span class="lbl">用于生产：</span>'+down.join('、')+'<br>';
+      h+='<span class="lbl">目标：</span><input type="number" value="'+gt(it.id)+'" min="1" max="99" onchange="st(\''+it.id+'\',this.value);toggleDetail(\''+it.id+'\')" onclick="event.stopPropagation();this.select()"> 个';
       h+='</div>';
       h+='</div>';
     });
@@ -1061,19 +1268,13 @@ function filterDragEnd(e) {
   document.querySelectorAll('#filterRow .chip').forEach(function(c) { c.classList.remove('drag-over'); });
   _filterDragEl = null;
 }
-// Filter row click delegation (only fire if not a drag)
+// Filter chips ignore the click generated at the end of a drag.
 var _filterDragMoved = false;
 (function(){
   var fr = document.getElementById('filterRow');
   if (!fr) return;
   fr.addEventListener('mousedown', function(e) { _filterDragMoved = false; });
   fr.addEventListener('mousemove', function(e) { if (e.buttons === 1) _filterDragMoved = true; });
-  fr.addEventListener('click', function(e) {
-    if (_filterDragMoved) return;
-    var chip = e.target.closest('.chip');
-    if (!chip) return;
-    setFilter(chip);
-  });
 })();
 function saveFilterOrder() {
   var chips = document.querySelectorAll('#filterRow .chip');
@@ -1082,7 +1283,7 @@ function saveFilterOrder() {
   chips.forEach(function(c) {
     order.push({st: c.dataset.st || '', bld: c.dataset.bld || ''});
     if (c.dataset.bld) sectionOrder.push(c.dataset.bld);
-    else if (c.dataset.st === 'silo') sectionOrder.push(c.dataset.st);
+    else if (c.dataset.st === 'silo') sectionOrder.push('silo_field','silo_tree');
   });
   sectionOrder.push('barn_tools','barn_ores','barn_expand','barn_animal','barn_other');
   persistJson('hd_filter_order',order);
@@ -1112,20 +1313,54 @@ function applyFilterOrderToBuildings() {
 }
 function renderFilters(){
   var row=document.getElementById('filterRow');
-  var h='<span class="chip active" data-st="" data-bld="" draggable="true" ondragstart="filterDragStart(event)" ondragover="filterDragOver(event)" ondragleave="filterDragLeave(event)" ondrop="filterDrop(event)" ondragend="filterDragEnd(event)">全部</span>';
-  h+='<span class="chip" data-st="silo_field" data-bld="" draggable="true" ondragstart="filterDragStart(event)" ondragover="filterDragOver(event)" ondragleave="filterDragLeave(event)" ondrop="filterDrop(event)" ondragend="filterDragEnd(event)">🌱 耕地</span>';
-  h+='<span class="chip" data-st="silo_tree" data-bld="" draggable="true" ondragstart="filterDragStart(event)" ondragover="filterDragOver(event)" ondragleave="filterDragLeave(event)" ondrop="filterDrop(event)" ondragend="filterDragEnd(event)">🌳 树木</span>';
-  h+='<span class="chip" data-st="barn" data-bld="" draggable="true" ondragstart="filterDragStart(event)" ondragover="filterDragOver(event)" ondragleave="filterDragLeave(event)" ondrop="filterDrop(event)" ondragend="filterDragEnd(event)">📦 货仓</span>';
-  D.buildings.forEach(function(b){
-    if(!b.slots) return;
-    h+='<span class="chip" data-st="" data-bld="'+b.id+'" draggable="true" ondragstart="filterDragStart(event)" ondragover="filterDragOver(event)" ondragleave="filterDragLeave(event)" ondrop="filterDrop(event)" ondragend="filterDragEnd(event)">'+b.nameCN+'</span>';
-  });
+  var selected=readStoredJson('hd_ui_filter',{st:'',bld:''});
+  if(selected.st==='silo_field'||selected.st==='silo_tree'||selected.st==='barn'){
+    selected={st:'',bld:''};
+    persistJson('hd_ui_filter',selected);
+  }
+  function chip(label,st,bld){
+    var active=selected.st===st&&selected.bld===bld?' active':'';
+    return '<button type="button" class="chip'+active+'" data-st="'+st+'" data-bld="'+bld+'" draggable="true" onclick="if(!_filterDragMoved)setFilter(this)" ondragstart="filterDragStart(event)" ondragover="filterDragOver(event)" ondragleave="filterDragLeave(event)" ondrop="filterDrop(event)" ondragend="filterDragEnd(event)">'+label+'</button>';
+  }
+  var h=chip('全部','','')+chip('粮仓','silo','');
+  D.buildings.forEach(function(b){ if(b.slots) h+=chip(b.nameCN,'',b.id); });
   row.innerHTML=h;
+  var savedOrder=loadFilterOrder();
+  if(savedOrder&&savedOrder.length){
+    var allChips=Array.from(row.querySelectorAll('.chip'));
+    var ordered=[];
+    savedOrder.forEach(function(entry){
+      var selector='.chip[data-st="'+(entry.st||'')+'"][data-bld="'+(entry.bld||'')+'"]';
+      var savedChip=row.querySelector(selector);
+      if(savedChip&&ordered.indexOf(savedChip)<0) ordered.push(savedChip);
+    });
+    allChips.forEach(function(savedChip){ if(ordered.indexOf(savedChip)<0) ordered.push(savedChip); });
+    ordered.forEach(function(savedChip){ row.appendChild(savedChip); });
+  }
+  localStorage.removeItem('hd_ui_equipment');
 }
 function setFilter(el){
-  document.querySelectorAll('#filterRow .chip').forEach(function(c){ c.classList.remove('active'); });
-  el.classList.add('active');
+  var filter={st:el.dataset.st||'',bld:el.dataset.bld||''};
+  var search=document.getElementById('searchInput');
+  if(search&&search.value){
+    search.value='';
+    localStorage.removeItem('hd_ui_search');
+  }
+  persistJson('hd_ui_filter',filter);
+  document.querySelectorAll('#filterRow .chip').forEach(function(chip){
+    chip.classList.toggle('active',(chip.dataset.st||'')===filter.st&&(chip.dataset.bld||'')===filter.bld);
+  });
   renderAll();
+}
+function onSearchInput(){
+  var input=document.getElementById('searchInput');
+  localStorage.setItem('hd_ui_search',input?input.value:'');
+  renderAll();
+}
+function toggleOverviewSection(id,button){
+  var section=document.getElementById(id); if(!section) return;
+  var expanded=section.classList.toggle('expanded');
+  if(button){button.textContent=expanded?'−':'＋';button.title=expanded?'收起':'展开完整列表';}
 }
 function computeRecursiveNeeds(){
   init();
@@ -1159,18 +1394,17 @@ function calcPriority(){
   ranked.forEach(function(r,i){
     var it=r.item;
     var stk=gs(it.id),tgt=gt(it.id),need=needs[it.id]||0;
-    // 数字排名制：前5名等级1(最红) → 最后5名等级10(最绿)
-    var level=Math.min(9,Math.floor(i/5));
-    var clr='hsl('+Math.round(120*(9-level)/9)+',70%,55%)';
     var rank=i+1;
+    var level=i<5?'urgent':(i<20?'soon':'steady');
+    var stateLabel=i<5?'立即补充':(i<20?'安排生产':'持续补货');
     var detail='';
     if(it.bld && bm[it.bld]) detail=bm[it.bld].nameCN;
-    if(it.ing.length>0) detail+=' ← '+it.ing.map(function(ing){ var ii=im[ing.i]; return esc(ii?ii.nameCN:ing.i); }).join('、');
-    h+='<div class="prio-item">';
-    h+='<div class="prio-bar" style="background:'+clr+'"></div>';
-    h+='<div class="prio-info"><div class="prio-name">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" style="width:22px;height:22px;object-fit:contain;vertical-align:middle;border-radius:2px" loading="lazy">':esc(it.emoji||''))+' '+esc(it.nameCN||it.id)+' <span style="color:'+clr+';font-weight:700">#'+rank+' 缺'+need+'个</span></div>';
-    h+='<div class="prio-detail">'+detail+' · ⏱'+fmt(it.t)+'</div></div>';
-    h+='<div class="prio-right"><div class="num" style="color:'+clr+';font-weight:700">缺'+need+'个</div></div>';
+    if(it.ing.length>0) detail+=(detail?' · ':'')+'原料 '+it.ing.map(function(ing){ var ii=im[ing.i]; return esc(ii?ii.nameCN:ing.i); }).join('、');
+    h+='<div class="prio-item '+level+'">';
+    h+='<div class="prio-bar"></div>';
+    h+='<div class="prio-info"><div class="prio-name">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" loading="lazy" alt="">':esc(it.emoji||''))+'<span>'+esc(it.nameCN||it.id)+'</span><span class="prio-status '+level+'">#'+rank+' '+stateLabel+'</span></div>';
+    h+='<div class="prio-detail">'+detail+(detail?' · ':'')+fmt(it.t)+'</div></div>';
+    h+='<div class="prio-right"><div class="num">缺'+need+'个</div></div>';
     h+='</div>';
   });
   list.innerHTML = h;
@@ -1231,9 +1465,18 @@ function calcBuyRecommendations(){
   container.innerHTML = h;
 }
 function getOrder(){
+  var defaults=['silo_field','silo_tree','feed_mill','bakery','sugar_mill','dairy','popcorn_pot','bbq_grill','pie_oven','cake_oven','loom','sewing_machine','juice_press','ice_cream_maker','jam_maker','smelter','jewelry_maker','coffee_kiosk','soup_kitchen','candle_maker','candy_maker','sauce_maker','flower_shop','sushi_bar','salad_bar','sandwich_bar','waffle_maker','tea_stand','taco_kitchen','hotdog_stand','deep_fryer','smoothie_mixer','essential_oils','preservation','honey_extractor','donut_maker','pasta_maker','pasta_kitchen','fudge_shop','porridge_bar','milkshake_bar','wok_kitchen','stew_pot','omelet_station','fondue_pot','yogurt_maker','cupcake_maker','kebab_stand','bath_kiosk','hat_maker','pottery_studio','perfumerie','lure_workbench','net_maker','barn_animal','barn_tools','barn_ores','barn_expand','barn_other'];
   var saved=localStorage.getItem('hd_order');
-  if(saved)try{var o=JSON.parse(saved);if(o&&o.length)return o;}catch(e){}
-  return ['silo_field','silo_tree','feed_mill','bakery','sugar_mill','dairy','popcorn_pot','bbq_grill','pie_oven','cake_oven','loom','sewing_machine','juice_press','ice_cream_maker','jam_maker','smelter','jewelry_maker','coffee_kiosk','soup_kitchen','candle_maker','candy_maker','sauce_maker','flower_shop','sushi_bar','salad_bar','sandwich_bar','waffle_maker','tea_stand','taco_kitchen','hotdog_stand','deep_fryer','smoothie_mixer','essential_oils','preservation','honey_extractor','donut_maker','pasta_maker','pasta_kitchen','fudge_shop','porridge_bar','milkshake_bar','wok_kitchen','stew_pot','omelet_station','fondue_pot','yogurt_maker','cupcake_maker','kebab_stand','bath_kiosk','hat_maker','pottery_studio','perfumerie','lure_workbench','net_maker','barn_animal','barn_tools','barn_ores','barn_expand','barn_other'];
+  var requested=[];
+  if(saved)try{var parsed=JSON.parse(saved);if(Array.isArray(parsed))requested=parsed;}catch(e){}
+  var normalized=[];
+  function add(key){if(defaults.indexOf(key)>=0&&normalized.indexOf(key)<0)normalized.push(key);}
+  requested.forEach(function(key){
+    if(key==='silo'){add('silo_field');add('silo_tree');}
+    else add(key);
+  });
+  defaults.forEach(add);
+  return normalized;
 }
 function toggleInfoBar(){
   var bar = document.getElementById('infoBar');
@@ -1362,6 +1605,7 @@ document.addEventListener('keydown',function(e){
 function switchSidebarTab(tab,el){
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
   el.classList.add('active');
+  persistText('hd_ui_tab',tab);
   document.getElementById('priorityList').style.display=(tab==='priority'?'':'none');
   document.getElementById('planList').style.display=(tab==='plan'?'':'none');document.getElementById('itemsList').style.display=(tab==='items'?'':'none');if(tab==='items')renderItemsList();
   if(tab==='priority') calcPriority();
@@ -1397,8 +1641,8 @@ function calcProductionPlan(){
   var needs=computeRecursiveNeeds();
   var plan={},totalNeeded=0;
   var groupMap={};
-  D.buildings.forEach(function(bld){ groupMap[bld.id]=bld; });
-  groupMap.raw_materials={id:'raw_materials',nameCN:'动物与基础原料',slots:1};
+  D.buildings.forEach(function(bld){ groupMap[bld.id]={id:bld.id,nameCN:bld.nameCN,slots:bld.slots||1,items:[]}; });
+  groupMap.raw_materials={id:'raw_materials',nameCN:'动物与基础原料',slots:1,items:[]};
   var rawMaterialIds={milk:1,egg:1,wool:1,goat_milk:1,bacon:1,duck_feather:1,fish_fillet:1,lobster_tail:1,lamb_chop:1,honeycomb:1};
   D.items.forEach(function(item){
     var groupId=item.bld;
@@ -1406,7 +1650,6 @@ function calcProductionPlan(){
     else if(!groupId && item.st==='silo_tree') groupId='orchard';
     else if(!groupId && rawMaterialIds[item.id]) groupId='raw_materials';
     if(!groupId || !groupMap[groupId]) return;
-    if(!groupMap[groupId].items) groupMap[groupId].items=[];
     groupMap[groupId].items.push(item);
   });
   Object.keys(groupMap).forEach(function(groupId){
@@ -1418,7 +1661,13 @@ function calcProductionPlan(){
       var need=needs[it.id]||0;
       var ownShort=Math.max(0,gt(it.id)-gs(it.id));
       if(need>0){
-        needed.push({id:it.id,nameCN:(it.nameCN||it.id),shortage:need,ownShortage:ownShort,time:it.t,ing:it.ing});
+        var readyQty=need;
+        if(it.ing&&it.ing.length){
+          readyQty=Math.min.apply(null,it.ing.map(function(ing){return Math.floor(gs(ing.i)/ing.q);}));
+          readyQty=Math.max(0,Math.min(need,readyQty));
+        }
+        var readiness=readyQty>=need?'ready':(readyQty>0?'partial':'blocked');
+        needed.push({id:it.id,nameCN:(it.nameCN||it.id),shortage:need,ownShortage:ownShort,time:it.t,ing:it.ing,readyQty:readyQty,readiness:readiness});
         totalNeeded+=need;
       }
     });
@@ -1426,6 +1675,8 @@ function calcProductionPlan(){
       var slots=bld.slots||1;
       var totalTime=0;
       needed.forEach(function(ni){totalTime+=ni.shortage*ni.time;});
+      var readinessOrder={ready:0,partial:1,blocked:2};
+      needed.sort(function(a,b){return readinessOrder[a.readiness]-readinessOrder[b.readiness]||(b.shortage*b.time-a.shortage*a.time);});
       plan[groupId]={nameCN:bld.nameCN,slots:slots,items:needed,totalTime:totalTime,totalTimeWithSlots:totalTime/slots};
     }
   });
@@ -1435,32 +1686,35 @@ function calcProductionPlan(){
     list.innerHTML='<div class="empty-state"><div class="big">✅</div><p>所有物品库存充足！（'+totalNeeded+'件需要，'+keys.length+'设备）</p></div>';
     return;
   }
-  var h='<div style="padding:6px 14px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border)">共需生产 '+(totalNeeded?totalNeeded:0)+' 件次</div>';
+  var h='<div class="plan-summary">共需生产 '+(totalNeeded?totalNeeded:0)+' 件次 · 设备按预计占用时间排序</div>';
   keys.forEach(function(bldId){
     var p=plan[bldId];
+    var readyCount=p.items.filter(function(item){return item.readiness==='ready';}).length;
+    var partialCount=p.items.filter(function(item){return item.readiness==='partial';}).length;
     h+='<div class="plan-building">';
     h+='<div class="plan-bld-header">';
-    h+='<span class="plan-bld-name">'+(ICONS[bldId]?'<img src="'+ICONS[bldId]+'" style="width:20px;height:20px;vertical-align:middle;margin-right:4px">':'')+p.nameCN+' <span style="font-size:10px;color:var(--muted);font-weight:400">(并行×'+p.slots+')</span></span>';
+    h+='<span class="plan-bld-name">'+(ICONS[bldId]?'<img src="'+ICONS[bldId]+'" class="overview-icon" alt="">':'')+'<span>'+esc(p.nameCN)+'<span class="plan-bld-meta">并行 '+p.slots+' · 可开工 '+readyCount+(partialCount?' · 部分 '+partialCount:'')+'</span></span></span>';
     h+='<span class="plan-bld-time">'+(p.totalTimeWithSlots>3600?Math.round(p.totalTimeWithSlots/3600)+'h':Math.round(p.totalTimeWithSlots/60)+'m')+'</span>';
     h+='</div>';
     p.items.forEach(function(ni){
       var ingInfo=ni.ing.map(function(ing){
-        var ii=im[ing.i],ingStock=gs(ing.i),ingTg=gt(ing.i);
-        var ingShort=ingStock<ingTg?'⚠不足('+ingStock+'/'+ingTg+')':'✓('+ingStock+')';
-        return esc(ii?ii.nameCN:ing.i)+'×'+ing.q+' '+ingShort;
-      }).join(', ');
-      h+='<div class="plan-item">';
+        var ii=im[ing.i],ingStock=gs(ing.i),required=ing.q*ni.shortage;
+        var ingShort=ingStock<required?'缺'+(required-ingStock)+'（现有'+ingStock+'）':'现有'+ingStock;
+        return esc(ii?ii.nameCN:ing.i)+'×'+required+' · '+ingShort;
+      }).join('；');
+      var stateLabel=ni.readiness==='ready'?'可生产全部':(ni.readiness==='partial'?'可生产 '+ni.readyQty:'等待原料');
+      h+='<div class="plan-item '+ni.readiness+'">';
       h+='<div class="plan-item-info">';
-      h+='<div class="plan-item-name">'+(ICONS[ni.id]?'<img src="'+ICONS[ni.id]+'" style="width:18px;height:18px;vertical-align:middle;margin-right:4px">':'')+esc(ni.nameCN)+' <span style="font-size:10px;color:var(--muted);font-weight:400">需产×'+ni.shortage+'</span><span class="chain-depth-badge" style="cursor:pointer" onclick="event.stopPropagation();togglePlanChain(\''+ni.id+'\',this.parentElement)">层级'+chainDepth(ni.id)+' <span class="chain-toggle">▶</span></span><div class="chain-expanded" style="display:none" id="planChain-'+ni.id+'"></div>';
+      h+='<div class="plan-item-name">'+(ICONS[ni.id]?'<img src="'+ICONS[ni.id]+'" style="width:20px;height:20px;object-fit:contain" alt="">':'')+'<span>'+esc(ni.nameCN)+'</span><span class="plan-state '+ni.readiness+'">'+stateLabel+'</span><span class="chain-depth-badge" style="cursor:pointer" onclick="event.stopPropagation();togglePlanChain(\''+ni.id+'\',this.parentElement)">层级 '+chainDepth(ni.id)+' <span class="chain-toggle">▶</span></span><div class="chain-expanded" style="display:none" id="planChain-'+ni.id+'"></div>';
       if(ni.ownShortage>0 && ni.ownShortage<ni.shortage){
         h+=' <span style="font-size:9px;color:var(--warn)">(自需'+ni.ownShortage+'+下游'+(ni.shortage-ni.ownShortage)+')</span>';
       }
       h+='</div>';
-      h+='<div class="plan-item-detail">'+fmt(ni.time)+'/个 · 共'+fmt(ni.shortage*ni.time)+'</div>';
-      h+='<div class="plan-item-detail" style="font-size:9px;color:var(--muted);line-height:1.4">'+ingInfo+'</div>';
+      h+='<div class="plan-item-detail">需产 '+ni.shortage+' · '+fmt(ni.time)+'/个 · 共 '+fmt(ni.shortage*ni.time)+'</div>';
+      if(ingInfo) h+='<div class="plan-item-detail">'+ingInfo+'</div>';
       h+='</div>';
       h+='<div class="plan-item-action">';
-      h+='<button class="btn btn-sm btn-primary" onclick="completeProduction(\''+ni.id+'\','+ni.shortage+')">完成</button>';
+      h+='<button class="btn btn-sm btn-primary" '+(ni.readyQty>0?'onclick="completeProduction(\''+ni.id+'\','+ni.readyQty+')"':'disabled title="原料不足"')+'>'+(ni.readyQty>0?'完成 '+ni.readyQty:'缺原料')+'</button>';
       h+='</div></div>';
     });
     h+='</div>';
@@ -1471,7 +1725,6 @@ function calcProductionPlan(){
 /* ====== Item List ====== */
 function renderItemsList(){
   init();
-  // Sort helper: by first char group, then pinyin
   function sortItems(arr){
     return arr.slice().sort(function(a,b){
       var fa=a.nameCN.charAt(0), fb=b.nameCN.charAt(0);
@@ -1485,27 +1738,19 @@ function renderItemsList(){
     else if(it.st==='silo_tree') siloTreeItems.push(it);
     else if(it.st==='barn') barnItems.push(it);
   });
-  siloFieldItems=sortItems(siloFieldItems);
-  siloTreeItems=sortItems(siloTreeItems);
+  var siloItems=sortItems(siloFieldItems.concat(siloTreeItems));
   barnItems=sortItems(barnItems);
-  var h='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;min-height:0;height:100%">';
-  // Left: silo
-  h+='<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;min-height:0">';
-  h+='<div style="padding:6px 10px;font-size:11px;color:var(--accent);font-weight:600;border-bottom:1px solid var(--border);background:#f9f9f6">🌾 粮仓</div>';
-  h+='<div style="overflow-y:auto;flex:1;min-height:0">';
-  siloFieldItems.forEach(function(it){
-    var ed=loadEdits(),ck=loadChecked();var edited=ed.mod&&ed.mod[it.id]||(ed.add||[]).some(function(a){return a.id===it.id;})||(ed.del||[]).indexOf(it.id)>=0;var checked=ck[it.id];
-    h+='<div class="plan-item" style="padding:3px 10px;cursor:pointer;border-bottom:1px solid #f0ede6" onclick="openEditModal(\''+it.id+'\')">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" style="width:16px;height:16px;vertical-align:middle;margin-right:4px">':esc(it.emoji||''))+'<span style="font-size:12px">'+esc(it.nameCN||it.id)+'</span>'+(edited&&!checked?' <span style="color:#22c55e;font-size:12px">✅</span>':'')+'</div>';
-  });
+  var edits=loadEdits(),checkedItems=loadChecked();
+  function itemRow(it){
+    var edited=(edits.mod&&edits.mod[it.id])||(edits.add||[]).some(function(a){return a.id===it.id;})||(edits.del||[]).indexOf(it.id)>=0;
+    return '<button type="button" class="items-list-row" onclick="openEditModal(\''+it.id+'\')">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" alt="">':esc(it.emoji||''))+'<span>'+esc(it.nameCN||it.id)+'</span>'+(edited&&!checkedItems[it.id]?'<span class="items-edited" title="有未核对修改">已修改</span>':'')+'</button>';
+  }
+  var h='<div class="items-columns">';
+  h+='<div class="items-column"><div class="items-column-title">粮仓 <span>'+siloItems.length+'</span></div><div class="items-column-body">';
+  siloItems.forEach(function(it){h+=itemRow(it);});
   h+='</div></div>';
-  // Right: barn
-  h+='<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;min-height:0">';
-  h+='<div style="padding:6px 10px;font-size:11px;color:var(--accent);font-weight:600;border-bottom:1px solid var(--border);background:#f9f9f6">📦 货仓</div>';
-  h+='<div style="overflow-y:auto;flex:1;min-height:0">';
-  barnItems.forEach(function(it){
-    var ed=loadEdits(),ck=loadChecked();var edited=ed.mod&&ed.mod[it.id]||(ed.add||[]).some(function(a){return a.id===it.id;})||(ed.del||[]).indexOf(it.id)>=0;var checked=ck[it.id];
-    h+='<div class="plan-item" style="padding:3px 10px;cursor:pointer;border-bottom:1px solid #f0ede6" onclick="openEditModal(\''+it.id+'\')">'+(ICONS[it.id]?'<img src="'+ICONS[it.id]+'" style="width:16px;height:16px;vertical-align:middle;margin-right:4px">':esc(it.emoji||''))+'<span style="font-size:12px">'+esc(it.nameCN||it.id)+'</span>'+(edited&&!checked?' <span style="color:#22c55e;font-size:12px">✅</span>':'')+'</div>';
-  });
+  h+='<div class="items-column"><div class="items-column-title">货仓 <span>'+barnItems.length+'</span></div><div class="items-column-body">';
+  barnItems.forEach(function(it){h+=itemRow(it);});
   h+='</div></div>';
   h+='</div>';
   document.getElementById('itemsList').innerHTML=h;
@@ -1513,7 +1758,13 @@ function renderItemsList(){
 var _editId=null;
 function loadEdits(){
   var edits=readStoredJson('hd_edits',{});
-  return edits&&typeof edits==='object'&&!Array.isArray(edits)?edits:{};
+  if(!edits||typeof edits!=='object'||Array.isArray(edits)) return {};
+  var cacao=edits.mod&&edits.mod.cacao;
+  if(cacao&&((cacao.nameCN||'').indexOf('�')>=0||cacao.emoji==='??'||cacao.emoji==='便')){
+    delete edits.mod.cacao;
+    persistJson('hd_edits',edits);
+  }
+  return edits;
 }
 function saveEdits(ed){ persistJson('hd_edits',ed); }
 function loadChecked(){
@@ -1572,6 +1823,8 @@ function openEditModal(id){
   renderIngs(it.ing);
   var preview=document.getElementById('emChainPreview'); if(preview) preview.style.display='none';
   document.getElementById('editModal').classList.remove('hidden');var s=document.getElementById('emBldSearch');if(s)s.value='';
+  showEditError('');
+  setEditSnapshot();
 }
 function openAddModal(bldId){
   applyEdits(); _editId=null;
@@ -1586,12 +1839,28 @@ function openAddModal(bldId){
   renderIngs([]);
   var preview=document.getElementById('emChainPreview'); if(preview) preview.style.display='none';
   document.getElementById('editModal').classList.remove('hidden');var s=document.getElementById('emBldSearch');if(s)s.value='';
+  showEditError('');
+  setEditSnapshot();
 }
-function closeEditModal(){ document.getElementById('editModal').classList.add('hidden'); }
+function closeEditModal(){ document.getElementById('editModal').classList.add('hidden'); _editSnapshot=''; }
 var _ingRows=[];
+var _editSnapshot='';
+function editFormSnapshot(){
+  function value(id){var element=document.getElementById(id);return element?element.value:'';}
+  return JSON.stringify({name:value('emName'),bld:value('emBld'),hours:value('emTimeH'),minutes:value('emTimeM'),target:value('emTg'),emoji:value('emEmoji'),ingredients:_ingRows});
+}
+function setEditSnapshot(){_editSnapshot=editFormSnapshot();updateEditSaveState();}
+function updateEditSaveState(){
+  var button=document.getElementById('emSave'); if(!button) return;
+  button.disabled=!_editSnapshot||editFormSnapshot()===_editSnapshot;
+}
+function showEditError(message){
+  var error=document.getElementById('emError');if(!error)return;
+  error.textContent=message||'';error.classList.toggle('show',Boolean(message));
+}
 function renderIngs(ings){ _ingRows=ings.map(function(ing){ return {i:ing.i,q:ing.q}; }); refreshIngUI(); }
-function addIngRow(){ _ingRows.push({i:'',q:1}); refreshIngUI(); }
-function removeIngRow(idx){ _ingRows.splice(idx,1); refreshIngUI(); }
+function addIngRow(){ _ingRows.push({i:'',q:1}); refreshIngUI(); updateEditSaveState(); }
+function removeIngRow(idx){ _ingRows.splice(idx,1); refreshIngUI(); updateEditSaveState(); }
 // Simple pinyin first-letter helper (covers common Chinese chars)
 var _pinyinMap=null;
 function _pyFL(str){
@@ -1609,35 +1878,66 @@ function _pyFL(str){
   }
   return result||"z";
 }
-function filterBldOptions(val){
+function filterBldOptions(input){
   var sel=document.getElementById("emBld");
   if(!sel) return;
-  var f=val.trim().toLowerCase();
+  if(input._imeComposing) return;
+  var f=input.value.trim().toLowerCase();
   var hasCN=/[\u4e00-\u9fff]/.test(f);
-  if(f && hasCN) try{ sel.size=Math.min(8,sel.querySelectorAll("option").length); sel.focus(); }catch(e){}
-  else try{ sel.size=0; }catch(e){}
   var opts=sel.querySelectorAll("option");
-  var found=false;
+  var matches=[];
   for(var i=0;i<opts.length;i++){
     var o=opts[i];
     if(!o.value){ o.style.display=""; continue; }
     if(f===""||o.textContent.toLowerCase().indexOf(f)>=0){
       o.style.display="";
-      if(!found&&o.value){ found=true; }
+      matches.push({id:o.value,name:o.textContent});
     }else{
       o.style.display="none";
     }
   }
+  sel.size=0;
+  renderBldSuggestions(f&&hasCN?matches:[]);
+}
+function renderBldSuggestions(matches){
+  var list=document.getElementById('bldSuggestions');
+  if(!list) return;
+  list.innerHTML='';
+  matches.forEach(function(match){
+    var button=document.createElement('button');
+    button.type='button';
+    button.className='ing-suggestion';
+    button.textContent=match.name;
+    button.setAttribute('role','option');
+    button.onmousedown=function(event){event.preventDefault();};
+    button.onclick=function(){selectBldSuggestion(match.id);};
+    list.appendChild(button);
+  });
+  list.classList.toggle('show',matches.length>0);
+}
+function hideBldSuggestions(){
+  var list=document.getElementById('bldSuggestions');
+  if(list) list.classList.remove('show');
+}
+function selectBldSuggestion(id){
+  var sel=document.getElementById('emBld');
+  var input=document.getElementById('emBldSearch');
+  if(!sel||!input) return;
+  sel.value=id;
+  input.value='';
+  Array.from(sel.querySelectorAll('option')).forEach(function(option){option.style.display='';});
+  hideBldSuggestions();
+  updateEditSaveState();
 }
 function filterIngSelect(input,idx){
   var sel=document.getElementById("ingSel_"+idx);
   if(!sel) return;
+  if(input._imeComposing) return;
   var f=input.value.trim();
-  var hasCN=/[\u4e00-\u9fff]/.test(f)||f.length>=99;
-  if(f && hasCN) try{ sel.size=Math.min(4,sel.querySelectorAll("option").length); sel.focus(); }catch(e){}
-  else try{ sel.size=0; }catch(e){}
+  var hasCN=/[\u4e00-\u9fff]/.test(f);
   f=f.toLowerCase();
   var groups=sel.querySelectorAll("optgroup");
+  var matches=[];
   for(var i=0;i<groups.length;i++){
     var g=groups[i];
     var opts=g.querySelectorAll("option");
@@ -1647,12 +1947,46 @@ function filterIngSelect(input,idx){
       if(!o.value){ o.style.display=""; continue; }
       if(f===""||o.textContent.toLowerCase().indexOf(f)>=0){
         o.style.display=""; vis++;
+        if(o.value) matches.push({id:o.value,name:o.textContent});
       }else{
         o.style.display="none";
       }
     }
     g.style.display=vis>0?"":"none";
   }
+  sel.size=0;
+  renderIngSuggestions(idx,f&&hasCN?matches:[]);
+}
+function renderIngSuggestions(idx,matches){
+  var list=document.getElementById('ingSuggestions_'+idx);
+  if(!list) return;
+  list.innerHTML='';
+  matches.forEach(function(match){
+    var button=document.createElement('button');
+    button.type='button';
+    button.className='ing-suggestion';
+    button.textContent=match.name;
+    button.setAttribute('role','option');
+    button.onmousedown=function(event){event.preventDefault();};
+    button.onclick=function(){selectIngSuggestion(idx,match.id);};
+    list.appendChild(button);
+  });
+  list.classList.toggle('show',matches.length>0);
+}
+function hideIngSuggestions(idx){
+  var list=document.getElementById('ingSuggestions_'+idx);
+  if(list) list.classList.remove('show');
+}
+function selectIngSuggestion(idx,id){
+  var sel=document.getElementById('ingSel_'+idx);
+  var input=sel&&sel.parentNode.querySelector('.ing-filter');
+  if(!sel||!input) return;
+  _ingRows[idx].i=id;
+  sel.value=id;
+  input.value='';
+  Array.from(sel.querySelectorAll('option,optgroup')).forEach(function(option){option.style.display='';});
+  hideIngSuggestions(idx);
+  updateEditSaveState();
 }
 function refreshIngUI(){
   var h='';
@@ -1684,7 +2018,7 @@ function refreshIngUI(){
     groups[groups.length-1].items.push(item);
   });
   _ingRows.forEach(function(r,idx){
-    h+='<div class="modal-ing"><input class="ing-filter" placeholder="输入搜索..." oninput="filterIngSelect(this,'+idx+')" onclick="event.stopPropagation()"><select id="ingSel_'+idx+'" onchange="_ingRows['+idx+'].i=this.value">';
+    h+='<div class="modal-ing"><input class="ing-filter" placeholder="搜索" autocomplete="off" aria-controls="ingSuggestions_'+idx+'" oncompositionstart="this._imeComposing=true" oncompositionend="this._imeComposing=false;filterIngSelect(this,'+idx+')" oninput="filterIngSelect(this,'+idx+')" onblur="hideIngSuggestions('+idx+')" onclick="event.stopPropagation()"><div class="ing-suggestions" id="ingSuggestions_'+idx+'" role="listbox"></div><select id="ingSel_'+idx+'" onchange="_ingRows['+idx+'].i=this.value;updateEditSaveState()">';
     h+='<option value="">选择原料</option>';
     groups.forEach(function(g){
       h+='<optgroup label="'+g.letter+'">';
@@ -1694,8 +2028,8 @@ function refreshIngUI(){
       h+='</optgroup>';
     });
     h+='</select>';
-    h+='<span>×</span><input type="number" min="1" value="'+r.q+'" onchange="_ingRows['+idx+'].q=parseInt(this.value)||1">';
-    h+='<button class="btn-rm" onclick="removeIngRow('+idx+')">×</button></div>';
+    h+='<span>×</span><input type="number" min="1" aria-label="原料数量" value="'+r.q+'" oninput="_ingRows['+idx+'].q=parseInt(this.value)||1;updateEditSaveState()">';
+    h+='<button class="btn-rm" onclick="removeIngRow('+idx+')" title="移除原料" aria-label="移除原料">×</button></div>';
   });
   document.getElementById('emIngs').innerHTML=h;
 }
@@ -1718,12 +2052,16 @@ function saveItem(){
   var tg=Math.max(1,nonNegativeInt(document.getElementById('emTg').value,5));
   var emoji=document.getElementById('emEmoji').value||'📦';
   var bldId=document.getElementById('emBld').value;
+  var selectedIngredientIds=_ingRows.filter(function(row){return row&&row.i;}).map(function(row){return row.i;});
+  var duplicateIngredient=selectedIngredientIds.find(function(id,index){return selectedIngredientIds.indexOf(id)!==index;});
   var ings=normalizeIngredients(_ingRows);
-  if(!name){ alert('请输入物品名称'); return; }
+  if(!name){ showEditError('请输入物品名称。'); document.getElementById('emName').focus(); return; }
+  if(duplicateIngredient){showEditError('同一种原料只能添加一次，请合并数量。');return;}
   if(_editId&&createsIngredientCycle(_editId,ings)){
-    alert('配方形成了循环依赖，请检查原材料。');
+    showEditError('配方形成循环依赖，请检查原材料。');
     return;
   }
+  showEditError('');
   var ed=loadEdits();
   if(_editId){
     if(!ed.mod) ed.mod={};
@@ -1808,15 +2146,38 @@ function scheduleFileBackupReminder(){
 async function bootstrap(){
   await hydrateStoredData();
   init();
+  var search=document.getElementById('searchInput');
+  if(search) search.value=localStorage.getItem('hd_ui_search')||'';
+  renderFilters();
   renderAll();
   calcBuyRecommendations();
+  var savedTab=localStorage.getItem('hd_ui_tab')||'priority';
+  var tabButton=document.querySelector('.tab[data-tab="'+savedTab+'"]');
+  if(tabButton) switchSidebarTab(savedTab,tabButton);
+  var savedScroll=nonNegativeInt(localStorage.getItem('hd_ui_scroll'),0);
+  if(savedScroll) requestAnimationFrame(function(){window.scrollTo(0,savedScroll);});
   scheduleFileBackupReminder();
 }
+var _scrollSaveTimer=null;
 document.addEventListener('DOMContentLoaded',function(){
   bootstrap().catch(function(error){
     console.error(error);
     toast('初始化失败: '+error.message);
   });
+  var modal=document.getElementById('editModal');
+  if(modal){
+    modal.addEventListener('input',updateEditSaveState);
+    modal.addEventListener('change',updateEditSaveState);
+  }
+  document.querySelectorAll('.tab').forEach(function(tab){
+    tab.addEventListener('keydown',function(event){
+      if(event.key==='Enter'||event.key===' '){event.preventDefault();switchSidebarTab(tab.dataset.tab,tab);}
+    });
+  });
+  window.addEventListener('scroll',function(){
+    clearTimeout(_scrollSaveTimer);
+    _scrollSaveTimer=setTimeout(function(){localStorage.setItem('hd_ui_scroll',String(Math.round(window.scrollY||0)));},180);
+  },{passive:true});
 });
 // Event delegation for edit buttons (catches clicks before inline onclick)
 document.getElementById("listBody").addEventListener("click",function(e){
@@ -1843,7 +2204,10 @@ function flushServerSave(){
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify(payload)
-  }).catch(function(){}).finally(function(){
+  }).then(function(response){
+    if(!response.ok) throw new Error('HTTP '+response.status);
+    showSaveStatus('已同步');
+  }).catch(function(){showSaveStatus('仅本地');}).finally(function(){
     _serverSaving=false;
     if(Object.keys(_serverPending).length) flushServerSave();
   });
@@ -1991,22 +2355,20 @@ function renderHardest(){
     scored.push({id:it.id, name:(it.nameCN||it.id), emoji:(it.emoji||''), time:ct, depth:dp, score:score});
   });
   scored.sort(function(a,b){ return b.score - a.score; });
-  var top8 = scored.slice(0, 8);
+  var top12 = scored.slice(0, 12);
   var container = document.getElementById('hardestItems');
   if (!container) return;
-  if (top8.length === 0) {
+  if (top12.length === 0) {
     container.innerHTML = '<span style="color:#999">暂无数据</span>';
     return;
   }
-  var ranks = ['r1','r2','r3','r4','r5','r6','r7','r8'];
   var h = '';
-  top8.forEach(function(r, i){
+  top12.forEach(function(r, i){
     h += '<div class="hd-card">';
-    h += '<span class="hd-rank ' + ranks[i] + '">' + (i+1) + '</span>';
-    h += esc(r.emoji) + ' ';
-    h += '<span class="hd-name">' + esc(r.name) + '</span>';
-    h += '<span class="hd-time">⏱' + fmt(r.time) + '</span>';
-    if (r.depth > 1) h += '<span class="hd-depth">' + r.depth + '层</span>';
+    h += '<span class="hd-rank r' + (i+1) + '">' + (i+1) + '</span>';
+    h += ICONS[r.id]?'<img src="'+ICONS[r.id]+'" class="overview-icon" alt="">':esc(r.emoji);
+    h += '<div style="min-width:0"><div class="hd-name">' + esc(r.name) + '</div>';
+    h += '<div class="hd-time">' + fmt(r.time) + (r.depth > 1?' · '+r.depth+'层':'') + '</div></div>';
     h += '</div>';
   });
   container.innerHTML = h;
@@ -2022,19 +2384,23 @@ function renderHardest(){
 <div class="modal-overlay hidden" id="editModal" onclick="if(event.target===this)closeEditModal()">
 <div class="modal-box" onclick="event.stopPropagation()">
 <h3 id="editModalTitle">编辑物品</h3>
+<div class="modal-scroll">
+<div class="modal-section-title">基础信息</div>
 <div class="modal-row"><label>名称</label><input id="emName"></div>
-<div style="margin:10px 0"><label style="font-size:13px;font-weight:600;color:var(--muted)">建筑</label></div><div class="bld-wrap"><input id="emBldSearch" placeholder="输入搜索..." class="ing-filter" style="margin-bottom:4px" oninput="filterBldOptions(this.value)"><select id="emBld"></select></div>
+<div class="modal-row"><label>生产设备</label><div class="bld-wrap"><input id="emBldSearch" placeholder="搜索设备" class="ing-filter" autocomplete="off" aria-controls="bldSuggestions" oncompositionstart="this._imeComposing=true" oncompositionend="this._imeComposing=false;filterBldOptions(this)" oninput="filterBldOptions(this)" onblur="hideBldSuggestions()"><div class="ing-suggestions" id="bldSuggestions" role="listbox"></div><select id="emBld"></select></div></div>
 <div class="modal-row"><label>生产时间</label><div style="display:flex;gap:4px;align-items:center;flex:1"><input id="emTimeH" type="number" min="0" placeholder="时" style="flex:1;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:13px;width:60px"><span style="font-size:12px;color:var(--muted)">时</span><input id="emTimeM" type="number" min="0" max="59" placeholder="分" style="flex:1;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:13px;width:60px"><span style="font-size:12px;color:var(--muted)">分</span></div></div>
 <div class="modal-row"><label>目标</label><input id="emTg" type="number" min="1" max="99"></div>
-<div class="modal-row"><label>emoji</label><input id="emEmoji" placeholder="🍪"></div>
-<div style="margin:10px 0"><label style="font-size:13px;font-weight:600;color:var(--muted)">原料配方</label></div>
+<div class="modal-row"><label>备用图标</label><input id="emEmoji" placeholder="用于没有图片的自定义物品"></div>
+<div class="modal-section-title">原料配方</div>
 <div id="emIngs"></div><div id="emChainPreview" style="margin-top:12px;border-top:1px solid var(--border);padding-top:8px;display:none"></div>
-<button class="btn btn-xs btn-outline" onclick="addIngRow()" style="margin-top:4px">+ 添加原料</button>
+<button class="btn btn-xs btn-outline" onclick="addIngRow()" style="margin-top:5px">＋ 添加原料</button>
+<div class="modal-error" id="emError" role="alert"></div>
+</div>
 <div class="modal-actions">
 <button class="btn btn-sm btn-danger" id="emDelete" style="display:none" onclick="deleteItem()">删除</button>
-<div ></div>
+<div class="modal-spacer"></div>
 <button class="btn btn-sm btn-outline" onclick="closeEditModal()">取消</button>
-<button class="btn btn-sm btn-primary" onclick="saveItem()">保存</button>
+<button class="btn btn-sm btn-primary" id="emSave" onclick="saveItem()" disabled>保存</button>
 </div>
 </div></div>
 </body>
