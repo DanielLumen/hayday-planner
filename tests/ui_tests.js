@@ -80,7 +80,7 @@ async function run() {
     const hasBar = await page.$("#priorityList .prio-item .prio-bar");
     check("优先级物品前有颜色条", hasBar !== null);
 
-    const priorityText = await page.$eval("#priorityList .prio-name", (el) => el.textContent || "");
+    const priorityText = await page.$eval("#priorityList .prio-item", (el) => el.textContent || "");
     check("优先级面板显示'缺N个'", priorityText.includes("缺") && /\d+个/.test(priorityText), priorityText.substring(0, 60));
 
     const priorityHtml = await page.$eval("#priorityList", (el) => el.innerHTML);
