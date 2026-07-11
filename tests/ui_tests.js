@@ -150,6 +150,23 @@ async function run() {
     const onfocusAttr = await page.$eval(".tile-input", (el) => el.getAttribute("onfocus"));
     check("输入框 onfocus 包含 select()", onfocusAttr && onfocusAttr.includes("select"));
 
+    await page.fill("#searchInput", "小麦");
+    check("搜索时显示结果数量", /^找到 \d+ 项$/.test(await page.textContent("#searchResult")));
+    check("搜索时显示清除按钮", await page.locator("#searchClear").isVisible());
+    await page.click("#searchClear");
+    check("清除搜索恢复完整清单", (await page.inputValue("#searchInput")) === "" && (await page.$$(".item-tile")).length >= 200);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    const mobileFilterState = await page.evaluate(() => ({
+      visibleChips: Array.from(document.querySelectorAll("#filterRow .chip")).filter((chip) => getComputedStyle(chip).display !== "none").length,
+      hasOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+      toggleText: document.querySelector(".mobile-filter-toggle")?.textContent,
+    }));
+    check("移动端默认收起设备筛选", mobileFilterState.visibleChips === 8 && mobileFilterState.toggleText === "更多设备", JSON.stringify(mobileFilterState));
+    check("移动端没有横向溢出", !mobileFilterState.hasOverflow, JSON.stringify(mobileFilterState));
+    await page.click(".mobile-filter-toggle");
+    check("移动端可展开全部设备", (await page.locator("#filterRow .chip:visible").count()) > 30 && (await page.textContent(".mobile-filter-toggle")) === "收起设备");
+
     check("页面无 JS 异常", pageErrors.length === 0, pageErrors.join(" | "));
     check("控制台无错误", consoleErrors.length === 0, consoleErrors.join(" | "));
 
