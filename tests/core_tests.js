@@ -33,4 +33,21 @@ assert.deepEqual(
   { id: "wheat", totalNeed: 14, ownShortage: 2, downstreamNeed: 12, useCount: 1, score: 52 },
 );
 
+const allocated = core.allocateReadyQuantities(
+  [
+    { id: "bread", shortage: 2, ing: [{ i: "wheat", q: 3 }] },
+    { id: "cookie", shortage: 2, ing: [{ i: "wheat", q: 2 }] },
+    { id: "corn", shortage: 4, ing: [] },
+  ],
+  { wheat: 8 },
+);
+assert.deepEqual(
+  allocated.map(({ id, readyQty, readiness }) => ({ id, readyQty, readiness })),
+  [
+    { id: "bread", readyQty: 2, readiness: "ready" },
+    { id: "cookie", readyQty: 1, readiness: "partial" },
+    { id: "corn", readyQty: 4, readiness: "ready" },
+  ],
+);
+
 console.log("core tests passed");

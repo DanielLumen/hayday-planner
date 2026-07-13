@@ -3,6 +3,7 @@
 const { chromium } = require("playwright");
 const path = require("path");
 const { pathToFileURL } = require("url");
+const { createServer } = require("../server");
 
 const FILE_URL = pathToFileURL(path.join(__dirname, "..", "index.html")).href;
 const SNAPSHOT_PATH = path.join(__dirname, "ui_snapshot.png");
@@ -17,6 +18,41 @@ function check(name, ok, detail = "") {
     console.log(`  ✗ ${name} — ${detail}`);
   }
   results.tests.push({ name, ok, detail });
+}
+
+async function testSyncRetry(browser) {
+  const server = createServer();
+  await new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", resolve);
+  });
+  const syncPage = await browser.newPage();
+  let attempts = 0;
+  try {
+    await syncPage.route("**/api/save", async (route) => {
+      if (route.request().method() !== "POST") {
+        await route.continue();
+        return;
+      }
+      attempts++;
+      if (attempts === 1) await route.abort("failed");
+      else await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
+    });
+    const port = server.address().port;
+    await syncPage.goto(`http://127.0.0.1:${port}/`, { waitUntil: "networkidle" });
+    await syncPage.evaluate(() => persistText("hd_review_sync", "saved"));
+    await syncPage.waitForTimeout(1700);
+    const state = await syncPage.evaluate(() => ({
+      local: localStorage.getItem("hd_review_sync"),
+      pending: Object.keys(_serverPending),
+      persistedQueue: localStorage.getItem(SERVER_PENDING_STORAGE),
+    }));
+    check("同步失败后自动重试", attempts >= 2, `请求次数: ${attempts}`);
+    check("同步成功后清空持久队列", state.local === "saved" && state.pending.length === 0 && state.persistedQueue === null, JSON.stringify(state));
+  } finally {
+    await syncPage.close();
+    await new Promise((resolve) => server.close(resolve));
+  }
 }
 
 async function run() {
@@ -40,6 +76,10 @@ async function run() {
 
     const title = await page.title();
     check("页面标题", title.includes("卡通农场"));
+    check("侧栏标签包含可访问状态", await page.evaluate(() => {
+      const tabs = Array.from(document.querySelectorAll('.tab[role="tab"]'));
+      return tabs.length === 3 && tabs.filter((tab) => tab.getAttribute("aria-selected") === "true").length === 1;
+    }));
     check("至少30个分组", (await page.$$(".section-header")).length >= 30);
     check("至少200个物品tile", (await page.$$(".item-tile")).length >= 200);
 
@@ -88,6 +128,8 @@ async function run() {
     check("优先级解释生产链缺口", /安全库存缺|生产链需|用于 \d+ 种产品/.test(priorityText), priorityText.substring(0, 90));
 
     await page.click('.tab[data-tab="plan"]');
+    const rawPlanText = await page.textContent("#planResults");
+    check("基础原料按独立来源安排", rawPlanText.includes("独立来源") && !rawPlanText.includes("动物与基础原料"));
     const chainToggle = page.locator('#planResults .chain-depth-badge').filter({ hasText: /层级 [2-9]/ }).first();
     if (await chainToggle.count()) {
       await chainToggle.click();
@@ -156,6 +198,48 @@ async function run() {
     await page.click("#searchClear");
     check("清除搜索恢复完整清单", (await page.inputValue("#searchInput")) === "" && (await page.$$(".item-tile")).length >= 200);
 
+    const migrationState = await page.evaluate(() => {
+      localStorage.removeItem("hd_migrate_peanut_milkshake");
+      localStorage.removeItem("hd_migrate_fish_and_chips");
+      localStorage.setItem("hd_edits", JSON.stringify({
+        mod: {
+          peanut_milkshake: { nameCN: "花生奶昔", bld: "milkshake_bar", t: 5100, ing: [{ i: "peanut", q: 1 }] },
+          fish_and_chips: { nameCN: "旧名称", bld: "deep_fryer", t: 4560, ing: [{ i: "fish_fillet", q: 2 }] },
+        },
+        add: [],
+        del: [],
+      }));
+      const edits = loadEdits();
+      return { peanut: edits.mod.peanut_milkshake, fish: edits.mod.fish_and_chips };
+    });
+    check("历史迁移保留人工时间和配方", migrationState.peanut.t === 5100 && migrationState.peanut.ing.length === 1 && migrationState.fish.t === 4560 && migrationState.fish.ing.length === 1, JSON.stringify(migrationState));
+    check("历史迁移仅修正名称和设备", migrationState.peanut.bld === "ice_cream_maker" && migrationState.fish.bld === "bbq_grill" && migrationState.fish.nameCN === "炸鱼薯条", JSON.stringify(migrationState));
+
+    const importState = await page.evaluate(() => {
+      const restored = importBackupData({
+        gtSilo: 12,
+        gtBarn: 9,
+        siloCap: 500,
+        barnCap: 600,
+        items: { custom_review_item: { n: 7, tg: 9 } },
+        edits: {
+          mod: {},
+          add: [{ id: "custom_review_item", nameCN: "测试自定义物品", emoji: "box", bld: "bakery", ing: [{ i: "wheat", q: 1 }, { i: "wheat", q: 2 }], t: 1800, tg: 9, st: "barn" }],
+          del: ["lavender"],
+        },
+      });
+      const savedEdits = JSON.parse(localStorage.getItem("hd_edits"));
+      return {
+        restored,
+        stock: gs("custom_review_item"),
+        target: gt("custom_review_item"),
+        ingredients: savedEdits.add[0].ing,
+        deletions: savedEdits.del,
+      };
+    });
+    check("自定义物品备份完整恢复", importState.restored === 1 && importState.stock === 7 && importState.target === 9, JSON.stringify(importState));
+    check("导入时规范重复原料和依赖删除", importState.ingredients.length === 1 && importState.ingredients[0].q === 3 && !importState.deletions.includes("lavender"), JSON.stringify(importState));
+
     await page.setViewportSize({ width: 390, height: 844 });
     const mobileFilterState = await page.evaluate(() => ({
       visibleChips: Array.from(document.querySelectorAll("#filterRow .chip")).filter((chip) => getComputedStyle(chip).display !== "none").length,
@@ -169,6 +253,8 @@ async function run() {
 
     check("页面无 JS 异常", pageErrors.length === 0, pageErrors.join(" | "));
     check("控制台无错误", consoleErrors.length === 0, consoleErrors.join(" | "));
+
+    await testSyncRetry(browser);
 
     if (results.failed > 0) {
       await page.screenshot({ path: SNAPSHOT_PATH, fullPage: false });

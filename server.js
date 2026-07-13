@@ -7,6 +7,11 @@ const dataFile = path.join(base, "data.json");
 const host = process.env.HOST || "127.0.0.1";
 const port = Number(process.env.PORT || 8766);
 const maxBodySize = 2 * 1024 * 1024;
+const publicFiles = new Set([
+  "index.html",
+  "planner-core.js",
+  "node_modules/pinyin-pro/dist/index.js",
+]);
 
 const contentTypes = {
   html: "text/html; charset=utf-8",
@@ -23,14 +28,22 @@ function send(res, status, body, headers) {
   res.end(body);
 }
 
+function parseStoredData(raw) {
+  let bytes = Buffer.isBuffer(raw) ? raw : Buffer.from(String(raw), "utf-8");
+  if (bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf) bytes = bytes.slice(3);
+  const data = JSON.parse(bytes.toString("utf-8"));
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    throw new Error("data file must contain a JSON object");
+  }
+  return data;
+}
+
 function loadData() {
   try {
-    let raw = fs.readFileSync(dataFile);
-    if (raw[0] === 0xef && raw[1] === 0xbb && raw[2] === 0xbf) raw = raw.slice(3);
-    const data = JSON.parse(raw.toString("utf-8"));
-    return data && typeof data === "object" && !Array.isArray(data) ? data : {};
-  } catch {
-    return {};
+    return parseStoredData(fs.readFileSync(dataFile));
+  } catch (error) {
+    error.status = 500;
+    throw error;
   }
 }
 
@@ -75,8 +88,9 @@ function resolveStaticPath(urlPath) {
   }
 
   const relative = pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");
-  const resolved = path.resolve(base, relative);
-  return resolved === base || resolved.startsWith(base + path.sep) ? resolved : null;
+  const isIcon = /^icons\/[a-z0-9_]+\.png$/.test(relative);
+  if (!publicFiles.has(relative) && !isIcon) return null;
+  return path.join(base, relative);
 }
 
 function isSameOrigin(req) {
@@ -102,9 +116,15 @@ function validateIncoming(incoming) {
 
 async function handleSave(req, res) {
   if (req.method === "GET") {
-    send(res, 200, JSON.stringify(loadData()), {
-      "Content-Type": "application/json; charset=utf-8",
-    });
+    try {
+      send(res, 200, JSON.stringify(loadData()), {
+        "Content-Type": "application/json; charset=utf-8",
+      });
+    } catch (error) {
+      send(res, 500, `err:${error.message}`, {
+        "Content-Type": "text/plain; charset=utf-8",
+      });
+    }
     return;
   }
 
@@ -208,4 +228,11 @@ if (require.main === module) {
   start();
 }
 
-module.exports = { createServer, isSameOrigin, loadData, resolveStaticPath, validateIncoming };
+module.exports = {
+  createServer,
+  isSameOrigin,
+  loadData,
+  parseStoredData,
+  resolveStaticPath,
+  validateIncoming,
+};

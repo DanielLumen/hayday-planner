@@ -63,6 +63,36 @@
     );
   }
 
+  function allocateReadyQuantities(candidates, stock) {
+    const available = {};
+    for (const [id, quantity] of Object.entries(stock || {})) {
+      available[id] = Math.max(0, Number.parseInt(quantity, 10) || 0);
+    }
+
+    return (Array.isArray(candidates) ? candidates : []).map((candidate) => {
+      const shortage = Math.max(0, Number.parseInt(candidate.shortage, 10) || 0);
+      const ingredients = normalizeIngredients(candidate.ing);
+      let readyQty = shortage;
+      if (ingredients.length) {
+        readyQty = Math.min(
+          shortage,
+          ...ingredients.map((ingredient) =>
+            Math.floor((available[ingredient.i] || 0) / ingredient.q),
+          ),
+        );
+      }
+      readyQty = Math.max(0, readyQty);
+      for (const ingredient of ingredients) {
+        available[ingredient.i] = Math.max(
+          0,
+          (available[ingredient.i] || 0) - readyQty * ingredient.q,
+        );
+      }
+      const readiness = readyQty >= shortage ? "ready" : readyQty > 0 ? "partial" : "blocked";
+      return { ...candidate, ing: ingredients, readyQty, readiness };
+    });
+  }
+
   function rankShortages(items, state) {
     const needs = calculateNeeds(items, state);
     const useCounts = new Map(items.map((item) => [item.id, 0]));
@@ -95,5 +125,11 @@
       );
   }
 
-  return { calculateNeeds, createsCycle, normalizeIngredients, rankShortages };
+  return {
+    allocateReadyQuantities,
+    calculateNeeds,
+    createsCycle,
+    normalizeIngredients,
+    rankShortages,
+  };
 });

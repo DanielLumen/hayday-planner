@@ -235,7 +235,10 @@ def main():
         f"{len(edits.get('del', []))} deletion requests)"
     )
     print(f"Integrity: {'PASS' if not errors else f'FAIL ({len(errors)} errors)'}")
-    print(f"Wiki reference: {len(mismatches)} time differences")
+    print(
+        f"Reference reminder: {len(mismatches)} time differences "
+        "(manual overrides kept)"
+    )
     print(
         "Warnings: "
         f"{len(zero_times)} zero-time items, {len(missing_icons)} missing icons, "
@@ -246,7 +249,7 @@ def main():
         print(f"  ERROR {error}")
     if args.verbose:
         for item, wiki_time in mismatches:
-            print(f'  WIKI {item["nameCN"]} ({item["id"]}): app={fmt_time(int(item["t"]))}, wiki={fmt_time(wiki_time)}')
+            print(f'  REF {item["nameCN"]} ({item["id"]}): app={fmt_time(int(item["t"]))}, reference={fmt_time(wiki_time)}')
         for item_id in duplicate_ingredients:
             print(f"  WARN merged duplicate ingredient in {item_id}")
         for item_id in retained:
