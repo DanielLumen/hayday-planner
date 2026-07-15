@@ -124,6 +124,11 @@ async function run() {
     }));
     check("关系网节点可由键盘访问且工具按钮有明确名称", relationAccessibility.graphRole === 'group' && relationAccessibility.buttonNodes > 400 && relationAccessibility.tabbableNodes === 1 && relationAccessibility.exportLabel === '导出数据' && relationAccessibility.importLabel === '导入数据' && relationAccessibility.fullscreenLabel === '全屏显示关系网', JSON.stringify(relationAccessibility));
 
+    await page.evaluate(() => selectRelationNode('cheese_sandwich', true));
+    const editActionBeforeFullscreen = await page.evaluate(() => {
+      const button = document.querySelector('#relationSelection [data-edit-id="cheese_sandwich"]');
+      return Boolean(button && getComputedStyle(button).display !== 'none');
+    });
     await page.click('#relationFullscreenButton');
     await page.waitForTimeout(220);
     const fullscreenState = await page.evaluate(() => ({
@@ -134,16 +139,26 @@ async function run() {
         viewHeight: document.querySelector('#relationsView')?.getBoundingClientRect().height || 0,
         viewportWidth: innerWidth,
         viewportHeight: innerHeight,
+        editActionDisplay: getComputedStyle(document.querySelector('#relationSelection [data-edit-id="cheese_sandwich"]')).display,
+        editModalHidden: document.querySelector('#editModal')?.classList.contains('hidden'),
     }));
     check("全屏按钮让关系网占满屏幕并切换为退出状态", fullscreenState.active && fullscreenState.pressed === 'true' && fullscreenState.label === '退出全屏' && fullscreenState.viewWidth >= fullscreenState.viewportWidth - 2 && fullscreenState.viewHeight >= fullscreenState.viewportHeight - 2, JSON.stringify(fullscreenState));
+    check("全屏专注查看时隐藏编辑物品入口", editActionBeforeFullscreen && fullscreenState.editActionDisplay === 'none' && fullscreenState.editModalHidden, JSON.stringify({ editActionBeforeFullscreen, fullscreenState }));
+    await page.evaluate(() => openEditModal('cheese_sandwich'));
+    const fullscreenEditGuard = await page.evaluate(() => ({
+      modalHidden: document.querySelector('#editModal')?.classList.contains('hidden'),
+      message: document.querySelector('#toast')?.textContent || '',
+    }));
+    check("全屏期间不会在关系网后方打开编辑对话框", fullscreenEditGuard.modalHidden && fullscreenEditGuard.message.includes('退出关系网全屏'), JSON.stringify(fullscreenEditGuard));
     await page.keyboard.press('Escape');
     await page.waitForTimeout(220);
     const restoredFullscreenState = await page.evaluate(() => ({
         active: Boolean(document.fullscreenElement || document.querySelector('#relationsView')?.classList.contains('is-pseudo-fullscreen')),
         pressed: document.querySelector('#relationFullscreenButton')?.getAttribute('aria-pressed'),
         label: document.querySelector('#relationFullscreenButton')?.textContent?.trim(),
+        editActionDisplay: getComputedStyle(document.querySelector('#relationSelection [data-edit-id="cheese_sandwich"]')).display,
     }));
-    check("再次操作或 Escape 可退出关系网全屏", !restoredFullscreenState.active && restoredFullscreenState.pressed === 'false' && restoredFullscreenState.label === '全屏', JSON.stringify(restoredFullscreenState));
+    check("再次操作或 Escape 可退出关系网全屏并恢复编辑入口", !restoredFullscreenState.active && restoredFullscreenState.pressed === 'false' && restoredFullscreenState.label === '全屏' && restoredFullscreenState.editActionDisplay !== 'none', JSON.stringify(restoredFullscreenState));
 
     const fishingSources = await page.evaluate(() => ({
       red: D.items.find((item) => item.id === 'red_lure')?.ing,
