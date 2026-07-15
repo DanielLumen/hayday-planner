@@ -98,18 +98,52 @@ async function run() {
       breadIsFinal: document.querySelector('[data-network-node="bread"]')?.classList.contains('final'),
       viewportWidth: document.documentElement.clientWidth,
       viewWidth: document.querySelector('#relationsView').getBoundingClientRect().width,
+      graphHeight: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().height || 0,
+      scale: _relationGraphView.scale,
     }));
     check("关系网在当前网页全宽显示", relationOverview.sameUrl === inventoryUrl && relationOverview.inventoryHidden && relationOverview.relationsVisible && relationOverview.viewWidth >= relationOverview.viewportWidth - 2, JSON.stringify(relationOverview));
     check("所有入网物品与关系同时显示在一张图中", relationOverview.nodeCount > 400 && relationOverview.edgeCount > 900 && relationOverview.finalCount > 200 && relationOverview.bandCount >= 4, JSON.stringify(relationOverview));
     check("最终产物按是否被作为原料判定，无关系物品单列", relationOverview.standaloneCount > 0 && !relationOverview.breadIsFinal, JSON.stringify(relationOverview));
+    await page.setViewportSize({ width: 2560, height: 1440 });
+    await page.waitForTimeout(220);
+    const largeScreenRelations = await page.evaluate(() => ({
+      graphHeight: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().height || 0,
+      viewportHeight: innerHeight,
+      scale: _relationGraphView.scale,
+    }));
+    check("大屏关系网使用可用高度并自动放大", largeScreenRelations.graphHeight > 1100 && largeScreenRelations.graphHeight >= largeScreenRelations.viewportHeight - 240 && largeScreenRelations.scale > relationOverview.scale * 1.5, JSON.stringify({ relationOverview, largeScreenRelations }));
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.waitForTimeout(220);
     const relationAccessibility = await page.evaluate(() => ({
       graphRole: document.querySelector('#relationsGraph')?.getAttribute('role'),
       buttonNodes: document.querySelectorAll('.network-node[role="button"]').length,
       tabbableNodes: document.querySelectorAll('.network-node[tabindex="0"]').length,
       exportLabel: document.querySelector('button[aria-label="导出数据"]')?.getAttribute('aria-label'),
       importLabel: document.querySelector('button[aria-label="导入数据"]')?.getAttribute('aria-label'),
+      fullscreenLabel: document.querySelector('#relationFullscreenButton')?.getAttribute('aria-label'),
     }));
-    check("关系网节点可由键盘访问且工具按钮有明确名称", relationAccessibility.graphRole === 'group' && relationAccessibility.buttonNodes > 400 && relationAccessibility.tabbableNodes === 1 && relationAccessibility.exportLabel === '导出数据' && relationAccessibility.importLabel === '导入数据', JSON.stringify(relationAccessibility));
+    check("关系网节点可由键盘访问且工具按钮有明确名称", relationAccessibility.graphRole === 'group' && relationAccessibility.buttonNodes > 400 && relationAccessibility.tabbableNodes === 1 && relationAccessibility.exportLabel === '导出数据' && relationAccessibility.importLabel === '导入数据' && relationAccessibility.fullscreenLabel === '全屏显示关系网', JSON.stringify(relationAccessibility));
+
+    await page.click('#relationFullscreenButton');
+    await page.waitForTimeout(220);
+    const fullscreenState = await page.evaluate(() => ({
+        active: document.fullscreenElement === document.querySelector('#relationsView') || document.querySelector('#relationsView')?.classList.contains('is-pseudo-fullscreen'),
+        pressed: document.querySelector('#relationFullscreenButton')?.getAttribute('aria-pressed'),
+        label: document.querySelector('#relationFullscreenButton')?.textContent?.trim(),
+        viewWidth: document.querySelector('#relationsView')?.getBoundingClientRect().width || 0,
+        viewHeight: document.querySelector('#relationsView')?.getBoundingClientRect().height || 0,
+        viewportWidth: innerWidth,
+        viewportHeight: innerHeight,
+    }));
+    check("全屏按钮让关系网占满屏幕并切换为退出状态", fullscreenState.active && fullscreenState.pressed === 'true' && fullscreenState.label === '退出全屏' && fullscreenState.viewWidth >= fullscreenState.viewportWidth - 2 && fullscreenState.viewHeight >= fullscreenState.viewportHeight - 2, JSON.stringify(fullscreenState));
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(220);
+    const restoredFullscreenState = await page.evaluate(() => ({
+        active: Boolean(document.fullscreenElement || document.querySelector('#relationsView')?.classList.contains('is-pseudo-fullscreen')),
+        pressed: document.querySelector('#relationFullscreenButton')?.getAttribute('aria-pressed'),
+        label: document.querySelector('#relationFullscreenButton')?.textContent?.trim(),
+    }));
+    check("再次操作或 Escape 可退出关系网全屏", !restoredFullscreenState.active && restoredFullscreenState.pressed === 'false' && restoredFullscreenState.label === '全屏', JSON.stringify(restoredFullscreenState));
 
     const fishingSources = await page.evaluate(() => ({
       red: D.items.find((item) => item.id === 'red_lure')?.ing,

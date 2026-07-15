@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>卡通农场 · 货仓助手 v2.17.0</title>
+<title>卡通农场 · 货仓助手 v2.18.0</title>
 <style>
 /* ====== 变量与重置 ====== */
 :root{--bg:#F8FAFC;--card:#FFFFFF;--text:#0F172A;--text-secondary:#475569;--muted:#64748B;--accent:#059669;--accent-hover:#047857;--warn:#D97706;--warn-light:#FFFBEB;--danger:#DC2626;--danger-light:#FEF2F2;--border:#E2E8F0;--shadow-sm:0 1px 2px rgba(0,0,0,.04);--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--radius:8px;--radius-sm:6px;--transition:150ms ease}
@@ -399,7 +399,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
 .relations-dot.final{background:var(--info-light);border-color:var(--info)}.relations-dot.intermediate{background:var(--warn-light);border-color:var(--warn)}.relations-dot.base{background:var(--accent-light);border-color:var(--accent)}.relations-dot.source{background:var(--bg);border-style:dashed;border-color:var(--muted)}
 .relations-note{font-size:11px;color:var(--muted)}
 .relations-content{border:1px solid var(--border);border-radius:8px;background:var(--card);overflow:hidden}
-.relation-graph-viewport{position:relative;width:100%;height:clamp(560px,72vh,840px);min-height:420px;overflow:hidden;background:var(--bg);cursor:grab;touch-action:none;user-select:none}
+.relation-graph-viewport{position:relative;width:100%;height:calc(100vh - 220px);height:calc(100dvh - 220px);min-height:560px;overflow:hidden;background:var(--bg);cursor:grab;touch-action:none;user-select:none}
 .relation-graph-viewport.dragging{cursor:grabbing}.relation-graph-svg{display:block;width:100%;height:100%}
 .network-band-line{fill:none;stroke:var(--border);stroke-width:1;stroke-dasharray:5 7;vector-effect:non-scaling-stroke}.network-band-label{fill:var(--muted);font-size:12px;font-weight:700;letter-spacing:.02em}
 .network-edge-path{fill:none;stroke:var(--border-strong);stroke-width:1;opacity:.27;vector-effect:non-scaling-stroke;transition:opacity .12s,stroke .12s}.network-edge-wrap.is-muted .network-edge-path{opacity:.025}.network-edge-wrap.is-active .network-edge-path{stroke:var(--accent);stroke-width:2;opacity:.95}.network-edge-wrap.alternative.is-active .network-edge-path{stroke:var(--info);stroke-dasharray:5 3}
@@ -408,9 +408,19 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
 .network-node .network-node-name{fill:var(--text);font-size:11px;font-weight:700;pointer-events:none;transition:opacity .12s}.network-node .network-node-emoji{font-size:16px;pointer-events:none}.network-node image{pointer-events:none}.network-node.is-muted{opacity:.08}.network-node.is-active rect{stroke-width:2}.network-node.is-selected rect{stroke:var(--info);stroke-width:3;filter:drop-shadow(0 0 3px rgba(55,111,208,.45))}.network-node.is-match rect{stroke:var(--accent);stroke-width:3}.network-node:focus{outline:none}.network-node:focus rect{stroke:var(--info);stroke-width:3}
 .relation-graph-viewport.is-low-zoom .network-node-name{opacity:0}.relation-graph-viewport.is-low-zoom .network-node.is-active .network-node-name,.relation-graph-viewport.is-low-zoom .network-node.is-selected .network-node-name,.relation-graph-viewport.is-low-zoom .network-node.is-match .network-node-name{opacity:1}
 .relation-graph-hint{position:absolute;left:10px;bottom:9px;padding:4px 7px;border-radius:5px;background:var(--card);color:var(--muted);font-size:10px;box-shadow:var(--shadow-sm);pointer-events:none}
+.relation-fullscreen-button[aria-pressed="true"]{background:var(--accent-light);border-color:var(--accent);color:var(--accent)}
+#relationsView.is-pseudo-fullscreen{position:fixed;inset:0;z-index:1000}
+body.relation-pseudo-fullscreen-active{overflow:hidden}
+#relationsView:is(:fullscreen,:-webkit-full-screen,.is-pseudo-fullscreen){width:100vw;height:100vh;height:100dvh;overflow:hidden;background:var(--bg)}
+#relationsView:is(:fullscreen,:-webkit-full-screen,.is-pseudo-fullscreen) .relations-shell{display:flex;flex-direction:column;width:100%;height:100%;padding:14px 16px;overflow:hidden}
+#relationsView:is(:fullscreen,:-webkit-full-screen,.is-pseudo-fullscreen) :is(.relations-heading,.relations-context){flex:0 0 auto}
+#relationsView:is(:fullscreen,:-webkit-full-screen,.is-pseudo-fullscreen) .relations-content{display:flex;flex:1 1 auto;min-height:0;flex-direction:column}
+#relationsView:is(:fullscreen,:-webkit-full-screen,.is-pseudo-fullscreen) .relation-selection{flex:0 0 auto}
+#relationsView:is(:fullscreen,:-webkit-full-screen,.is-pseudo-fullscreen) .relation-graph-viewport{flex:1 1 auto;height:auto;min-height:0}
+#relationsView:is(:fullscreen,:-webkit-full-screen,.is-pseudo-fullscreen) #relationsStandalone{display:none}
 .relation-selection{min-height:58px;padding:9px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--card)}.relation-selection[hidden]{display:none}.relation-selection-icon{width:36px;height:36px;flex:0 0 36px;display:flex;align-items:center;justify-content:center;font-size:26px}.relation-selection-icon img{width:34px;height:34px;object-fit:contain}.relation-selection-copy{min-width:0;flex:1}.relation-selection-name{font-size:13px;font-weight:700}.relation-selection-meta,.relation-selection-recipe{margin-top:2px;color:var(--muted);font-size:11px;line-height:16px}.relation-selection-recipe{color:var(--text-secondary)}.relation-selection-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .relation-unplaced{padding:16px 0 4px}.relation-unplaced h3{font-size:14px}.relation-unplaced p{margin:3px 0 9px;color:var(--muted);font-size:11px}.relation-group-count{font-size:11px;font-weight:500;color:var(--muted)}.relation-unplaced-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:6px}.relation-unplaced-item{min-height:38px;padding:5px 7px;border:1px dotted var(--border-strong);border-radius:6px;background:var(--card);display:flex;align-items:center;gap:6px;font-size:11px}.relation-unplaced-item img{width:24px;height:24px;object-fit:contain}.relation-unplaced-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-@media(max-width:640px){.app-view-nav{padding:5px 8px}.app-view-tab{min-width:82px;min-height:36px}.relations-shell{padding:10px 8px 20px}.relations-heading{display:block}.relations-controls{margin-top:9px;justify-content:stretch}.relations-search{width:100%;min-width:0;flex:1 0 100%}.relation-zoom-controls{width:100%;justify-content:flex-end}.relation-graph-viewport{height:58vh;min-height:380px}.relations-context{align-items:flex-start}.relation-selection{align-items:center;flex-wrap:wrap}.relation-selection-actions{width:100%;padding-left:46px}.relation-selection-actions .btn{min-height:40px}.relation-unplaced-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.app-view-nav{padding:5px 8px}.app-view-tab{min-width:82px;min-height:36px}.relations-shell{padding:10px 8px 20px}.relations-heading{display:block}.relations-controls{margin-top:9px;justify-content:stretch}.relations-search{width:100%;min-width:0;flex:1 0 100%}.relation-zoom-controls{width:100%;justify-content:flex-end}.relation-graph-viewport{height:58vh;height:58dvh;min-height:380px}.relations-context{align-items:flex-start}.relation-selection{align-items:center;flex-wrap:wrap}.relation-selection-actions{width:100%;padding-left:46px}.relation-selection-actions .btn{min-height:40px}.relation-unplaced-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 <script src="./node_modules/pinyin-pro/dist/index.js"></script>
 <script src="./planner-core.js"></script>
@@ -480,6 +490,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
       <button type="button" class="btn btn-outline" onclick="relationGraphZoom(.8)" aria-label="缩小关系网">−</button>
       <button type="button" class="btn btn-outline" onclick="relationGraphFit(false)">返回全景</button>
       <button type="button" class="btn btn-outline" onclick="relationGraphZoom(1.25)" aria-label="放大关系网">＋</button>
+      <button type="button" class="btn btn-outline relation-fullscreen-button" id="relationFullscreenButton" onclick="toggleRelationFullscreen()" aria-label="全屏显示关系网" aria-controls="relationsView" aria-pressed="false">全屏</button>
       <span class="relation-zoom-mode" id="relationZoomMode">全景</span>
       <span class="relation-zoom-value" id="relationZoomValue">100%</span>
     </div>
@@ -504,7 +515,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
     </svg>
     <div class="relation-graph-hint">全图始终在这一张网里 · 点击节点聚焦关系</div>
   </div>
-  <p class="sr-only" id="relationsKeyboardHelp">按 Tab 进入关系网，使用方向键在相邻产品间移动，按回车聚焦，按 Escape 返回全景。</p>
+  <p class="sr-only" id="relationsKeyboardHelp">按 Tab 进入关系网，使用方向键在相邻产品间移动，按回车聚焦；全屏时按 Escape 退出全屏，普通模式按 Escape 返回全景。</p>
 </div>
 <div id="relationsStandalone"></div>
 </section>
@@ -1047,7 +1058,7 @@ var RELATION_VIRTUAL_ITEMS=[
   {id:'__nectar',nameCN:'花蜜',emoji:'🌼',ing:[],st:'source',relationVirtual:true,sourceNote:'花蜜灌木采集 · 不进入货仓'}
 ];
 var _relationsNetwork=null,_relationsLayout=null,_relationsItemsById={},_relationsDirty=true,_relationsQuery='',_relationsSelectedId='';
-var _relationGraphView={x:0,y:0,scale:1,autoFit:true,mode:'overview'},_relationGraphDrag=null,_relationResizeTimer=null;
+var _relationGraphView={x:0,y:0,scale:1,autoFit:true,mode:'overview'},_relationGraphDrag=null,_relationResizeTimer=null,_relationFullscreenReturnFocus=null;
 var SERVER_PENDING_STORAGE='_hd_server_pending';
 var _serverPending={}, _serverSaveTimer=null, _serverRetryTimer=null, _serverSaving=false, _serverRetryDelay=1000;
 function readStoredJson(key,fallback){
@@ -1670,6 +1681,67 @@ function relationGraphApplyTransform(){
   var hint=document.querySelector('.relation-graph-hint');
   if(hint)hint.textContent=_relationGraphView.mode==='focus'?'聚焦模式 · 拖动查看完整上下游，返回全景可恢复总览':'全景模式 · 搜索或点击节点进入可读聚焦';
 }
+function relationFullscreenElement(){
+  return document.fullscreenElement||document.webkitFullscreenElement||null;
+}
+function relationGraphIsFullscreen(){
+  var view=document.getElementById('relationsView');
+  return Boolean(view&&(relationFullscreenElement()===view||view.classList.contains('is-pseudo-fullscreen')));
+}
+function scheduleRelationGraphViewportRefresh(delay){
+  clearTimeout(_relationResizeTimer);
+  _relationResizeTimer=setTimeout(function(){
+    var relations=document.getElementById('relationsView');
+    if(!relations||relations.hidden||!_relationsLayout)return;
+    if(_relationGraphView.autoFit) relationGraphFit(true);
+    else if(_relationsSelectedId&&_relationsLayout.positionedById[_relationsSelectedId]) relationGraphFocusLinks(collectRelationGraphLinks(_relationsSelectedId),_relationsSelectedId);
+    else{relationGraphResizeViewport();relationGraphApplyTransform();}
+  },Number.isFinite(delay)?delay:80);
+}
+function syncRelationFullscreenState(){
+  var active=relationGraphIsFullscreen(),button=document.getElementById('relationFullscreenButton'),view=document.getElementById('relationsView');
+  document.body.classList.toggle('relation-pseudo-fullscreen-active',Boolean(view&&view.classList.contains('is-pseudo-fullscreen')));
+  if(button){
+    button.textContent=active?'退出全屏':'全屏';
+    button.setAttribute('aria-label',active?'退出关系网全屏':'全屏显示关系网');
+    button.setAttribute('aria-pressed',active?'true':'false');
+    button.title=active?'退出全屏（Esc）':'全屏显示关系网';
+  }
+  if(!active&&_relationFullscreenReturnFocus){
+    var returnFocus=_relationFullscreenReturnFocus;_relationFullscreenReturnFocus=null;
+    requestAnimationFrame(function(){if(returnFocus&&document.contains(returnFocus))returnFocus.focus();});
+  }
+  requestAnimationFrame(function(){scheduleRelationGraphViewportRefresh(0);});
+}
+async function toggleRelationFullscreen(forceEnter){
+  var view=document.getElementById('relationsView');if(!view)return;
+  var active=relationGraphIsFullscreen(),enter=typeof forceEnter==='boolean'?forceEnter:!active;
+  if(enter&&!active){
+    _relationFullscreenReturnFocus=document.activeElement;
+    var request=view.requestFullscreen||view.webkitRequestFullscreen;
+    if(request){
+      try{
+        await request.call(view);
+        syncRelationFullscreenState();
+        return;
+      }catch(error){}
+    }
+    view.classList.add('is-pseudo-fullscreen');
+    syncRelationFullscreenState();
+  }else if(!enter&&active){
+    if(view.classList.contains('is-pseudo-fullscreen')){
+      view.classList.remove('is-pseudo-fullscreen');
+      syncRelationFullscreenState();
+    }else{
+      var exit=document.exitFullscreen||document.webkitExitFullscreen;
+      try{
+        if(exit)await exit.call(document);
+      }catch(error){
+        toast('无法退出全屏，请按 Esc 重试');
+      }
+    }
+  }
+}
 function relationGraphFit(keepSelection){
   if(!_relationsLayout) return;
   var size=relationGraphResizeViewport();if(!size)return;
@@ -1766,7 +1838,7 @@ function focusRelationGraphNode(id){
 function onRelationNodeKey(event,node){
   var id=node&&node.getAttribute('data-network-node');if(!id)return;
   if(event.key==='Enter'||event.key===' '){event.preventDefault();selectRelationNode(id,true);return;}
-  if(event.key==='Escape'){event.preventDefault();relationGraphFit(false);return;}
+  if(event.key==='Escape'){event.preventDefault();if(relationGraphIsFullscreen())toggleRelationFullscreen(false);else relationGraphFit(false);return;}
   var targetId='';
   if(event.key==='ArrowRight'){
     var ingredients=_relationsNetwork.ingredientsById[id]||[];if(ingredients.length)targetId=ingredients[0].to;
@@ -1842,11 +1914,16 @@ function bindRelationGraphInteractions(){
   svg.addEventListener('click',function(event){if(!event.target.closest('.network-node')&&!_relationGraphDrag)selectRelationNode('',false);});
   if(!window._relationResizeBound){
     window._relationResizeBound=true;
-    window.addEventListener('resize',function(){clearTimeout(_relationResizeTimer);_relationResizeTimer=setTimeout(function(){
-      if(_relationGraphView.autoFit) relationGraphFit(true);
-      else if(_relationsSelectedId&&_relationsLayout&&_relationsLayout.positionedById[_relationsSelectedId]) relationGraphFocusLinks(collectRelationGraphLinks(_relationsSelectedId),_relationsSelectedId);
-      else{relationGraphResizeViewport();relationGraphApplyTransform();}
-    },100);});
+    window.addEventListener('resize',function(){scheduleRelationGraphViewportRefresh(100);});
+  }
+  if(!window._relationFullscreenBound){
+    window._relationFullscreenBound=true;
+    document.addEventListener('fullscreenchange',syncRelationFullscreenState);
+    document.addEventListener('webkitfullscreenchange',syncRelationFullscreenState);
+    document.addEventListener('keydown',function(event){
+      if(event.key!=='Escape'||!relationGraphIsFullscreen())return;
+      event.preventDefault();event.stopPropagation();toggleRelationFullscreen(false);
+    },true);
   }
 }
 function renderRelations(options){
