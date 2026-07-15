@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>卡通农场 · 货仓助手 v2.18.0</title>
+<title>卡通农场 · 货仓助手 v2.18.1</title>
 <style>
 /* ====== 变量与重置 ====== */
 :root{--bg:#F8FAFC;--card:#FFFFFF;--text:#0F172A;--text-secondary:#475569;--muted:#64748B;--accent:#059669;--accent-hover:#047857;--warn:#D97706;--warn-light:#FFFBEB;--danger:#DC2626;--danger-light:#FEF2F2;--border:#E2E8F0;--shadow-sm:0 1px 2px rgba(0,0,0,.04);--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--radius:8px;--radius-sm:6px;--transition:150ms ease}
@@ -416,6 +416,7 @@ body.relation-pseudo-fullscreen-active{overflow:hidden}
 #relationsView:is(:fullscreen,:-webkit-full-screen,.is-pseudo-fullscreen) :is(.relations-heading,.relations-context){flex:0 0 auto}
 #relationsView:is(:fullscreen,:-webkit-full-screen,.is-pseudo-fullscreen) .relations-content{display:flex;flex:1 1 auto;min-height:0;flex-direction:column}
 #relationsView:is(:fullscreen,:-webkit-full-screen,.is-pseudo-fullscreen) .relation-selection{flex:0 0 auto}
+#relationsView:is(:fullscreen,:-webkit-full-screen,.is-pseudo-fullscreen) .relation-edit-action{display:none}
 #relationsView:is(:fullscreen,:-webkit-full-screen,.is-pseudo-fullscreen) .relation-graph-viewport{flex:1 1 auto;height:auto;min-height:0}
 #relationsView:is(:fullscreen,:-webkit-full-screen,.is-pseudo-fullscreen) #relationsStandalone{display:none}
 .relation-selection{min-height:58px;padding:9px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--card)}.relation-selection[hidden]{display:none}.relation-selection-icon{width:36px;height:36px;flex:0 0 36px;display:flex;align-items:center;justify-content:center;font-size:26px}.relation-selection-icon img{width:34px;height:34px;object-fit:contain}.relation-selection-copy{min-width:0;flex:1}.relation-selection-name{font-size:13px;font-weight:700}.relation-selection-meta,.relation-selection-recipe{margin-top:2px;color:var(--muted);font-size:11px;line-height:16px}.relation-selection-recipe{color:var(--text-secondary)}.relation-selection-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
@@ -503,7 +504,7 @@ body.relation-pseudo-fullscreen-active{overflow:hidden}
     <span><i class="relations-dot base" aria-hidden="true"></i>基础来源</span>
     <span><i class="relations-dot source" aria-hidden="true"></i>特殊来源</span>
   </div>
-  <div class="relations-note">左侧是最终产物，右侧逐层追溯原料。点击节点查看数量并编辑，拖动或滚轮浏览。</div>
+  <div class="relations-note">左侧是最终产物，右侧逐层追溯原料。点击节点查看数量和关系；普通模式可编辑物品。</div>
 </div>
 <div class="relations-content" id="relationsContent">
   <div class="relation-selection" id="relationSelection" aria-live="polite" hidden></div>
@@ -1878,7 +1879,7 @@ function selectRelationNode(id,focus){
   if(selection){
     var recipe=(_relationsNetwork.ingredientsById[id]||[]).map(function(edge){var ingredient=_relationsItemsById[edge.to];return (ingredient?(ingredient.nameCN||ingredient.id):edge.to)+' × '+(edge.q||1);}).join(' · ');
     selection.hidden=false;
-    selection.innerHTML='<div class="relation-selection-icon">'+relationIconHtml(item)+'</div><div class="relation-selection-copy"><div class="relation-selection-name">'+esc(item?(item.nameCN||item.id):id)+'</div><div class="relation-selection-meta">'+esc((roleNames[role]||role)+' · '+relationNodeMeta(item,role)+' · 直接原料 '+ingredients+' · 下游用途 '+dependents+' · 网络第 '+position.depth+' 层')+'</div>'+(recipe?'<div class="relation-selection-recipe">配方：'+esc(recipe)+'</div>':'')+'</div><div class="relation-selection-actions"><button type="button" class="btn btn-outline" onclick="relationGraphFit(false)">返回全景</button><button type="button" class="btn btn-outline" onclick="relationGraphFocusNode(\''+esc(id)+'\')">定位节点</button>'+(im[id]?'<button type="button" class="btn btn-primary" data-edit-id="'+esc(id)+'" onclick="openEditModal(this.dataset.editId)">编辑物品</button>':'')+'</div>';
+    selection.innerHTML='<div class="relation-selection-icon">'+relationIconHtml(item)+'</div><div class="relation-selection-copy"><div class="relation-selection-name">'+esc(item?(item.nameCN||item.id):id)+'</div><div class="relation-selection-meta">'+esc((roleNames[role]||role)+' · '+relationNodeMeta(item,role)+' · 直接原料 '+ingredients+' · 下游用途 '+dependents+' · 网络第 '+position.depth+' 层')+'</div>'+(recipe?'<div class="relation-selection-recipe">配方：'+esc(recipe)+'</div>':'')+'</div><div class="relation-selection-actions"><button type="button" class="btn btn-outline" onclick="relationGraphFit(false)">返回全景</button><button type="button" class="btn btn-outline" onclick="relationGraphFocusNode(\''+esc(id)+'\')">定位节点</button>'+(im[id]?'<button type="button" class="btn btn-primary relation-edit-action" data-edit-id="'+esc(id)+'" onclick="openEditModal(this.dataset.editId)">编辑物品</button>':'')+'</div>';
   }
   if(focus) relationGraphFocusLinks(links,id);
 }
@@ -2511,6 +2512,10 @@ function applyEdits(){
   _relationsDirty=true;
 }
 function openEditModal(id){
+  if(relationGraphIsFullscreen()){
+    toast('请先退出关系网全屏再编辑物品');
+    return;
+  }
   applyEdits(); _editId=id;
   var it=im[id]; if(!it) return;
   document.getElementById('editModalTitle').textContent='编辑: '+(it.nameCN||it.id);
