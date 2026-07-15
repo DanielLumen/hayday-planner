@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>卡通农场 · 货仓助手 v2.14.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>卡通农场 · 货仓助手 v2.17.0</title>
 <style>
 /* ====== 变量与重置 ====== */
 :root{--bg:#F8FAFC;--card:#FFFFFF;--text:#0F172A;--text-secondary:#475569;--muted:#64748B;--accent:#059669;--accent-hover:#047857;--warn:#D97706;--warn-light:#FFFBEB;--danger:#DC2626;--danger-light:#FEF2F2;--border:#E2E8F0;--shadow-sm:0 1px 2px rgba(0,0,0,.04);--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--radius:8px;--radius-sm:6px;--transition:150ms ease}
@@ -243,6 +243,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
 .search-input,.filter-select{height:36px;padding:7px 11px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:13px;outline:none}
 .search-input:focus,.filter-select:focus{border-color:var(--info);box-shadow:0 0 0 3px rgba(55,111,208,.1)}
 .filter-row{padding:0 16px 8px;gap:5px;flex-wrap:wrap;overflow-x:visible}
+.filter-row:not(.expanded) .chip:nth-of-type(n+13){display:none}
+.mobile-filter-toggle{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer}
 .chip{padding:5px 11px;border-radius:6px;font-size:12px;cursor:pointer!important}
 .chip.active{background:var(--accent-light);color:var(--accent);border-color:#A9D8C2;font-weight:600}
 .main-layout{grid-template-columns:minmax(0,1fr) minmax(360px,430px);gap:10px;padding:0 12px 18px}
@@ -377,7 +379,38 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
 .toast-action{border:0;background:transparent;color:#8ED7B5;font-size:12px;font-weight:700;cursor:pointer;padding:2px 4px}
 @media(max-width:1100px){.hardest-bar .hd-items,.buy-banner .buy-items{grid-template-columns:repeat(3,minmax(0,1fr))}.hardest-bar .hd-card:nth-child(n+4),.buy-banner .buy-card:nth-child(n+4){display:none}.hardest-bar.expanded .hd-card,.buy-banner.expanded .buy-card{display:flex}}
 @media(max-width:960px){.main-layout{grid-template-columns:1fr}.side-panel{position:static;max-height:none;overflow:visible}.hardest-bar .hd-items,.buy-banner .buy-items{grid-template-columns:repeat(2,minmax(0,1fr))}#itemsList{height:70vh;overflow:hidden}}
-@media(max-width:640px){.topbar{padding:6px 10px}.brand-icon{width:25px;height:25px}.topbar h1{font-size:15px}.topbar .sub{display:none}.save-status{display:none}.topbar-actions .btn,.overview-toggle{min-width:36px;min-height:36px}.btn-label{display:none}.overview-section,.hardest-bar,.buy-banner,.stats-row{margin-left:8px;margin-right:8px}.hardest-bar,.buy-banner{display:grid;grid-template-columns:1fr 36px}.hardest-bar .hd-label,.buy-banner .buy-label{width:auto}.hardest-bar .hd-items,.buy-banner .buy-items{grid-column:1/-1}.stats-row{grid-template-columns:repeat(2,1fr)}.stat-card{border-right:0;border-bottom:1px solid var(--border)}.stat-card:last-child{grid-column:1/-1;border-bottom:0}.toolbar{padding:7px 8px;grid-template-columns:1fr}.filter-row{padding:0 8px 7px;align-items:center}.filter-row:not(.expanded) .chip:nth-of-type(n+9){display:none}.mobile-filter-toggle{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer}.main-layout{padding:0 6px 14px;min-width:0}.panel,.panel-body,.side-panel{min-width:0}.item-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:5px}.item-tile{padding:7px;min-height:72px}.tile-icon,.tile-icon img{width:24px;height:24px}.tile-name{font-size:12px}.tile-input{width:36px}.tile-edit{display:flex;opacity:.55;left:auto;right:3px;top:3px}.tile-revert{right:26px}.duo-slider{grid-template-columns:1fr}.modal-overlay{padding:0}.modal-box{width:100vw;max-width:none;max-height:100vh;height:100vh;border-radius:0}.modal-scroll{padding:12px}.modal-box h3,.modal-actions{padding-left:12px;padding-right:12px}.modal-row{grid-template-columns:68px minmax(0,1fr)}.modal-section-title{font-size:12px;color:var(--text-secondary)}.modal-ing{grid-template-columns:minmax(80px,1fr) 120px auto 42px 26px}}
+@media(max-width:640px){.topbar{padding:5px 8px}.brand-icon{width:25px;height:25px}.topbar h1{font-size:15px}.topbar .sub{display:none}.save-status{display:none}.topbar-actions .btn,.overview-toggle{min-width:44px;min-height:44px}.btn-label{display:none}.overview-section,.hardest-bar,.buy-banner,.stats-row{margin-left:8px;margin-right:8px}.hardest-bar,.buy-banner{display:grid;grid-template-columns:1fr 44px;padding:7px 9px}.hardest-bar .hd-label,.buy-banner .buy-label{width:auto}.hardest-bar .hd-items,.buy-banner .buy-items{grid-column:1/-1}.hardest-bar .hd-card:nth-child(n+3),.buy-banner .buy-card:nth-child(n+3){display:none}.hardest-bar.expanded .hd-card,.buy-banner.expanded .buy-card{display:flex}.stats-row{grid-template-columns:repeat(3,minmax(0,1fr));padding:5px 6px}.stat-card{padding:4px 3px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}.stat-card:nth-child(3n){border-right:0}.stat-card:nth-child(n+4){border-bottom:0}.stat-card:last-child{grid-column:auto;border-right:0}.toolbar{padding:7px 8px;grid-template-columns:1fr}.filter-row{padding:0 8px 7px;align-items:center}.filter-row:not(.expanded) .chip:nth-of-type(n+9){display:none}.main-layout{padding:0 6px 14px;min-width:0}.panel,.panel-body,.side-panel{min-width:0}.item-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:5px}.item-tile{padding:7px;min-height:72px}.tile-icon,.tile-icon img{width:24px;height:24px}.tile-name{font-size:12px}.tile-input{width:36px}.tile-edit{display:flex;opacity:.55;left:auto;right:3px;top:3px}.tile-revert{right:26px}.duo-slider{grid-template-columns:1fr}.modal-overlay{padding:0}.modal-box{width:100vw;max-width:none;max-height:100vh;height:100vh;border-radius:0}.modal-scroll{padding:12px}.modal-box h3,.modal-actions{padding-left:12px;padding-right:12px}.modal-row{grid-template-columns:68px minmax(0,1fr)}.modal-section-title{font-size:12px;color:var(--text-secondary)}.modal-ing{grid-template-columns:minmax(80px,1fr) 120px auto 42px 26px}}
+/* ====== 产品关系网 ====== */
+[hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.app-view-nav{display:flex;align-items:center;justify-content:center;gap:2px;padding:6px 12px;background:var(--card);border-bottom:1px solid var(--border)}
+.app-view-tab{min-width:92px;min-height:34px;padding:6px 14px;border:1px solid var(--border);background:var(--bg);color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;transition:background var(--transition),color var(--transition),border-color var(--transition)}
+.app-view-tab:first-child{border-radius:6px 0 0 6px}.app-view-tab:last-child{border-radius:0 6px 6px 0}
+.app-view-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}.app-view-tab:focus-visible{outline:2px solid rgba(55,111,208,.55);outline-offset:2px}
+.relations-shell{padding:14px 16px 28px;min-width:0}
+.relations-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px}
+.relations-title h2{font-size:18px;line-height:24px;margin:0}.relations-summary{margin-top:3px;color:var(--muted);font-size:12px}
+.relations-controls{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+.relations-search{width:min(300px,42vw);min-width:210px;height:36px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:13px;outline:none}.relations-search:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(5,150,105,.12)}
+.relation-zoom-controls{display:flex;align-items:center;gap:4px}.relation-zoom-controls .btn{height:36px;white-space:nowrap}.relation-zoom-mode{min-width:40px;padding:3px 7px;border-radius:999px;background:var(--accent-light);color:var(--accent);font-size:10px;font-weight:700;text-align:center}.relation-zoom-value{min-width:42px;color:var(--muted);font-size:11px;text-align:center}
+.relations-context{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 0 11px}
+.relations-legend{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--text-secondary);font-size:11px}
+.relations-legend span{display:inline-flex;align-items:center;gap:5px}.relations-dot{width:9px;height:9px;border-radius:3px;display:inline-block;border:1px solid var(--border)}
+.relations-dot.final{background:var(--info-light);border-color:var(--info)}.relations-dot.intermediate{background:var(--warn-light);border-color:var(--warn)}.relations-dot.base{background:var(--accent-light);border-color:var(--accent)}.relations-dot.source{background:var(--bg);border-style:dashed;border-color:var(--muted)}
+.relations-note{font-size:11px;color:var(--muted)}
+.relations-content{border:1px solid var(--border);border-radius:8px;background:var(--card);overflow:hidden}
+.relation-graph-viewport{position:relative;width:100%;height:clamp(560px,72vh,840px);min-height:420px;overflow:hidden;background:var(--bg);cursor:grab;touch-action:none;user-select:none}
+.relation-graph-viewport.dragging{cursor:grabbing}.relation-graph-svg{display:block;width:100%;height:100%}
+.network-band-line{fill:none;stroke:var(--border);stroke-width:1;stroke-dasharray:5 7;vector-effect:non-scaling-stroke}.network-band-label{fill:var(--muted);font-size:12px;font-weight:700;letter-spacing:.02em}
+.network-edge-path{fill:none;stroke:var(--border-strong);stroke-width:1;opacity:.27;vector-effect:non-scaling-stroke;transition:opacity .12s,stroke .12s}.network-edge-wrap.is-muted .network-edge-path{opacity:.025}.network-edge-wrap.is-active .network-edge-path{stroke:var(--accent);stroke-width:2;opacity:.95}.network-edge-wrap.alternative.is-active .network-edge-path{stroke:var(--info);stroke-dasharray:5 3}
+.network-edge-label{display:none;fill:var(--text-secondary);font-size:10px;font-weight:700;paint-order:stroke;stroke:var(--card);stroke-width:6px;stroke-linejoin:round;pointer-events:none}.network-edge-wrap.show-label .network-edge-label{display:block}
+.network-node{cursor:pointer;transition:opacity .12s}.network-node rect{fill:var(--card);stroke:var(--border-strong);stroke-width:1;vector-effect:non-scaling-stroke}.network-node.final rect{fill:var(--info-light);stroke:var(--info)}.network-node.intermediate rect{fill:var(--warn-light);stroke:var(--warn)}.network-node.raw rect,.network-node.base rect{fill:var(--accent-light);stroke:var(--accent)}.network-node.source rect{fill:var(--bg);stroke:var(--muted);stroke-dasharray:4 3}.network-node.unknown rect,.network-node.cycle rect{fill:var(--danger-light);stroke:var(--danger)}
+.network-node .network-node-name{fill:var(--text);font-size:11px;font-weight:700;pointer-events:none;transition:opacity .12s}.network-node .network-node-emoji{font-size:16px;pointer-events:none}.network-node image{pointer-events:none}.network-node.is-muted{opacity:.08}.network-node.is-active rect{stroke-width:2}.network-node.is-selected rect{stroke:var(--info);stroke-width:3;filter:drop-shadow(0 0 3px rgba(55,111,208,.45))}.network-node.is-match rect{stroke:var(--accent);stroke-width:3}.network-node:focus{outline:none}.network-node:focus rect{stroke:var(--info);stroke-width:3}
+.relation-graph-viewport.is-low-zoom .network-node-name{opacity:0}.relation-graph-viewport.is-low-zoom .network-node.is-active .network-node-name,.relation-graph-viewport.is-low-zoom .network-node.is-selected .network-node-name,.relation-graph-viewport.is-low-zoom .network-node.is-match .network-node-name{opacity:1}
+.relation-graph-hint{position:absolute;left:10px;bottom:9px;padding:4px 7px;border-radius:5px;background:var(--card);color:var(--muted);font-size:10px;box-shadow:var(--shadow-sm);pointer-events:none}
+.relation-selection{min-height:58px;padding:9px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--card)}.relation-selection[hidden]{display:none}.relation-selection-icon{width:36px;height:36px;flex:0 0 36px;display:flex;align-items:center;justify-content:center;font-size:26px}.relation-selection-icon img{width:34px;height:34px;object-fit:contain}.relation-selection-copy{min-width:0;flex:1}.relation-selection-name{font-size:13px;font-weight:700}.relation-selection-meta,.relation-selection-recipe{margin-top:2px;color:var(--muted);font-size:11px;line-height:16px}.relation-selection-recipe{color:var(--text-secondary)}.relation-selection-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.relation-unplaced{padding:16px 0 4px}.relation-unplaced h3{font-size:14px}.relation-unplaced p{margin:3px 0 9px;color:var(--muted);font-size:11px}.relation-group-count{font-size:11px;font-weight:500;color:var(--muted)}.relation-unplaced-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:6px}.relation-unplaced-item{min-height:38px;padding:5px 7px;border:1px dotted var(--border-strong);border-radius:6px;background:var(--card);display:flex;align-items:center;gap:6px;font-size:11px}.relation-unplaced-item img{width:24px;height:24px;object-fit:contain}.relation-unplaced-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:640px){.app-view-nav{padding:5px 8px}.app-view-tab{min-width:82px;min-height:36px}.relations-shell{padding:10px 8px 20px}.relations-heading{display:block}.relations-controls{margin-top:9px;justify-content:stretch}.relations-search{width:100%;min-width:0;flex:1 0 100%}.relation-zoom-controls{width:100%;justify-content:flex-end}.relation-graph-viewport{height:58vh;min-height:380px}.relations-context{align-items:flex-start}.relation-selection{align-items:center;flex-wrap:wrap}.relation-selection-actions{width:100%;padding-left:46px}.relation-selection-actions .btn{min-height:40px}.relation-unplaced-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 <script src="./node_modules/pinyin-pro/dist/index.js"></script>
 <script src="./planner-core.js"></script>
@@ -386,21 +419,26 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
 <div class="topbar">
 <div class="brand"><img class="brand-icon" src="icons/ui_barn.png" alt=""><h1 ondblclick="toggleInfoBar()" style="cursor:pointer" title="双击收起或展开概览">卡通农场<span class="sub">库存规划</span></h1></div>
 <div class="topbar-actions"><span class="save-status" id="saveStatus">已保存</span><button class="btn btn-outline btn-xs" onclick="toggleInfoBar()" id="infoToggle" title="收起或展开概览" aria-label="收起或展开概览">▲</button>
-<button class="btn btn-outline btn-xs" onclick="saveToFile()"><span aria-hidden="true">⇩</span><span class="btn-label">导出</span></button>
-<button class="btn btn-outline btn-xs" onclick="loadFromFile()"><span aria-hidden="true">⇧</span><span class="btn-label">导入</span></button>
+<button class="btn btn-outline btn-xs" onclick="saveToFile()" aria-label="导出数据"><span aria-hidden="true">⇩</span><span class="btn-label">导出</span></button>
+<button class="btn btn-outline btn-xs" onclick="loadFromFile()" aria-label="导入数据"><span aria-hidden="true">⇧</span><span class="btn-label">导入</span></button>
 </div>
 </div>
+<nav class="app-view-nav" role="tablist" aria-label="主视图">
+<button type="button" class="app-view-tab active" data-app-view="inventory" role="tab" aria-selected="true" aria-controls="inventoryView" onclick="switchAppView('inventory',this)">库存助手</button>
+<button type="button" class="app-view-tab" data-app-view="relations" role="tab" aria-selected="false" aria-controls="relationsView" onclick="switchAppView('relations',this)">关系网</button>
+</nav>
+<main id="inventoryView" role="tabpanel" aria-label="库存助手">
 <div id="infoBar" class="info-bar">
 <div class="stats-row" id="statsRow" ondblclick="toggleInfoBar()" title="双击收起/展开"></div>
 <div class="buy-banner" id="buyBanner" ondblclick="toggleInfoBar()" title="双击收起/展开">
   <div class="buy-label">购买建议</div>
   <div class="buy-items" id="buyItems">计算中…</div>
-  <button class="overview-toggle" onclick="event.stopPropagation();toggleOverviewSection('buyBanner',this)" title="展开完整建议" aria-label="展开完整建议">＋</button>
+  <button class="overview-toggle" onclick="event.stopPropagation();toggleOverviewSection('buyBanner',this)" title="展开完整建议" aria-label="展开完整建议" aria-expanded="false" aria-controls="buyItems">＋</button>
 </div>
 <div id="hardestBar" class="hardest-bar" ondblclick="toggleInfoBar()" title="双击收起/展开">
   <div class="hd-label">最难生产</div>
   <div class="hd-items" id="hardestItems">计算中…</div>
-  <button class="overview-toggle" onclick="event.stopPropagation();toggleOverviewSection('hardestBar',this)" title="展开完整排行" aria-label="展开完整排行">＋</button>
+  <button class="overview-toggle" onclick="event.stopPropagation();toggleOverviewSection('hardestBar',this)" title="展开完整排行" aria-label="展开完整排行" aria-expanded="false" aria-controls="hardestItems">＋</button>
 </div>
 </div>
 <div class="toolbar">
@@ -431,6 +469,46 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
 <div class="side-body" id="itemsList" role="tabpanel" style="display:none"><div style="padding:10px;color:var(--muted);font-size:12px">点击标签加载物品清单</div></div>
 </div>
 </div>
+</main>
+<main id="relationsView" role="tabpanel" aria-labelledby="relationsTitle" hidden>
+<section class="relations-shell">
+<div class="relations-heading">
+  <div class="relations-title"><h2 id="relationsTitle">产品关系网</h2><div class="relations-summary" id="relationsSummary">正在整理当前配方…</div></div>
+  <div class="relations-controls">
+    <input type="search" class="relations-search" id="relationsSearch" placeholder="搜索并高亮物品" aria-label="搜索关系网" oninput="onRelationsSearch()" onkeydown="onRelationsSearchKey(event)">
+    <div class="relation-zoom-controls" aria-label="关系网缩放">
+      <button type="button" class="btn btn-outline" onclick="relationGraphZoom(.8)" aria-label="缩小关系网">−</button>
+      <button type="button" class="btn btn-outline" onclick="relationGraphFit(false)">返回全景</button>
+      <button type="button" class="btn btn-outline" onclick="relationGraphZoom(1.25)" aria-label="放大关系网">＋</button>
+      <span class="relation-zoom-mode" id="relationZoomMode">全景</span>
+      <span class="relation-zoom-value" id="relationZoomValue">100%</span>
+    </div>
+  </div>
+</div>
+<div class="relations-context">
+  <div class="relations-legend" aria-label="节点图例">
+    <span><i class="relations-dot final" aria-hidden="true"></i>最终产物</span>
+    <span><i class="relations-dot intermediate" aria-hidden="true"></i>中间产物</span>
+    <span><i class="relations-dot base" aria-hidden="true"></i>基础来源</span>
+    <span><i class="relations-dot source" aria-hidden="true"></i>特殊来源</span>
+  </div>
+  <div class="relations-note">左侧是最终产物，右侧逐层追溯原料。点击节点查看数量并编辑，拖动或滚轮浏览。</div>
+</div>
+<div class="relations-content" id="relationsContent">
+  <div class="relation-selection" id="relationSelection" aria-live="polite" hidden></div>
+  <div class="relation-graph-viewport" id="relationGraphViewport">
+    <svg class="relation-graph-svg" id="relationsGraph" role="group" aria-label="全部产品从最终产物到原料的生产关系网" aria-describedby="relationsKeyboardHelp">
+      <title>全部产品生产关系网</title>
+      <defs><marker id="relationArrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6 z" fill="var(--border-strong)"></path></marker></defs>
+      <g id="relationsGraphWorld"></g>
+    </svg>
+    <div class="relation-graph-hint">全图始终在这一张网里 · 点击节点聚焦关系</div>
+  </div>
+  <p class="sr-only" id="relationsKeyboardHelp">按 Tab 进入关系网，使用方向键在相邻产品间移动，按回车聚焦，按 Escape 返回全景。</p>
+</div>
+<div id="relationsStandalone"></div>
+</section>
+</main>
 <div class="toast" id="toast"></div>
 <script>
 'use strict';
@@ -944,12 +1022,12 @@ items:[{id:"wheat",nameCN:"小麦",emoji:"🌾",ing:[],t:120,tg:30,st:"silo_fiel
 {id:"fresh_diffuser",nameCN:"清新香薰",emoji:"🧴",bld:"perfumerie",ing:[{i:"lemon_oil",q:1},{i:"lavender_oil",q:1}],t:6600,tg:3,st:"barn"},
 {id:"zesty_perfume",nameCN:"活力香水",emoji:"🧴",bld:"perfumerie",ing:[{i:"lemon_oil",q:2}],t:6780,tg:3,st:"barn"},
 {id:"calming_diffuser",nameCN:"安神香薰",emoji:"🧴",bld:"perfumerie",ing:[{i:"lavender_oil",q:2},{i:"mint_oil",q:1}],t:6960,tg:3,st:"barn"},
-{id:"red_lure",nameCN:"红色鱼饵",emoji:"🔴",bld:"lure_workbench",ing:[{i:"wheat",q:1}],t:900,tg:5,st:"barn"},
-{id:"green_lure",nameCN:"绿色鱼饵",emoji:"🟢",bld:"lure_workbench",ing:[{i:"soybean",q:1}],t:900,tg:5,st:"barn"},
-{id:"blue_lure",nameCN:"蓝色鱼饵",emoji:"🔵",bld:"lure_workbench",ing:[{i:"indigo",q:1}],t:900,tg:5,st:"barn"},
-{id:"purple_lure",nameCN:"紫色鱼饵",emoji:"🟣",bld:"lure_workbench",ing:[{i:"lavender",q:1}],t:900,tg:5,st:"barn"},
-{id:"gold_lure",nameCN:"金色鱼饵",emoji:"🟡",bld:"lure_workbench",ing:[{i:"sesame",q:1}],t:1200,tg:3,st:"barn"},
-{id:"fishing_net",nameCN:"渔网",emoji:"🥅",bld:"net_maker",ing:[{i:"cotton",q:3},{i:"wool",q:1}],t:7200,tg:5,st:"barn"},
+{id:"red_lure",nameCN:"红色鱼饵",emoji:"🔴",bld:"lure_workbench",ing:[],t:5400,tg:5,st:"barn"},
+{id:"green_lure",nameCN:"绿色鱼饵",emoji:"🟢",bld:"lure_workbench",ing:[{i:"green_voucher",q:1}],t:4500,tg:5,st:"barn"},
+{id:"blue_lure",nameCN:"蓝色鱼饵",emoji:"🔵",bld:"lure_workbench",ing:[{i:"blue_voucher",q:1}],t:3600,tg:5,st:"barn"},
+{id:"purple_lure",nameCN:"紫色鱼饵",emoji:"🟣",bld:"lure_workbench",ing:[{i:"purple_voucher",q:1}],t:2700,tg:5,st:"barn"},
+{id:"gold_lure",nameCN:"金色鱼饵",emoji:"🟡",bld:"lure_workbench",ing:[{i:"gold_voucher",q:1}],t:1800,tg:3,st:"barn"},
+{id:"fishing_net",nameCN:"渔网",emoji:"🥅",bld:"net_maker",ing:[],t:14400,tg:5,st:"barn"},
 {id:"pickles",nameCN:"腌黄瓜",emoji:"🥒",bld:"preservation",ing:[{i:"cucumber",q:2}],t:5460,tg:3,st:"barn"},
 {id:"canned_fish",nameCN:"鱼罐头",emoji:"🐟",bld:"preservation",ing:[{i:"fish_fillet",q:3},{i:"olive_oil",q:1}],t:5700,tg:3,st:"barn"},
 {id:"kimchi",nameCN:"泡菜",emoji:"🥬",bld:"preservation",ing:[{i:"cabbage",q:3},{i:"chili_pepper",q:1},{i:"garlic",q:1}],t:5880,tg:3,st:"barn"},
@@ -961,6 +1039,15 @@ var PROD_MULTIPLIERS={milk:15,bacon:15,wool:15,mutton:10,goat_milk:12,egg:18,bro
 var ICONS={"wheat":"icons/wheat.png","corn":"icons/corn.png","soybean":"icons/soybean.png","sugarcane":"icons/sugarcane.png","carrot":"icons/carrot.png","indigo":"icons/indigo.png","pumpkin":"icons/pumpkin.png","cotton":"icons/cotton.png","chili_pepper":"icons/chili_pepper.png","tomato":"icons/tomato.png","strawberry":"icons/strawberry.png","potato":"icons/potato.png","rice":"icons/rice.png","tea_leaf":"icons/tea_leaf.png","lettuce":"icons/lettuce.png","sunflower":"icons/sunflower.png","apple":"icons/apple.png","cherry":"icons/cherry.png","raspberry":"icons/raspberry.png","blackberry":"icons/blackberry.png","coffee_bean":"icons/coffee_bean.png","olive":"icons/olive.png","lemon":"icons/lemon.png","banana":"icons/banana.png","pineapple":"icons/pineapple.png","peach":"icons/peach.png","mushroom":"icons/mushroom.png","eggplant":"icons/eggplant.png","cucumber":"icons/cucumber.png","onion":"icons/onion.png","ginger":"icons/ginger.png","garlic":"icons/garlic.png","milk":"icons/milk.png","egg":"icons/egg.png","wool":"icons/wool.png","goat_milk":"icons/goat_milk.png","bacon":"icons/bacon.png","cow_feed":"icons/cow_feed.png","chicken_feed":"icons/chicken_feed.png","pig_feed":"icons/pig_feed.png","sheep_feed":"icons/sheep_feed.png","goat_feed":"icons/goat_feed.png","bread":"icons/bread.png","corn_bread":"icons/corn_bread.png","cookie":"icons/cookie.png","raspberry_muffin":"icons/raspberry_muffin.png","pizza":"icons/pizza.png","spicy_pizza":"icons/spicy_pizza.png","brown_sugar":"icons/brown_sugar.png","white_sugar":"icons/white_sugar.png","syrup":"icons/syrup.png","cream":"icons/cream.png","butter":"icons/butter.png","cheese":"icons/cheese.png","goat_cheese":"icons/goat_cheese.png","popcorn":"icons/popcorn.png","butter_popcorn":"icons/butter_popcorn.png","chili_popcorn":"icons/chili_popcorn.png","honey_popcorn":"icons/honey_popcorn.png","chocolate_popcorn":"icons/chocolate_popcorn.png","snack_mix":"icons/snack_mix.png","pancake":"icons/pancake.png","bacon_eggs":"icons/bacon_eggs.png","hamburger":"icons/hamburger.png","roasted_tomato":"icons/roasted_tomato.png","baked_potato":"icons/baked_potato.png","carrot_pie":"icons/carrot_pie.png","pumpkin_pie":"icons/pumpkin_pie.png","apple_pie":"icons/apple_pie.png","bacon_pie":"icons/bacon_pie.png","carrot_cake":"icons/carrot_cake.png","cream_cake":"icons/cream_cake.png","strawberry_cake":"icons/strawberry_cake.png","cotton_fabric":"icons/cotton_fabric.png","blue_sweater":"icons/blue_sweater.png","red_scarf":"icons/red_scarf.png","cotton_shirt":"icons/cotton_shirt.png","violet_dress":"icons/violet_dress.png","pillow":"icons/pillow.png","apple_juice":"icons/apple_juice.png","cherry_juice":"icons/cherry_juice.png","carrot_juice":"icons/carrot_juice.png","tomato_juice":"icons/tomato_juice.png","berry_juice":"icons/berry_juice.png","vanilla_ice_cream":"icons/vanilla_ice_cream.png","strawberry_ice_cream":"icons/strawberry_ice_cream.png","apple_jam":"icons/apple_jam.png","raspberry_jam":"icons/raspberry_jam.png","blackberry_jam":"icons/blackberry_jam.png","cherry_jam":"icons/cherry_jam.png","silver_bar":"icons/silver_bar.png","gold_bar":"icons/gold_bar.png","platinum_bar":"icons/platinum_bar.png","iron_bar":"icons/iron_bar.png","diamond_ring":"icons/diamond_ring.png","espresso":"icons/espresso.png","tomato_soup":"icons/tomato_soup.png","pumpkin_soup":"icons/pumpkin_soup.png","mushroom_soup":"icons/mushroom_soup.png","lollipop":"icons/lollipop.png","toffee":"icons/toffee.png","chocolate":"icons/chocolate.png","olive_oil":"icons/olive_oil.png","soy_sauce":"icons/soy_sauce.png","mayonnaise":"icons/mayonnaise.png","tomato_sauce":"icons/tomato_sauce.png","rustic_bouquet":"icons/rustic_bouquet.png","bright_bouquet":"icons/bright_bouquet.png","sushi_roll":"icons/sushi_roll.png","fruit_salad":"icons/fruit_salad.png","milk_tea":"icons/milk_tea.png","fish_taco":"icons/fish_taco.png","hotdog":"icons/hotdog.png","berry_smoothie":"icons/berry_smoothie.png","green_smoothie":"icons/green_smoothie.png","dried_fruit":"icons/dried_fruit.png","pickles":"icons/pickles.png","asparagus":"icons/asparagus.png","axe":"icons/axe.png","beetroot":"icons/beetroot.png","bell_pepper":"icons/bell_pepper.png","black_bean":"icons/black_bean.png","blueberries":"icons/blueberries.png","bolt":"icons/bolt.png","broccoli":"icons/broccoli.png","cabbage":"icons/cabbage.png","cacao":"icons/cacao.png","chamomile":"icons/chamomile.png","chickpea":"icons/chickpea.png","clay":"icons/clay.png","coal":"icons/coal.png","coconut":"icons/coconut.png","diamond":"icons/diamond.png","duct_tape":"icons/duct_tape.png","dynamite":"icons/dynamite.png","gold_ore":"icons/gold_ore.png","grapes":"icons/grapes.png","guava":"icons/guava.png","iron_ore":"icons/iron_ore.png","lily":"icons/lily.png","mango":"icons/mango.png","mint":"icons/mint.png","oats":"icons/oats.png","orange":"icons/orange.png","passion_fruit":"icons/passion_fruit.png","peony":"icons/peony.png","pickaxe":"icons/pickaxe.png","plank":"icons/plank.png","platinum_ore":"icons/platinum_ore.png","plum":"icons/plum.png","pomegranate":"icons/pomegranate.png","saw":"icons/saw.png","sesame":"icons/sesame.png","shovel":"icons/shovel.png","silver_ore":"icons/silver_ore.png","tnt":"icons/tnt.png","watermelon":"icons/watermelon.png","beeswax":"icons/beeswax.png","blue_voucher":"icons/blue_voucher.png","duck_feather":"icons/duck_feather.png","expansion_permit":"icons/expansion_permit.png","fish_fillet":"icons/fish_fillet.png","green_voucher":"icons/green_voucher.png","hammer":"icons/hammer.png","hand_drill":"icons/hand_drill.png","honey":"icons/honey.png","honeycomb":"icons/honeycomb.png","lamb_chop":"icons/lamb_chop.png","land_deed":"icons/land_deed.png","lobster_tail":"icons/lobster_tail.png","mallet":"icons/mallet.png","map_piece":"icons/map_piece.png","marker_stake":"icons/marker_stake.png","nail":"icons/nail.png","purple_voucher":"icons/purple_voucher.png","screw":"icons/screw.png","wood_panel":"icons/wood_panel.png","cheese_fondue":"icons/cheese_fondue.png","chocolate_fondue":"icons/chocolate_fondue.png","fried_rice":"icons/fried_rice.png","plain_yogurt":"icons/plain_yogurt.png","rice_noodles":"icons/rice_noodles.png","sprinkled_donut":"icons/sprinkled_donut.png","cloche_hat":"icons/cloche_hat.png","top_hat":"icons/top_hat.png","flower_crown":"icons/flower_crown.png","refined_coal":"icons/refined_coal.png","fresh_diffuser":"icons/fresh_diffuser.png","calming_diffuser":"icons/calming_diffuser.png","chickpea_stew":"icons/chickpea_stew.png","chili_stew":"icons/chili_stew.png","winter_stew":"icons/winter_stew.png","sweet_porridge":"icons/sweet_porridge.png","fresh_porridge":"icons/fresh_porridge.png","tea_pot":"icons/tea_pot.png","potted_plant":"icons/potted_plant.png","strawberry_yogurt":"icons/strawberry_yogurt.png","tropical_yogurt":"icons/tropical_yogurt.png","bacon_fondue":"icons/bacon_fondue.png","tropical_fondue":"icons/tropical_fondue.png","guava_cupcake":"icons/guava_cupcake.png","tropical_cupcake":"icons/tropical_cupcake.png","cookie_cupcake":"icons/cookie_cupcake.png","tofu_dog":"icons/tofu_dog.png","corn_dog":"icons/corn_dog.png","onion_dog":"icons/onion_dog.png","mocha_milkshake":"icons/mocha_milkshake.png","fruity_milkshake":"icons/fruity_milkshake.png","honey_soap":"icons/honey_soap.png","lemon_lotion":"icons/lemon_lotion.png","rich_soap":"icons/rich_soap.png","strawberry_candle":"icons/strawberry_candle.png","raspberry_candle":"icons/raspberry_candle.png","lemon_candle":"icons/lemon_candle.png","floral_candle":"icons/floral_candle.png","canned_fish":"icons/canned_fish.png","kimchi":"icons/kimchi.png","guava_compote":"icons/guava_compote.png","mint_fudge":"icons/mint_fudge.png","chili_fudge":"icons/chili_fudge.png","lemon_fudge":"icons/lemon_fudge.png","spring_omelet":"icons/spring_omelet.png","cheese_omelet":"icons/cheese_omelet.png","rice_omelet":"icons/rice_omelet.png","potato_omelet":"icons/potato_omelet.png","wooly_chaps":"icons/wooly_chaps.png","soothing_pad":"icons/soothing_pad.png","blanket":"icons/blanket.png","lamb_feed":"icons/lamb_feed.png","wheat_bundle":"icons/wheat_bundle.png","meat_bucket":"icons/meat_bucket.png","caramel_apple":"icons/caramel_apple.png","jelly_beans":"icons/jelly_beans.png","honey_peanuts":"icons/honey_peanuts.png","cotton_candy":"icons/cotton_candy.png","sesame_brittle":"icons/sesame_brittle.png","gracious_bouquet":"icons/gracious_bouquet.png","candy_bouquet":"icons/candy_bouquet.png","birthday_bouquet":"icons/birthday_bouquet.png","soft_bouquet":"icons/soft_bouquet.png","veggie_bouquet":"icons/veggie_bouquet.png","chili_poppers":"icons/chili_poppers.png","veggie_lasagna":"icons/veggie_lasagna.png","mushroom_pasta":"icons/mushroom_pasta.png","bean_dip":"icons/bean_dip.png","lemon_curd":"icons/lemon_curd.png","olive_dip":"icons/olive_dip.png","salsa":"icons/salsa.png","hummus":"icons/hummus.png","tart_dressing":"icons/tart_dressing.png","green_tea":"icons/green_tea.png","honey_tea":"icons/honey_tea.png","lemon_tea":"icons/lemon_tea.png","mint_tea":"icons/mint_tea.png","chamomile_tea":"icons/chamomile_tea.png","egg_sandwich":"icons/egg_sandwich.png","strawberry_jam":"icons/strawberry_jam.png","blueberry_chutney":"icons/blueberry_chutney.png","marmalade":"icons/marmalade.png","peach_jam":"icons/peach_jam.png","grape_jam":"icons/grape_jam.png","passion_fruit_jam":"icons/passion_fruit_jam.png","pineapple_juice":"icons/pineapple_juice.png","orange_juice":"icons/orange_juice.png","grape_juice":"icons/grape_juice.png","passion_fruit_juice":"icons/passion_fruit_juice.png","watermelon_juice":"icons/watermelon_juice.png","mango_juice":"icons/mango_juice.png","guava_juice":"icons/guava_juice.png","fish_burger":"icons/fish_burger.png","lobster_skewer":"icons/lobster_skewer.png","garlic_bread":"icons/garlic_bread.png","grilled_asparagus":"icons/grilled_asparagus.png","grilled_onion":"icons/grilled_onion.png","winter_veggies":"icons/winter_veggies.png","stuffed_peppers":"icons/stuffed_peppers.png","grilled_eggplant":"icons/grilled_eggplant.png","banana_pancakes":"icons/banana_pancakes.png","blackberry_muffin":"icons/blackberry_muffin.png","blueberry_muffin":"icons/blueberry_muffin.png","potato_bread":"icons/potato_bread.png","banana_bread":"icons/banana_bread.png","cheesecake":"icons/cheesecake.png","blueberry_cheesecake":"icons/blueberry_cheesecake.png","potato_feta_cake":"icons/potato_feta_cake.png","honey_apple_cake":"icons/honey_apple_cake.png","fancy_cake":"icons/fancy_cake.png","pineapple_cake":"icons/pineapple_cake.png","lemon_cake":"icons/lemon_cake.png","chocolate_roll":"icons/chocolate_roll.png","pomegranate_cake":"icons/pomegranate_cake.png","cherry_popsicle":"icons/cherry_popsicle.png","chocolate_ice_cream":"icons/chocolate_ice_cream.png","sesame_ice_cream":"icons/sesame_ice_cream.png","orange_sorbet":"icons/orange_sorbet.png","affogato":"icons/affogato.png","peach_ice_cream":"icons/peach_ice_cream.png","coconut_ice_cream":"icons/coconut_ice_cream.png","fruit_sorbet":"icons/fruit_sorbet.png","lamb_soup":"icons/lamb_soup.png","asparagus_soup":"icons/asparagus_soup.png","fish_soup":"icons/fish_soup.png","cabbage_soup":"icons/cabbage_soup.png","onion_soup":"icons/onion_soup.png","noodle_soup":"icons/noodle_soup.png","potato_soup":"icons/potato_soup.png","bell_pepper_soup":"icons/bell_pepper_soup.png","broccoli_soup":"icons/broccoli_soup.png","beetroot_salad":"icons/beetroot_salad.png","mushroom_salad":"icons/mushroom_salad.png","fish_pie":"icons/fish_pie.png","feta_pie":"icons/feta_pie.png","casserole":"icons/casserole.png","shepherds_pie":"icons/shepherds_pie.png","asparagus_quiche":"icons/asparagus_quiche.png","lemon_pie":"icons/lemon_pie.png","eggplant_parmesan":"icons/eggplant_parmesan.png","feed_mill":"icons/feed_mill.png","bakery":"icons/bakery.png","popcorn_pot":"icons/popcorn_pot.png","pie_oven":"icons/pie_oven.png","cake_oven":"icons/cake_oven.png","juice_press":"icons/juice_press.png","ice_cream_maker":"icons/ice_cream_maker.png","jam_maker":"icons/jam_maker.png","smelter":"icons/smelter.png","coffee_kiosk":"icons/coffee_kiosk.png","soup_kitchen":"icons/soup_kitchen.png","candle_maker":"icons/candle_maker.png","sauce_maker":"icons/sauce_maker.png","flower_shop":"icons/flower_shop.png","sushi_bar":"icons/sushi_bar.png","smoothie_mixer":"icons/smoothie_mixer.png","waffle_maker":"icons/waffle_maker.png","salad_bar":"icons/salad_bar.png","sandwich_bar":"icons/sandwich_bar.png","tea_stand":"icons/tea_stand.png","taco_kitchen":"icons/taco_kitchen.png","deep_fryer":"icons/deep_fryer.png","donut_maker":"icons/donut_maker.png","pasta_maker":"icons/pasta_maker.png","pasta_kitchen":"icons/pasta_kitchen.png","fudge_shop":"icons/fudge_shop.png","porridge_bar":"icons/porridge_bar.png","milkshake_bar":"icons/milkshake_bar.png","wok_kitchen":"icons/wok_kitchen.png","stew_pot":"icons/stew_pot.png","omelet_station":"icons/omelet_station.png","fondue_pot":"icons/fondue_pot.png","yogurt_maker":"icons/yogurt_maker.png","cupcake_maker":"icons/cupcake_maker.png","bath_kiosk":"icons/bath_kiosk.png","hat_maker":"icons/hat_maker.png","pottery_studio":"icons/pottery_studio.png","lure_workbench":"icons/lure_workbench.png","net_maker":"icons/net_maker.png","honey_extractor":"icons/honey_extractor.png","flower_shawl":"icons/flower_shawl.png","bracelet":"icons/bracelet.png","necklace":"icons/necklace.png","flower_pendant":"icons/flower_pendant.png","raspberry_mocha":"icons/raspberry_mocha.png","hot_chocolate":"icons/hot_chocolate.png","caramel_latte":"icons/caramel_latte.png","iced_banana_latte":"icons/iced_banana_latte.png","egg_sushi":"icons/egg_sushi.png","big_sushi_roll":"icons/big_sushi_roll.png","rice_ball":"icons/rice_ball.png","lamb_stir_fry":"icons/lamb_stir_fry.png","spicy_fish":"icons/spicy_fish.png","peanut_noodles":"icons/peanut_noodles.png","tofu_stir_fry":"icons/tofu_stir_fry.png","sun_hat":"icons/sun_hat.png","red_lure":"icons/red_lure.png","green_lure":"icons/green_lure.png","blue_lure":"icons/blue_lure.png","purple_lure":"icons/purple_lure.png","gold_lure":"icons/gold_lure.png","fishing_net":"icons/fishing_net.png","lavender":"icons/lavender.png","peanut":"icons/peanut.png","jasmine":"icons/jasmine.png","frutti_pizza":"icons/frutti_pizza.png","gingerbread":"icons/gingerbread.png","macaroon":"icons/macaroon.png","pineapple_bars":"icons/pineapple_bars.png","lamb_skewer":"icons/lamb_skewer.png","fish_skewer":"icons/fish_skewer.png","chocolate_pie":"icons/chocolate_pie.png","peach_tart":"icons/peach_tart.png","passion_pie":"icons/passion_pie.png","mushroom_pie":"icons/mushroom_pie.png","berry_cake":"icons/berry_cake.png","chocolate_cake":"icons/chocolate_cake.png","fruit_cake":"icons/fruit_cake.png","blue_hat":"icons/blue_hat.png","cloth_shoe":"icons/cloth_shoe.png","mint_ice_cream":"icons/mint_ice_cream.png","banana_split":"icons/banana_split.png","peanut_milkshake":"icons/peanut_milkshake.png","plum_jam":"icons/plum_jam.png","silver_ring":"icons/silver_ring.png","gold_bracelet":"icons/gold_bracelet.png","iron_bracelet":"icons/iron_bracelet.png","latte":"icons/latte.png","cappuccino":"icons/cappuccino.png","mocha":"icons/mocha.png","lobster_soup":"icons/lobster_soup.png","candle":"icons/candle.png","flower_candle":"icons/flower_candle.png","lobster_sushi":"icons/lobster_sushi.png","green_salad":"icons/green_salad.png","potato_salad":"icons/potato_salad.png","tomato_salad":"icons/tomato_salad.png","carrot_salad":"icons/carrot_salad.png","cucumber_salad":"icons/cucumber_salad.png","cheese_salad":"icons/cheese_salad.png","egg_salad":"icons/egg_salad.png","broccoli_salad":"icons/broccoli_salad.png","bell_pepper_salad":"icons/bell_pepper_salad.png","spinach_salad":"icons/spinach_salad.png","blt_sandwich":"icons/blt_sandwich.png","veggie_sandwich":"icons/veggie_sandwich.png","cheese_sandwich":"icons/cheese_sandwich.png","fish_sandwich":"icons/fish_sandwich.png","chicken_sandwich":"icons/chicken_sandwich.png","ham_sandwich":"icons/ham_sandwich.png","roast_beef_sandwich":"icons/roast_beef_sandwich.png","cucumber_sandwich":"icons/cucumber_sandwich.png","waffle":"icons/waffle.png","strawberry_waffle":"icons/strawberry_waffle.png","chocolate_waffle":"icons/chocolate_waffle.png","blueberry_waffle":"icons/blueberry_waffle.png","breakfast_waffle":"icons/breakfast_waffle.png","french_fries":"icons/french_fries.png","fish_and_chips":"icons/fish_and_chips.png","onion_rings":"icons/onion_rings.png","tempura":"icons/tempura.png","spring_rolls":"icons/spring_rolls.png","tea":"icons/tea.png","apple_tea":"icons/apple_tea.png","berry_tea":"icons/berry_tea.png","peach_tea":"icons/peach_tea.png","ginger_tea":"icons/ginger_tea.png","chicken_taco":"icons/chicken_taco.png","veggie_taco":"icons/veggie_taco.png","spicy_taco":"icons/spicy_taco.png","special_taco":"icons/special_taco.png","chili_hotdog":"icons/chili_hotdog.png","strawberry_smoothie":"icons/strawberry_smoothie.png","peach_smoothie":"icons/peach_smoothie.png","banana_smoothie":"icons/banana_smoothie.png","mango_smoothie":"icons/mango_smoothie.png","pineapple_smoothie":"icons/pineapple_smoothie.png","blueberry_smoothie":"icons/blueberry_smoothie.png","carrot_smoothie":"icons/carrot_smoothie.png","lavender_oil":"icons/lavender_oil.png","wheat_oil":"icons/wheat_oil.png","lemon_oil":"icons/lemon_oil.png","mint_oil":"icons/mint_oil.png","gold_voucher":"icons/gold_voucher.png","donut":"icons/donut.png","chocolate_donut":"icons/chocolate_donut.png","apple_donut":"icons/apple_donut.png","glazed_donut":"icons/glazed_donut.png","berry_donut":"icons/berry_donut.png","pasta":"icons/pasta.png","lasagna":"icons/lasagna.png","spaghetti":"icons/spaghetti.png","rice_noodle_dish":"icons/rice_noodle_dish.png","cheese_pasta":"icons/cheese_pasta.png","seafood_pasta":"icons/seafood_pasta.png","fudge":"icons/fudge.png","caramel":"icons/caramel.png","peanut_fudge":"icons/peanut_fudge.png","porridge":"icons/porridge.png","oatmeal":"icons/oatmeal.png","apple_porridge":"icons/apple_porridge.png","milkshake":"icons/milkshake.png","berry_milkshake":"icons/berry_milkshake.png","stir_fry":"icons/stir_fry.png","beef_stew":"icons/beef_stew.png","vegetable_stew":"icons/vegetable_stew.png","omelet":"icons/omelet.png","bacon_omelet":"icons/bacon_omelet.png","fruit_yogurt":"icons/fruit_yogurt.png","breakfast_bowl":"icons/breakfast_bowl.png","cupcake":"icons/cupcake.png","carrot_cupcake":"icons/carrot_cupcake.png","kebab":"icons/kebab.png","spicy_kebab":"icons/spicy_kebab.png","doner_supreme":"icons/doner_supreme.png","bath_salt":"icons/bath_salt.png","face_mask":"icons/face_mask.png","lotion":"icons/lotion.png","clay_pot":"icons/clay_pot.png","vase":"icons/vase.png","clay_mug":"icons/clay_mug.png","perfume":"icons/perfume.png","cologne":"icons/cologne.png","zesty_perfume":"icons/zesty_perfume.png"};
 ICONS.hand_pies=ICONS.fish_and_chips;
 var S, im={}, bm={}, dm={};
+var RELATION_EXTERNAL_IDS=['axe','saw','pickaxe','dynamite','tnt','shovel','plank','duct_tape','bolt','screw','wood_panel','nail','hammer','land_deed','mallet','marker_stake','hand_drill','map_piece','expansion_permit','green_voucher','blue_voucher','purple_voucher','gold_voucher'];
+var RELATION_BATCH_OUTPUTS={cow_feed:3,chicken_feed:3,pig_feed:3,sheep_feed:3,goat_feed:3,lamb_feed:3};
+var RELATION_VIRTUAL_ITEMS=[
+  {id:'__lobster_trap',nameCN:'捕虾笼',emoji:'🪤',bld:'net_maker',ing:[],st:'source',relationVirtual:true,sourceNote:'织网机制作 · 当前未纳入库存'},
+  {id:'__duck_trap',nameCN:'鸭子陷阱',emoji:'🪤',bld:'net_maker',ing:[],st:'source',relationVirtual:true,sourceNote:'织网机制作 · 当前未纳入库存'},
+  {id:'__nectar',nameCN:'花蜜',emoji:'🌼',ing:[],st:'source',relationVirtual:true,sourceNote:'花蜜灌木采集 · 不进入货仓'}
+];
+var _relationsNetwork=null,_relationsLayout=null,_relationsItemsById={},_relationsDirty=true,_relationsQuery='',_relationsSelectedId='';
+var _relationGraphView={x:0,y:0,scale:1,autoFit:true,mode:'overview'},_relationGraphDrag=null,_relationResizeTimer=null;
 var SERVER_PENDING_STORAGE='_hd_server_pending';
 var _serverPending={}, _serverSaveTimer=null, _serverRetryTimer=null, _serverSaving=false, _serverRetryDelay=1000;
 function readStoredJson(key,fallback){
@@ -1245,6 +1332,8 @@ function renderAll(){
   body.innerHTML=h;
   calcPriority(); if(typeof renderItemsList==='function') renderItemsList();
   if(document.getElementById('planList').style.display!=='none') calcProductionPlan();
+  var relationView=document.getElementById('relationsView');
+  if(relationView&&!relationView.hidden&&_relationsDirty&&typeof renderRelations==='function') renderRelations({focusId:_relationsSelectedId});
 }
 function toggleDetail(id){
   var d=document.getElementById('det_'+id);
@@ -1434,10 +1523,391 @@ function clearSearch(){
   renderAll();
   input.focus();
 }
+/* ====== 产品关系网 ====== */
+function buildRelationOverlay(itemMap){
+  var relations={};
+  function add(from,to,meta){
+    if(!itemMap[from]||!itemMap[to]) return;
+    if(!relations[from]) relations[from]=[];
+    relations[from].push(Object.assign({i:to,q:1,kind:'source'},meta||{}));
+  }
+  add('milk','cow_feed',{label:'每份需 1 袋饲料'});
+  add('egg','chicken_feed',{label:'每份需 1 袋饲料'});
+  add('bacon','pig_feed',{label:'每份需 1 袋饲料'});
+  add('wool','sheep_feed',{label:'每份需 1 袋饲料'});
+  add('goat_milk','goat_feed',{label:'每份需 1 袋饲料'});
+  add('lamb_chop','lamb_feed',{label:'每份需 1 袋饲料'});
+  ['red_lure','green_lure','blue_lure','purple_lure','gold_lure'].forEach(function(lure){
+    add('fish_fillet',lure,{mode:'alternative',label:'每片需 1 个鱼饵'});
+  });
+  add('fish_fillet','fishing_net',{mode:'alternative',label:'每 3 片需 1 张',outputQty:3});
+  add('lobster_tail','__lobster_trap',{label:'每尾需 1 个'});
+  add('duck_feather','__duck_trap',{label:'每根需 1 个'});
+  add('honeycomb','__nectar',{q:100,label:'每份采集 100 滴'});
+  return relations;
+}
+function buildRelationsModel(){
+  init();
+  var allItems=D.items.map(function(item){return Object.assign({},item,{ing:(item.ing||[]).map(function(ing){return Object.assign({},ing);})});});
+  RELATION_VIRTUAL_ITEMS.forEach(function(item){
+    if(!allItems.some(function(existing){return existing.id===item.id;})) allItems.push(Object.assign({},item));
+  });
+  _relationsItemsById={};
+  allItems.forEach(function(item){_relationsItemsById[item.id]=item;});
+  _relationsNetwork=HayDayPlannerCore.analyzeProductionNetwork(allItems,{
+    externalIds:RELATION_EXTERNAL_IDS,
+    relationsById:buildRelationOverlay(_relationsItemsById)
+  });
+  _relationsNetwork.realFinalIds=_relationsNetwork.finalIds.filter(function(id){return im[id]&&!_relationsItemsById[id].relationVirtual;});
+  _relationsNetwork.realStandaloneIds=_relationsNetwork.standaloneIds.filter(function(id){return im[id];});
+  _relationsNetwork.realUnrootedIds=_relationsNetwork.unrootedIds.filter(function(id){return im[id]&&_relationsNetwork.realStandaloneIds.indexOf(id)<0;});
+  _relationsNetwork.realConnectedCount=D.items.length-_relationsNetwork.realStandaloneIds.length;
+  _relationsLayout=HayDayPlannerCore.layoutProductionNetwork(_relationsNetwork,{rootIds:_relationsNetwork.realFinalIds,targetAspect:1.85});
+  _relationsDirty=false;
+  return _relationsNetwork;
+}
+function relationNodeMatches(id,query){
+  if(!query) return true;
+  var item=_relationsItemsById[id];
+  if(!item) return String(id).toLowerCase().indexOf(query)>=0;
+  var name=(item.nameCN||item.id||'').toLowerCase();
+  var building=item.bld&&bm[item.bld]?(bm[item.bld].nameCN||'').toLowerCase():'';
+  var source=(item.sourceNote||'').toLowerCase();
+  return name.indexOf(query)>=0||String(item.id).toLowerCase().indexOf(query)>=0||_pyFL(name).indexOf(query)>=0||building.indexOf(query)>=0||source.indexOf(query)>=0;
+}
+function relationNodeMeta(item,role){
+  if(!item) return '未知原料';
+  if(item.sourceNote) return item.sourceNote;
+  if(RELATION_BATCH_OUTPUTS[item.id]) return (item.bld&&bm[item.bld]?bm[item.bld].nameCN+' · ':'')+'每批产 '+RELATION_BATCH_OUTPUTS[item.id]+' 袋';
+  if(item.bld&&bm[item.bld]) return bm[item.bld].nameCN;
+  if(item.id==='peanut') return '花生灌木 / 松鼠窝采集';
+  if(/^(coal|iron_ore|silver_ore|gold_ore|platinum_ore|diamond)$/.test(item.id)) return '矿洞随机产出';
+  if(item.st==='silo_field') return '耕地采收';
+  if(item.st==='silo_tree') return '树木 / 灌木采收';
+  if(/^(milk|egg|bacon|wool|goat_milk|lamb_chop)$/.test(item.id)) return '动物饲养来源';
+  if(/^(fish_fillet|lobster_tail|duck_feather)$/.test(item.id)) return '捕鱼区来源';
+  if(item.id==='honeycomb') return '蜂箱采集来源';
+  if(role==='external') return '外部获取';
+  return '独立来源';
+}
+function relationIconHtml(item){
+  if(item&&ICONS[item.id]) return '<img src="'+ICONS[item.id]+'" loading="lazy" alt="">';
+  return esc(item&&item.emoji?item.emoji:'□');
+}
+function relationEdgeLabel(edge,parentId){
+  if(edge&&edge.label) return edge.label;
+  var quantity=edge&&edge.q?edge.q:1;
+  return RELATION_BATCH_OUTPUTS[parentId]?'每批需 '+quantity:'每份需 '+quantity;
+}
+function renderRelationStandalone(ids,title,description,listId){
+  if(!ids.length) return '';
+  var h='<section class="relation-unplaced"><h3>'+esc(title)+' <span class="relation-group-count">'+ids.length+' 项</span></h3><p>'+esc(description)+'</p><div class="relation-unplaced-grid" id="'+esc(listId)+'">';
+  ids.forEach(function(id){
+    var item=_relationsItemsById[id]||im[id];
+    h+='<div class="relation-unplaced-item" data-relation-node="'+esc(id)+'">'+relationIconHtml(item)+'<span>'+esc(item?(item.nameCN||item.id):id)+'</span></div>';
+  });
+  return h+'</div></section>';
+}
+function relationRoleById(id){
+  var item=_relationsItemsById[id];
+  if(item&&item.relationVirtual) return 'source';
+  if(_relationsNetwork&&_relationsNetwork.realFinalIds.indexOf(id)>=0) return 'final';
+  var role=_relationsNetwork&&_relationsNetwork.rolesById[id];
+  if(role==='unplaced'||role==='external') return 'source';
+  return role||'unknown';
+}
+function relationNodeShortName(name){
+  name=String(name||'');
+  return name.length>10?name.slice(0,9)+'…':name;
+}
+function relationEdgeKey(from,to){return String(from)+'\u0000'+String(to);}
+function relationGraphPath(fromNode,toNode){
+  var startX=fromNode.x+fromNode.width,startY=fromNode.y+fromNode.height/2;
+  var endX=toNode.x,endY=toNode.y+toNode.height/2;
+  var bend=Math.max(34,(endX-startX)*.46);
+  return 'M '+startX+' '+startY+' C '+(startX+bend)+' '+startY+', '+(endX-bend)+' '+endY+', '+endX+' '+endY;
+}
+function relationSvgIcon(item){
+  if(item&&ICONS[item.id]) return '<image href="'+esc(ICONS[item.id])+'" x="4" y="3" width="20" height="20" preserveAspectRatio="xMidYMid meet"></image>';
+  return '<text class="network-node-emoji" x="5" y="19">'+esc(item&&item.emoji?item.emoji:'□')+'</text>';
+}
+function renderRelationGraphSvg(){
+  var layout=_relationsLayout,h='';
+  layout.bands.forEach(function(band){
+    h+='<g class="network-band" data-network-band="'+band.depth+'"><rect class="network-band-line" x="'+(band.x-8)+'" y="'+band.y+'" width="'+(band.width+16)+'" height="'+band.height+'" rx="8"></rect><text class="network-band-label" x="'+band.x+'" y="'+(band.y+17)+'">'+esc(band.label)+' · '+band.count+'</text></g>';
+  });
+  layout.edges.forEach(function(edge){
+    var from=layout.positionedById[edge.from],to=layout.positionedById[edge.to];
+    if(!from||!to) return;
+    var label=relationEdgeLabel(edge,edge.from);
+    var middleX=(from.x+from.width+to.x)/2,middleY=(from.y+from.height/2+to.y+to.height/2)/2-4;
+    h+='<g class="network-edge-wrap'+(edge.mode==='alternative'?' alternative':'')+'" data-edge-from="'+esc(edge.from)+'" data-edge-to="'+esc(edge.to)+'"><title>'+esc((_relationsItemsById[edge.from]&&_relationsItemsById[edge.from].nameCN||edge.from)+' → '+(_relationsItemsById[edge.to]&&_relationsItemsById[edge.to].nameCN||edge.to)+' · '+label)+'</title><path class="network-edge-path" d="'+relationGraphPath(from,to)+'" marker-end="url(#relationArrow)"></path><text class="network-edge-label" x="'+middleX+'" y="'+middleY+'" text-anchor="middle">'+esc(label)+'</text></g>';
+  });
+  layout.nodes.forEach(function(node,index){
+    var item=_relationsItemsById[node.id],name=item?(item.nameCN||item.id):node.id;
+    var role=relationRoleById(node.id),meta=relationNodeMeta(item,role);
+    h+='<g class="network-node '+role+'" role="button" tabindex="'+(index===0?'0':'-1')+'" aria-label="'+esc(name+'，'+meta+'，网络第 '+node.depth+' 层')+'" data-network-node="'+esc(node.id)+'" data-depth="'+node.depth+'" transform="translate('+node.x+' '+node.y+')" onclick="event.stopPropagation();selectRelationNode(this.getAttribute(\'data-network-node\'),true)" onkeydown="onRelationNodeKey(event,this)"><title>'+esc(name+' · '+meta)+'</title><rect width="'+node.width+'" height="'+node.height+'" rx="5"></rect>'+relationSvgIcon(item)+'<text class="network-node-name" x="27" y="17">'+esc(relationNodeShortName(name))+'</text></g>';
+  });
+  return h;
+}
+function relationGraphResizeViewport(){
+  var svg=document.getElementById('relationsGraph'),viewport=document.getElementById('relationGraphViewport');
+  if(!svg||!viewport) return null;
+  var rect=viewport.getBoundingClientRect(),width=Math.max(1,Math.round(rect.width)),height=Math.max(1,Math.round(rect.height));
+  svg.setAttribute('viewBox','0 0 '+width+' '+height);
+  return {width:width,height:height};
+}
+function relationGraphApplyTransform(){
+  var world=document.getElementById('relationsGraphWorld');if(!world)return;
+  world.setAttribute('transform','translate('+_relationGraphView.x+' '+_relationGraphView.y+') scale('+_relationGraphView.scale+')');
+  var value=document.getElementById('relationZoomValue');if(value)value.textContent=Math.round(_relationGraphView.scale*100)+'%';
+  var mode=document.getElementById('relationZoomMode');if(mode)mode.textContent=_relationGraphView.mode==='focus'?'聚焦':'全景';
+  var viewport=document.getElementById('relationGraphViewport');
+  if(viewport){
+    viewport.classList.toggle('is-low-zoom',_relationGraphView.mode==='overview'&&_relationGraphView.scale<.68);
+    viewport.classList.toggle('is-focus-mode',_relationGraphView.mode==='focus');
+  }
+  var hint=document.querySelector('.relation-graph-hint');
+  if(hint)hint.textContent=_relationGraphView.mode==='focus'?'聚焦模式 · 拖动查看完整上下游，返回全景可恢复总览':'全景模式 · 搜索或点击节点进入可读聚焦';
+}
+function relationGraphFit(keepSelection){
+  if(!_relationsLayout) return;
+  var size=relationGraphResizeViewport();if(!size)return;
+  var padding=18;
+  var scale=Math.min((size.width-padding*2)/_relationsLayout.width,(size.height-padding*2)/_relationsLayout.height);
+  scale=Math.max(.06,Math.min(1.5,scale));
+  _relationGraphView.scale=scale;
+  _relationGraphView.x=(size.width-_relationsLayout.width*scale)/2;
+  _relationGraphView.y=(size.height-_relationsLayout.height*scale)/2;
+  _relationGraphView.autoFit=true;
+  _relationGraphView.mode='overview';
+  if(!keepSelection&&_relationsSelectedId) selectRelationNode('',false);
+  relationGraphApplyTransform();
+}
+function relationGraphZoom(factor,anchorX,anchorY){
+  if(!_relationsLayout) return;
+  var size=relationGraphResizeViewport();if(!size)return;
+  var oldScale=_relationGraphView.scale;
+  var nextScale=Math.max(.06,Math.min(3.5,oldScale*factor));
+  var x=Number.isFinite(anchorX)?anchorX:size.width/2,y=Number.isFinite(anchorY)?anchorY:size.height/2;
+  var worldX=(x-_relationGraphView.x)/oldScale,worldY=(y-_relationGraphView.y)/oldScale;
+  _relationGraphView.scale=nextScale;
+  _relationGraphView.x=x-worldX*nextScale;
+  _relationGraphView.y=y-worldY*nextScale;
+  _relationGraphView.autoFit=false;
+  relationGraphApplyTransform();
+}
+function relationGraphFocusNode(id){
+  if(!_relationsLayout||!_relationsLayout.positionedById[id]) return;
+  var size=relationGraphResizeViewport(),node=_relationsLayout.positionedById[id];if(!size)return;
+  var scale=Math.max(1.05,Math.min(1.65,_relationGraphView.scale*2.1));
+  _relationGraphView.scale=scale;
+  _relationGraphView.x=size.width/2-(node.x+node.width/2)*scale;
+  _relationGraphView.y=size.height/2-(node.y+node.height/2)*scale;
+  _relationGraphView.autoFit=false;
+  _relationGraphView.mode='focus';
+  relationGraphApplyTransform();
+}
+function relationGraphFocusLinks(links,anchorId){
+  if(!_relationsLayout||!links||!links.nodes.size)return;
+  var size=relationGraphResizeViewport();if(!size)return;
+  var positions=Array.from(links.nodes).map(function(id){return _relationsLayout.positionedById[id];}).filter(Boolean);if(!positions.length)return;
+  var minX=Math.min.apply(null,positions.map(function(node){return node.x;}));
+  var minY=Math.min.apply(null,positions.map(function(node){return node.y;}));
+  var maxX=Math.max.apply(null,positions.map(function(node){return node.x+node.width;}));
+  var maxY=Math.max.apply(null,positions.map(function(node){return node.y+node.height;}));
+  var padding=54,width=Math.max(1,maxX-minX),height=Math.max(1,maxY-minY);
+  var scale=Math.min((size.width-padding*2)/width,(size.height-padding*2)/height);
+  var mobile=size.width<640,anchor=anchorId&&_relationsLayout.positionedById[anchorId];
+  scale=Math.max(mobile ? .86 : .9,Math.min(1.6,scale));
+  _relationGraphView.scale=scale;
+  if(anchor){
+    var anchorRatio=mobile ? .28 : (anchor.depth===0 ? .16 : .42);
+    _relationGraphView.x=size.width*anchorRatio-(anchor.x+anchor.width/2)*scale;
+    _relationGraphView.y=size.height*.5-(anchor.y+anchor.height/2)*scale;
+  }else{
+    _relationGraphView.x=size.width/2-(minX+maxX)/2*scale;
+    _relationGraphView.y=size.height/2-(minY+maxY)/2*scale;
+  }
+  _relationGraphView.autoFit=false;
+  _relationGraphView.mode='focus';
+  relationGraphApplyTransform();
+}
+function collectRelationGraphLinks(id){
+  var nodes=new Set([id]),edges=new Set(),seenUp=new Set(),seenDown=new Set();
+  function upstream(nodeId){
+    if(seenUp.has(nodeId))return;seenUp.add(nodeId);
+    (_relationsNetwork.ingredientsById[nodeId]||[]).forEach(function(edge){
+      if(!_relationsLayout.positionedById[edge.to])return;
+      nodes.add(edge.to);edges.add(relationEdgeKey(nodeId,edge.to));upstream(edge.to);
+    });
+  }
+  function downstream(nodeId){
+    if(seenDown.has(nodeId))return;seenDown.add(nodeId);
+    (_relationsNetwork.dependentsById[nodeId]||[]).forEach(function(edge){
+      if(!_relationsLayout.positionedById[edge.from])return;
+      nodes.add(edge.from);edges.add(relationEdgeKey(edge.from,nodeId));downstream(edge.from);
+    });
+  }
+  upstream(id);downstream(id);
+  return {nodes:nodes,edges:edges};
+}
+function clearRelationGraphSelectionClasses(){
+  var nodes=Array.from(document.querySelectorAll('.network-node'));
+  nodes.forEach(function(node,index){node.classList.remove('is-muted','is-active','is-selected');node.setAttribute('tabindex',index===0?'0':'-1');});
+  document.querySelectorAll('.network-edge-wrap').forEach(function(edge){edge.classList.remove('is-muted','is-active','show-label');});
+}
+function focusRelationGraphNode(id){
+  var target=Array.from(document.querySelectorAll('.network-node')).find(function(node){return node.getAttribute('data-network-node')===String(id);});
+  if(!target)return;
+  document.querySelectorAll('.network-node').forEach(function(node){node.setAttribute('tabindex',node===target?'0':'-1');});
+  target.focus();
+}
+function onRelationNodeKey(event,node){
+  var id=node&&node.getAttribute('data-network-node');if(!id)return;
+  if(event.key==='Enter'||event.key===' '){event.preventDefault();selectRelationNode(id,true);return;}
+  if(event.key==='Escape'){event.preventDefault();relationGraphFit(false);return;}
+  var targetId='';
+  if(event.key==='ArrowRight'){
+    var ingredients=_relationsNetwork.ingredientsById[id]||[];if(ingredients.length)targetId=ingredients[0].to;
+  }else if(event.key==='ArrowLeft'){
+    var dependents=_relationsNetwork.dependentsById[id]||[];if(dependents.length)targetId=dependents[0].from;
+  }else if(event.key==='ArrowUp'||event.key==='ArrowDown'){
+    var position=_relationsLayout.positionedById[id];
+    var peers=_relationsLayout.nodes.filter(function(candidate){return candidate.depth===position.depth;}).sort(function(a,b){return a.y-b.y||a.x-b.x;});
+    var index=peers.findIndex(function(candidate){return candidate.id===id;});
+    var next=index+(event.key==='ArrowDown'?1:-1);if(next>=0&&next<peers.length)targetId=peers[next].id;
+  }else if(event.key==='Home'&&_relationsLayout.rootIds.length)targetId=_relationsLayout.rootIds[0];
+  if(!targetId||!_relationsLayout.positionedById[targetId])return;
+  event.preventDefault();focusRelationGraphNode(targetId);selectRelationNode(targetId,true);
+}
+function selectRelationNode(id,focus){
+  var selection=document.getElementById('relationSelection');
+  if(!id||!_relationsLayout||!_relationsLayout.positionedById[id]){
+    _relationsSelectedId='';clearRelationGraphSelectionClasses();if(selection)selection.hidden=true;return;
+  }
+  _relationsSelectedId=id;
+  var links=collectRelationGraphLinks(id),directKeys=new Set();
+  (_relationsNetwork.ingredientsById[id]||[]).forEach(function(edge){directKeys.add(relationEdgeKey(id,edge.to));});
+  (_relationsNetwork.dependentsById[id]||[]).forEach(function(edge){directKeys.add(relationEdgeKey(edge.from,id));});
+  document.querySelectorAll('.network-node').forEach(function(node){
+    var nodeId=node.getAttribute('data-network-node'),active=links.nodes.has(nodeId);
+    node.classList.toggle('is-muted',!active);node.classList.toggle('is-active',active);node.classList.toggle('is-selected',nodeId===id);
+    node.setAttribute('tabindex',nodeId===id?'0':'-1');
+  });
+  document.querySelectorAll('.network-edge-wrap').forEach(function(edge){
+    var key=relationEdgeKey(edge.getAttribute('data-edge-from'),edge.getAttribute('data-edge-to'));
+    var active=links.edges.has(key),show=active&&(links.edges.size<=90||directKeys.has(key));
+    edge.classList.toggle('is-muted',!active);edge.classList.toggle('is-active',active);edge.classList.toggle('show-label',show);
+  });
+  var item=_relationsItemsById[id],position=_relationsLayout.positionedById[id];
+  var ingredients=(_relationsNetwork.ingredientsById[id]||[]).length,dependents=(_relationsNetwork.dependentsById[id]||[]).length;
+  var role=relationRoleById(id),roleNames={final:'最终产物',intermediate:'中间产物',raw:'基础来源',source:'特殊来源',unknown:'未知来源'};
+  if(selection){
+    var recipe=(_relationsNetwork.ingredientsById[id]||[]).map(function(edge){var ingredient=_relationsItemsById[edge.to];return (ingredient?(ingredient.nameCN||ingredient.id):edge.to)+' × '+(edge.q||1);}).join(' · ');
+    selection.hidden=false;
+    selection.innerHTML='<div class="relation-selection-icon">'+relationIconHtml(item)+'</div><div class="relation-selection-copy"><div class="relation-selection-name">'+esc(item?(item.nameCN||item.id):id)+'</div><div class="relation-selection-meta">'+esc((roleNames[role]||role)+' · '+relationNodeMeta(item,role)+' · 直接原料 '+ingredients+' · 下游用途 '+dependents+' · 网络第 '+position.depth+' 层')+'</div>'+(recipe?'<div class="relation-selection-recipe">配方：'+esc(recipe)+'</div>':'')+'</div><div class="relation-selection-actions"><button type="button" class="btn btn-outline" onclick="relationGraphFit(false)">返回全景</button><button type="button" class="btn btn-outline" onclick="relationGraphFocusNode(\''+esc(id)+'\')">定位节点</button>'+(im[id]?'<button type="button" class="btn btn-primary" data-edit-id="'+esc(id)+'" onclick="openEditModal(this.dataset.editId)">编辑物品</button>':'')+'</div>';
+  }
+  if(focus) relationGraphFocusLinks(links,id);
+}
+function bindRelationGraphInteractions(){
+  var svg=document.getElementById('relationsGraph'),viewport=document.getElementById('relationGraphViewport');
+  if(!svg||!viewport||svg._relationBound)return;
+  svg._relationBound=true;
+  svg.addEventListener('pointerdown',function(event){
+    if(event.button!==0||event.target.closest('.network-node'))return;
+    _relationGraphDrag={pointerId:event.pointerId,startX:event.clientX,startY:event.clientY,originX:_relationGraphView.x,originY:_relationGraphView.y};
+    viewport.classList.add('dragging');_relationGraphView.autoFit=false;
+    try{svg.setPointerCapture(event.pointerId);}catch(error){}
+  });
+  svg.addEventListener('pointermove',function(event){
+    if(!_relationGraphDrag||_relationGraphDrag.pointerId!==event.pointerId)return;
+    _relationGraphView.x=_relationGraphDrag.originX+event.clientX-_relationGraphDrag.startX;
+    _relationGraphView.y=_relationGraphDrag.originY+event.clientY-_relationGraphDrag.startY;
+    relationGraphApplyTransform();
+  });
+  function endDrag(event){
+    if(!_relationGraphDrag||_relationGraphDrag.pointerId!==event.pointerId)return;
+    _relationGraphDrag=null;viewport.classList.remove('dragging');
+  }
+  svg.addEventListener('pointerup',endDrag);svg.addEventListener('pointercancel',endDrag);
+  svg.addEventListener('wheel',function(event){
+    event.preventDefault();var rect=svg.getBoundingClientRect();
+    relationGraphZoom(event.deltaY<0?1.14:.88,event.clientX-rect.left,event.clientY-rect.top);
+  },{passive:false});
+  svg.addEventListener('dblclick',function(event){
+    if(event.target.closest('.network-node'))return;var rect=svg.getBoundingClientRect();
+    relationGraphZoom(1.4,event.clientX-rect.left,event.clientY-rect.top);
+  });
+  svg.addEventListener('click',function(event){if(!event.target.closest('.network-node')&&!_relationGraphDrag)selectRelationNode('',false);});
+  if(!window._relationResizeBound){
+    window._relationResizeBound=true;
+    window.addEventListener('resize',function(){clearTimeout(_relationResizeTimer);_relationResizeTimer=setTimeout(function(){
+      if(_relationGraphView.autoFit) relationGraphFit(true);
+      else if(_relationsSelectedId&&_relationsLayout&&_relationsLayout.positionedById[_relationsSelectedId]) relationGraphFocusLinks(collectRelationGraphLinks(_relationsSelectedId),_relationsSelectedId);
+      else{relationGraphResizeViewport();relationGraphApplyTransform();}
+    },100);});
+  }
+}
+function renderRelations(options){
+  options=options||{};
+  var network=(!_relationsNetwork||_relationsDirty)?buildRelationsModel():_relationsNetwork;
+  var world=document.getElementById('relationsGraphWorld');if(!world)return;
+  world.innerHTML=renderRelationGraphSvg();
+  var standalone=document.getElementById('relationsStandalone');
+  if(standalone){
+    standalone.innerHTML=renderRelationStandalone(network.realStandaloneIds,'未进入关系网','这些物品既没有可追溯配方，也没有被其他产品使用，因此不在主图中强行安排位置。','standaloneExternalList')+renderRelationStandalone(network.realUnrootedIds,'未归入最终产物','这些物品存在关系，但目前无法从任何最终产物追溯到。','unrootedRelationList');
+  }
+  var summary=document.getElementById('relationsSummary');
+  if(summary) summary.textContent='一张网展示 '+network.realFinalIds.length+' 个最终产物 · '+network.realConnectedCount+' 个现有物品进入主图 · '+network.realStandaloneIds.length+' 个物品单列';
+  bindRelationGraphInteractions();
+  requestAnimationFrame(function(){
+    if(options.preserveView){relationGraphResizeViewport();relationGraphApplyTransform();}else relationGraphFit(true);
+    var focusId=options.focusId||_relationsSelectedId;
+    if(focusId&&_relationsLayout.positionedById[focusId]) selectRelationNode(focusId,Boolean(options.focusId));
+    else{_relationsSelectedId='';var selection=document.getElementById('relationSelection');if(selection)selection.hidden=true;}
+    onRelationsSearch();
+  });
+}
+function onRelationsSearch(){
+  var input=document.getElementById('relationsSearch');_relationsQuery=input?input.value.trim().toLowerCase():'';
+  var matches=[];
+  document.querySelectorAll('.network-node').forEach(function(node){
+    var id=node.getAttribute('data-network-node'),matched=Boolean(_relationsQuery&&relationNodeMatches(id,_relationsQuery));
+    node.classList.toggle('is-match',matched);if(matched)matches.push(id);
+  });
+  var summary=document.getElementById('relationsSummary');
+  if(summary&&_relationsNetwork){
+    summary.textContent=_relationsQuery?'全图保留，已高亮 '+matches.length+' 个匹配物品':'一张网展示 '+_relationsNetwork.realFinalIds.length+' 个最终产物 · '+_relationsNetwork.realConnectedCount+' 个现有物品进入主图 · '+_relationsNetwork.realStandaloneIds.length+' 个物品单列';
+  }
+  return matches;
+}
+function onRelationsSearchKey(event){
+  if(event.key!=='Enter')return;
+  var matches=onRelationsSearch();if(matches.length){event.preventDefault();selectRelationNode(matches[0],true);}
+}
+function switchAppView(view,button,preserveScroll){
+  var selected=view==='relations'?'relations':'inventory';
+  var inventory=document.getElementById('inventoryView'),relations=document.getElementById('relationsView');
+  if(inventory) inventory.hidden=selected!=='inventory';
+  if(relations) relations.hidden=selected!=='relations';
+  document.querySelectorAll('.app-view-tab').forEach(function(tab){
+    var active=tab.dataset.appView===selected;tab.classList.toggle('active',active);tab.setAttribute('aria-selected',active?'true':'false');
+  });
+  localStorage.setItem('hd_app_view',selected);
+  if(selected==='relations') renderRelations();
+  if(!preserveScroll) window.scrollTo(0,0);
+}
 function toggleOverviewSection(id,button){
   var section=document.getElementById(id); if(!section) return;
   var expanded=section.classList.toggle('expanded');
-  if(button){button.textContent=expanded?'−':'＋';button.title=expanded?'收起':'展开完整列表';}
+  if(button){
+    var subject=id==='buyBanner'?'建议':'排行';
+    button.textContent=expanded?'−':'＋';
+    button.title=expanded?'收起完整'+subject:'展开完整'+subject;
+    button.setAttribute('aria-label',button.title);
+    button.setAttribute('aria-expanded',expanded?'true':'false');
+  }
 }
 function computeRecursiveNeeds(){
   init();
@@ -1961,6 +2431,7 @@ function applyEdits(){
     });
   });
   _chainCache={};
+  _relationsDirty=true;
 }
 function openEditModal(id){
   applyEdits(); _editId=id;
@@ -2312,6 +2783,9 @@ async function bootstrap(){
   var savedTab=localStorage.getItem('hd_ui_tab')||'priority';
   var tabButton=document.querySelector('.tab[data-tab="'+savedTab+'"]');
   if(tabButton) switchSidebarTab(savedTab,tabButton);
+  var savedView=localStorage.getItem('hd_app_view')==='relations'?'relations':'inventory';
+  var viewButton=document.querySelector('.app-view-tab[data-app-view="'+savedView+'"]');
+  switchAppView(savedView,viewButton,true);
   var savedScroll=nonNegativeInt(localStorage.getItem('hd_ui_scroll'),0);
   if(savedScroll) requestAnimationFrame(function(){window.scrollTo(0,savedScroll);});
   scheduleFileBackupReminder();
@@ -2330,6 +2804,11 @@ document.addEventListener('DOMContentLoaded',function(){
   document.querySelectorAll('.tab').forEach(function(tab){
     tab.addEventListener('keydown',function(event){
       if(event.key==='Enter'||event.key===' '){event.preventDefault();switchSidebarTab(tab.dataset.tab,tab);}
+    });
+  });
+  document.querySelectorAll('.app-view-tab').forEach(function(tab){
+    tab.addEventListener('keydown',function(event){
+      if(event.key==='Enter'||event.key===' '){event.preventDefault();switchAppView(tab.dataset.appView,tab);}
     });
   });
   window.addEventListener('scroll',function(){
