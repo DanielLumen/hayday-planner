@@ -7,6 +7,7 @@ const { createServer } = require("../server");
 
 const FILE_URL = pathToFileURL(path.join(__dirname, "..", "index.html")).href;
 const SNAPSHOT_PATH = path.join(__dirname, "ui_snapshot.png");
+const TINY_PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64");
 const results = { passed: 0, failed: 0, tests: [] };
 
 function check(name, ok, detail = "") {
@@ -70,7 +71,15 @@ async function run() {
 
   try {
     await page.goto(FILE_URL, { waitUntil: "networkidle", timeout: 30000 });
-    await page.evaluate(() => localStorage.clear());
+    await page.evaluate(async () => {
+      localStorage.clear();
+      if (window.HayDayItemImages && HayDayItemImages.supported()) {
+        await new Promise((resolve) => {
+          const request = indexedDB.deleteDatabase(HayDayItemImages.DB_NAME);
+          request.onsuccess = request.onerror = request.onblocked = () => resolve();
+        });
+      }
+    });
     await page.reload({ waitUntil: "networkidle" });
     await page.waitForTimeout(800);
 
@@ -100,12 +109,15 @@ async function run() {
       viewWidth: document.querySelector('#relationsView').getBoundingClientRect().width,
       graphHeight: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().height || 0,
       scale: _relationGraphView.scale,
+      layoutNodeCount: _relationsLayout?.nodes.length || 0,
+      layoutEdgeCount: _relationsLayout?.edges.length || 0,
     }));
     check("关系网在当前网页全宽显示", relationOverview.sameUrl === inventoryUrl && relationOverview.inventoryHidden && relationOverview.relationsVisible && relationOverview.viewWidth >= relationOverview.viewportWidth - 2, JSON.stringify(relationOverview));
-    check("所有入网物品与关系同时显示在一张图中", relationOverview.nodeCount > 400 && relationOverview.edgeCount > 900 && relationOverview.finalCount > 200 && relationOverview.bandCount >= 4, JSON.stringify(relationOverview));
+    check("所有入网物品与关系同时显示在一张图中", relationOverview.nodeCount > 400 && relationOverview.edgeCount > 800 && relationOverview.nodeCount === relationOverview.layoutNodeCount && relationOverview.edgeCount === relationOverview.layoutEdgeCount && relationOverview.finalCount > 200 && relationOverview.bandCount >= 4, JSON.stringify(relationOverview));
     check("最终产物按是否被作为原料判定，无关系物品单列", relationOverview.standaloneCount > 0 && !relationOverview.breadIsFinal, JSON.stringify(relationOverview));
     await page.setViewportSize({ width: 2560, height: 1440 });
-    await page.waitForTimeout(220);
+    await page.evaluate(() => window.dispatchEvent(new Event('resize')));
+    await page.waitForTimeout(320);
     const largeScreenRelations = await page.evaluate(() => ({
       graphHeight: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().height || 0,
       viewportHeight: innerHeight,
@@ -113,7 +125,8 @@ async function run() {
     }));
     check("大屏关系网使用可用高度并自动放大", largeScreenRelations.graphHeight > 1100 && largeScreenRelations.graphHeight >= largeScreenRelations.viewportHeight - 240 && largeScreenRelations.scale > relationOverview.scale * 1.5, JSON.stringify({ relationOverview, largeScreenRelations }));
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.waitForTimeout(220);
+    await page.evaluate(() => window.dispatchEvent(new Event('resize')));
+    await page.waitForTimeout(320);
     const relationAccessibility = await page.evaluate(() => ({
       graphRole: document.querySelector('#relationsGraph')?.getAttribute('role'),
       buttonNodes: document.querySelectorAll('.network-node[role="button"]').length,
@@ -318,6 +331,64 @@ async function run() {
     });
     check("物品清单在右侧标签正下方", itemListLayout.sameSide && itemListLayout.belowTab, JSON.stringify(itemListLayout));
     check("物品清单保持粮仓货仓两栏", itemListLayout.columns === 2, JSON.stringify(itemListLayout));
+    const userDataBeforeImage = await page.evaluate(() => ({
+      edits: localStorage.getItem('hd_edits'),
+      inventory: localStorage.getItem('hd_inv'),
+    }));
+    await page.click('#itemsList .items-review-entry button');
+    const reviewWorkspace = await page.evaluate(() => ({
+      visible: !document.querySelector('#dataReviewPanel').hidden,
+      inventoryHidden: document.querySelector('#inventoryMainLayout').hidden,
+      filters: document.querySelectorAll('#dataReviewFilters .review-filter').length,
+      summary: document.querySelector('#dataReviewSummary').textContent,
+      missing: getDataReviewCounts().missing,
+      honeyToast: getDataReviewState(im.cheese_sandwich, loadEdits(), loadChecked()),
+    }));
+    check("数据校对从物品清单进入且不增加主导航", reviewWorkspace.visible && reviewWorkspace.inventoryHidden && reviewWorkspace.filters === 5 && reviewWorkspace.summary.includes('图片覆盖率'), JSON.stringify(reviewWorkspace));
+    check("内置占位图不会被误算为真实图片", reviewWorkspace.missing > 0 && reviewWorkspace.honeyToast.placeholderImage && reviewWorkspace.honeyToast.missingImage, JSON.stringify(reviewWorkspace));
+    await page.evaluate(() => setDataReviewFilter('all'));
+    await page.evaluate(() => chooseItemImage('bread'));
+    const imageInput = page.locator('input[type="file"][accept*="image/png"]');
+    check("上传按钮只接受常见图片格式", await imageInput.count() === 1);
+    await imageInput.setInputFiles({ name: 'bread.png', mimeType: 'image/png', buffer: TINY_PNG });
+    await page.waitForFunction(() => hasCustomItemImage('bread'));
+    const uploadedImageState = await page.evaluate(async (before) => {
+      const backup = await buildBackupData();
+      return {
+        custom: hasCustomItemImage('bread'),
+        source: itemImageSrc('bread').slice(0, 22),
+        version: backup.version,
+        backupHasImage: Boolean(backup.itemImages.bread?.dataUrl),
+        editsUntouched: localStorage.getItem('hd_edits') === before.edits,
+        inventoryUntouched: localStorage.getItem('hd_inv') === before.inventory,
+        detailUsesUpload: document.querySelector('#dataReviewDetail img')?.src.startsWith('data:image/'),
+      };
+    }, userDataBeforeImage);
+    check("用户图片保存在独立图片库并立即显示", uploadedImageState.custom && uploadedImageState.source.startsWith('data:image/') && uploadedImageState.detailUsesUpload, JSON.stringify(uploadedImageState));
+    check("上传图片不改写物品编辑和库存", uploadedImageState.editsUntouched && uploadedImageState.inventoryUntouched, JSON.stringify(uploadedImageState));
+    check("新备份使用 v3 并包含用户图片", uploadedImageState.version === 3 && uploadedImageState.backupHasImage, JSON.stringify(uploadedImageState));
+    const staleImageState = await page.evaluate(async (tinyPng) => {
+      const before = itemImageSrc('bread');
+      const stale = await buildBackupData();
+      stale.itemImages.bread.dataUrl = tinyPng;
+      stale.itemImages.bread.updatedAt = '2000-01-01T00:00:00.000Z';
+      const merged = await importBackupImages(stale);
+      await refreshItemImageCache();
+      return { merged, unchanged: itemImageSrc('bread') === before };
+    }, `data:image/png;base64,${TINY_PNG.toString('base64')}`);
+    check("旧备份图片不能覆盖较新的本地图片", staleImageState.merged === 0 && staleImageState.unchanged, JSON.stringify(staleImageState));
+    const imageMergeState = await page.evaluate(async () => {
+      const backup = await buildBackupData();
+      await HayDayItemImages.remove('bread');
+      await refreshItemImageCache();
+      const removed = !hasCustomItemImage('bread');
+      const merged = await importBackupImages(backup);
+      await refreshItemImageCache();
+      return { removed, merged, restored: hasCustomItemImage('bread') };
+    });
+    check("新版备份以合并方式恢复图片", imageMergeState.removed && imageMergeState.merged === 1 && imageMergeState.restored, JSON.stringify(imageMergeState));
+    await page.click('#dataReviewPanel .data-review-heading .btn');
+    check("退出校对后恢复原库存界面", await page.evaluate(() => document.querySelector('#dataReviewPanel').hidden && !document.querySelector('#inventoryMainLayout').hidden));
     await page.click('.tab[data-tab="priority"]');
 
     const tileMetaTexts = await page.$$eval(".tile-meta", (els) => els.map((el) => el.textContent));
@@ -394,6 +465,7 @@ async function run() {
     });
     check("自定义物品备份完整恢复", importState.restored === 1 && importState.stock === 7 && importState.target === 9, JSON.stringify(importState));
     check("导入时规范重复原料和依赖删除", importState.ingredients.length === 1 && importState.ingredients[0].q === 3 && !importState.deletions.includes("lavender"), JSON.stringify(importState));
+    check("导入旧版备份不会清空已有用户图片", await page.evaluate(() => hasCustomItemImage('bread')));
 
     await page.setViewportSize({ width: 390, height: 844 });
     const mobileFilterState = await page.evaluate(() => ({
@@ -412,6 +484,17 @@ async function run() {
     check("移动端摘要更紧凑且顶部操作保持可点和可读", mobileFilterState.statColumns === 3 && mobileFilterState.topActions.every((action) => action.label && action.width >= 44 && action.height >= 44), JSON.stringify(mobileFilterState));
     await page.click(".mobile-filter-toggle");
     check("移动端可展开全部设备", (await page.locator("#filterRow .chip:visible").count()) > 30 && (await page.textContent(".mobile-filter-toggle")) === "收起设备");
+    await page.click('.tab[data-tab="items"]');
+    await page.click('#itemsList .items-review-entry button');
+    const mobileReviewState = await page.evaluate(() => ({
+      documentOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+      layoutColumns: getComputedStyle(document.querySelector('.data-review-layout')).gridTemplateColumns.split(' ').length,
+      searchWidth: document.querySelector('#dataReviewSearch').getBoundingClientRect().width,
+      panelWidth: document.querySelector('#dataReviewPanel').getBoundingClientRect().width,
+      detailVisible: document.querySelector('#dataReviewDetail').getBoundingClientRect().height > 0,
+    }));
+    check("移动端数据校对改为单栏且没有横向溢出", !mobileReviewState.documentOverflow && mobileReviewState.layoutColumns === 1 && mobileReviewState.searchWidth <= mobileReviewState.panelWidth && mobileReviewState.detailVisible, JSON.stringify(mobileReviewState));
+    await page.click('#dataReviewPanel .data-review-heading .btn');
 
     await page.click('.app-view-tab[data-app-view="relations"]');
     await page.fill('#relationsSearch', '奶酪三明治');
