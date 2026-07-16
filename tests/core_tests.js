@@ -2,6 +2,29 @@
 
 const assert = require("node:assert/strict");
 const core = require("../planner-core");
+const itemImages = require("../item-image-store");
+const placeholderIconIds = require("../icon-status");
+
+assert.equal(placeholderIconIds.includes("cheese_sandwich"), true);
+assert.equal(placeholderIconIds.includes("bread"), false);
+
+const tinyPng = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+const normalizedImage = itemImages.normalizeRecord("bread", { dataUrl: tinyPng, width: 1, height: 1, updatedAt: "2026-07-16T00:00:00.000Z" });
+assert.deepEqual(normalizedImage, {
+  id: "bread",
+  dataUrl: tinyPng,
+  mimeType: "image/png",
+  width: 1,
+  height: 1,
+  updatedAt: "2026-07-16T00:00:00.000Z",
+});
+assert.equal(itemImages.normalizeRecord("bread", { dataUrl: "https://example.com/image.png" }), null);
+assert.equal(itemImages.normalizeRecord("", { dataUrl: tinyPng }), null);
+assert.deepEqual(itemImages.normalizeBackup({ bread: normalizedImage, unsafe: { dataUrl: "javascript:alert(1)" } }), [normalizedImage]);
+assert.equal(itemImages.shouldReplace(null, normalizedImage), true);
+assert.equal(itemImages.shouldReplace({ updatedAt: "2026-07-17T00:00:00.000Z" }, normalizedImage), false);
+assert.equal(itemImages.shouldReplace({ updatedAt: "2026-07-15T00:00:00.000Z" }, normalizedImage), true);
+assert.equal(itemImages.shouldReplace({ updatedAt: "" }, normalizedImage), false);
 
 const items = [
   { id: "wheat", ing: [] },
