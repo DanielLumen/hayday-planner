@@ -50,6 +50,22 @@ async function testSyncRetry(browser) {
     }));
     check("同步失败后自动重试", attempts >= 2, `请求次数: ${attempts}`);
     check("同步成功后清空持久队列", state.local === "saved" && state.pending.length === 0 && state.persistedQueue === null, JSON.stringify(state));
+
+    const attemptsBeforeConflict = attempts;
+    await syncPage.evaluate(() => {
+      localStorage.setItem('hd_inv', '{"wheat":{"n":0}}');
+      localStorage.setItem(SERVER_PENDING_STORAGE, JSON.stringify({ hd_inv: '{"wheat":{"n":0}}' }));
+      localStorage.setItem(SERVER_REVISION_STORAGE, 'stale-browser-revision');
+    });
+    await syncPage.reload({ waitUntil: "networkidle" });
+    await syncPage.waitForTimeout(500);
+    const conflictState = await syncPage.evaluate(() => ({
+      conflict: _serverConflict,
+      localInventory: localStorage.getItem('hd_inv'),
+      pending: JSON.parse(localStorage.getItem(SERVER_PENDING_STORAGE) || '{}'),
+      status: document.querySelector('#saveStatus')?.textContent || '',
+    }));
+    check("旧浏览器待同步数据不会覆盖较新的服务器版本", conflictState.conflict && conflictState.localInventory.includes('"n":0') && conflictState.pending.hd_inv === conflictState.localInventory && attempts === attemptsBeforeConflict && conflictState.status.includes('同步冲突'), JSON.stringify({ conflictState, attempts, attemptsBeforeConflict }));
   } finally {
     await syncPage.close();
     await new Promise((resolve) => server.close(resolve));
@@ -85,6 +101,46 @@ async function run() {
 
     const title = await page.title();
     check("页面标题", title.includes("卡通农场"));
+    const overviewToggleInitial = await page.evaluate(() => ({
+      text: document.querySelector('#infoToggle')?.textContent?.trim(),
+      expanded: document.querySelector('#infoToggle')?.getAttribute('aria-expanded'),
+      visible: getComputedStyle(document.querySelector('#infoBar')).display !== 'none',
+    }));
+    check("库存助手顶部概览按钮使用明确的收起文字", overviewToggleInitial.text === '收起' && overviewToggleInitial.expanded === 'true' && overviewToggleInitial.visible, JSON.stringify(overviewToggleInitial));
+    await page.click('#infoToggle');
+    const overviewToggleCollapsed = await page.evaluate(() => ({
+      text: document.querySelector('#infoToggle')?.textContent?.trim(),
+      expanded: document.querySelector('#infoToggle')?.getAttribute('aria-expanded'),
+      hidden: getComputedStyle(document.querySelector('#infoBar')).display === 'none',
+      bodyClass: document.body.classList.contains('info-collapsed'),
+    }));
+    check("库存助手概览收起后按钮改为展开文字", overviewToggleCollapsed.text === '展开' && overviewToggleCollapsed.expanded === 'false' && overviewToggleCollapsed.hidden && overviewToggleCollapsed.bodyClass, JSON.stringify(overviewToggleCollapsed));
+    await page.click('#infoToggle');
+    const collapseControlSystem = await page.evaluate(() => {
+      // 约束所有现在和未来的展开/收起按钮，而不是维护一份容易遗漏的选择器名单。
+      const controls = Array.from(document.querySelectorAll('button[aria-expanded],button.collapse-toggle'));
+      const standard = controls.filter((button) => !button.classList.contains('collapse-toggle-compact'));
+      const signatures = Array.from(new Set(standard.map((button) => {
+        const style = getComputedStyle(button);
+        return [style.height, style.borderRadius, style.borderStyle, style.fontSize].join('|');
+      })));
+      return {
+        count: controls.length,
+        missingClass: controls.filter((button) => !button.classList.contains('collapse-toggle')).length,
+        invalidText: controls.filter((button) => !['展开','收起'].includes(button.textContent.trim())).map((button) => button.textContent.trim()),
+        missingState: controls.filter((button) => !['true','false'].includes(button.getAttribute('aria-expanded'))).length,
+        signatures,
+      };
+    });
+    check("全局展开收起按钮使用同一组件、汉字和状态规则", collapseControlSystem.count > 35 && collapseControlSystem.missingClass === 0 && collapseControlSystem.invalidText.length === 0 && collapseControlSystem.missingState === 0 && collapseControlSystem.signatures.length === 1, JSON.stringify(collapseControlSystem));
+    await page.click('#buyBanner .overview-toggle');
+    const overviewSectionExpanded = await page.evaluate(() => ({
+      expanded: document.querySelector('#buyBanner')?.classList.contains('expanded'),
+      text: document.querySelector('#buyBanner .overview-toggle')?.textContent?.trim(),
+      aria: document.querySelector('#buyBanner .overview-toggle')?.getAttribute('aria-expanded'),
+    }));
+    check("建议模块展开后统一显示收起文字", overviewSectionExpanded.expanded && overviewSectionExpanded.text === '收起' && overviewSectionExpanded.aria === 'true', JSON.stringify(overviewSectionExpanded));
+    await page.click('#buyBanner .overview-toggle');
     check("侧栏标签包含可访问状态", await page.evaluate(() => {
       const tabs = Array.from(document.querySelectorAll('.tab[role="tab"]'));
       return tabs.length === 3 && tabs.filter((tab) => tab.getAttribute("aria-selected") === "true").length === 1;
@@ -137,7 +193,79 @@ async function run() {
     }));
     check("关系网节点可由键盘访问且工具按钮有明确名称", relationAccessibility.graphRole === 'group' && relationAccessibility.buttonNodes > 400 && relationAccessibility.tabbableNodes === 1 && relationAccessibility.exportLabel === '导出数据' && relationAccessibility.importLabel === '导入数据' && relationAccessibility.fullscreenLabel === '全屏显示关系网', JSON.stringify(relationAccessibility));
 
+    const relationPanelCoverage = await page.evaluate(() => ({
+      keys: Array.from(document.querySelectorAll('[data-relation-panel]')).map((panel) => panel.getAttribute('data-relation-panel')),
+      missingToggles: Array.from(document.querySelectorAll('[data-relation-panel]')).filter((panel) => !panel.hidden && !panel.querySelector('.relation-panel-toggle')).map((panel) => panel.getAttribute('data-relation-panel')),
+      readyPanels: Array.from(document.querySelectorAll('[data-relation-panel]')).filter((panel) => panel.querySelector('.relation-panel-toggle')).length,
+      expandedToggles: document.querySelectorAll('[data-relation-panel] .relation-panel-toggle[aria-expanded="true"]').length,
+    }));
+    check("关系网每个辅助功能模块都有独立收起按钮", ['tools','guide','demand','selection','standalone'].every((key) => relationPanelCoverage.keys.includes(key)) && relationPanelCoverage.missingToggles.length === 0 && relationPanelCoverage.expandedToggles === relationPanelCoverage.readyPanels, JSON.stringify(relationPanelCoverage));
+
+    const standardLayout = await page.evaluate(() => ({
+      height: _relationsLayout.height,
+      width: _relationsLayout.width,
+      rows: _relationsLayout.rowsPerColumn,
+      nodes: _relationsLayout.nodes.length,
+      edges: _relationsLayout.edges.length,
+    }));
+    await page.click('#relationCompactButton');
+    await page.waitForTimeout(180);
+    const compactLayout = await page.evaluate(() => ({
+      height: _relationsLayout.height,
+      width: _relationsLayout.width,
+      rows: _relationsLayout.rowsPerColumn,
+      nodes: _relationsLayout.nodes.length,
+      edges: _relationsLayout.edges.length,
+      pressed: document.querySelector('#relationCompactButton')?.getAttribute('aria-pressed'),
+      label: document.querySelector('#relationCompactButton')?.textContent?.trim(),
+    }));
+    check("低高度排列减少纵向跨度且不丢失节点和关系", compactLayout.height < standardLayout.height && compactLayout.width > standardLayout.width && compactLayout.rows < standardLayout.rows && compactLayout.nodes === standardLayout.nodes && compactLayout.edges === standardLayout.edges && compactLayout.pressed === 'true' && compactLayout.label === '标准排列', JSON.stringify({ standardLayout, compactLayout }));
+    await page.click('#relationCompactButton');
+    await page.waitForTimeout(180);
+
+    const panelsBeforeCollapse = await page.evaluate(() => ({
+      top: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().top || 0,
+      height: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().height || 0,
+    }));
+    await page.click('#relationToolsPanel > .relation-panel-toggle');
+    await page.click('#relationGuidePanel > .relation-panel-toggle');
+    await page.click('#relationDemandPlanner .relation-panel-toggle');
+    await page.waitForTimeout(320);
+    const panelsAfterCollapse = await page.evaluate(() => ({
+      top: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().top || 0,
+      height: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().height || 0,
+      collapsed: ['tools','guide','demand'].every((key) => document.querySelector('[data-relation-panel="'+key+'"]')?.classList.contains('is-collapsed')),
+      allClosed: ['tools','guide','demand'].every((key) => document.querySelector('[data-relation-panel="'+key+'"] .relation-panel-toggle')?.getAttribute('aria-expanded') === 'false'),
+      nodes: document.querySelectorAll('.network-node').length,
+    }));
+    check("收起辅助模块会把释放的纵向空间补给关系图", panelsAfterCollapse.collapsed && panelsAfterCollapse.allClosed && panelsAfterCollapse.top < panelsBeforeCollapse.top && panelsAfterCollapse.height > panelsBeforeCollapse.height && panelsAfterCollapse.nodes > 400, JSON.stringify({ panelsBeforeCollapse, panelsAfterCollapse }));
+    await page.click('#relationToolsPanel > .relation-panel-toggle');
+    await page.click('#relationGuidePanel > .relation-panel-toggle');
+    await page.click('#relationDemandPlanner .relation-panel-toggle');
+    await page.waitForTimeout(320);
+
     await page.evaluate(() => selectRelationNode('cheese_sandwich', true));
+    const selectionPanelBefore = await page.evaluate(() => ({
+      height: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().height || 0,
+      panelHeight: document.querySelector('#relationSelection')?.getBoundingClientRect().height || 0,
+      detailVisible: !document.querySelector('#relationSelection')?.hidden,
+      toggle: document.querySelector('#relationSelection .relation-panel-toggle')?.getAttribute('aria-expanded'),
+    }));
+    await page.click('#relationSelection .relation-panel-toggle');
+    await page.waitForTimeout(220);
+    const selectionPanelCollapsed = await page.evaluate(() => ({
+      height: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().height || 0,
+      panelHeight: document.querySelector('#relationSelection')?.getBoundingClientRect().height || 0,
+      recordedExpandedHeight: _relationPanelExpandedHeights.selection || 0,
+      viewportHeightStyle: getComputedStyle(document.querySelector('#relationGraphViewport')).height,
+      collapsed: document.querySelector('#relationSelection')?.classList.contains('is-collapsed'),
+      copyDisplay: getComputedStyle(document.querySelector('#relationSelection .relation-selection-copy')).display,
+      selected: document.querySelector('[data-network-node="cheese_sandwich"]')?.classList.contains('is-selected'),
+      toggle: document.querySelector('#relationSelection .relation-panel-toggle')?.getAttribute('aria-expanded'),
+    }));
+    check("物品详情可独立收起且不清除当前关系", selectionPanelBefore.detailVisible && selectionPanelBefore.toggle === 'true' && selectionPanelCollapsed.collapsed && selectionPanelCollapsed.copyDisplay === 'none' && selectionPanelCollapsed.selected && selectionPanelCollapsed.toggle === 'false' && selectionPanelCollapsed.height > selectionPanelBefore.height, JSON.stringify({ selectionPanelBefore, selectionPanelCollapsed }));
+    await page.click('#relationSelection .relation-panel-toggle');
+    await page.waitForTimeout(220);
     const editActionBeforeFullscreen = await page.evaluate(() => {
       const button = document.querySelector('#relationSelection [data-edit-id="cheese_sandwich"]');
       return Boolean(button && getComputedStyle(button).display !== 'none');
@@ -165,6 +293,10 @@ async function run() {
     check("全屏期间不会在关系网后方打开编辑对话框", fullscreenEditGuard.modalHidden && fullscreenEditGuard.message.includes('退出关系网全屏'), JSON.stringify(fullscreenEditGuard));
     await page.keyboard.press('Escape');
     await page.waitForTimeout(220);
+    if (await page.evaluate(() => Boolean(document.fullscreenElement || document.querySelector('#relationsView')?.classList.contains('is-pseudo-fullscreen')))) {
+      await page.click('#relationFullscreenButton');
+      await page.waitForTimeout(220);
+    }
     const restoredFullscreenState = await page.evaluate(() => ({
         active: Boolean(document.fullscreenElement || document.querySelector('#relationsView')?.classList.contains('is-pseudo-fullscreen')),
         pressed: document.querySelector('#relationFullscreenButton')?.getAttribute('aria-pressed'),
@@ -206,6 +338,22 @@ async function run() {
     check("搜索只高亮并聚焦关系，不会把其他物品从全图移除", cheeseNetwork.allNodesRemain > 400 && cheeseNetwork.selected && cheeseNetwork.detail.includes('奶酪三明治'), JSON.stringify(cheeseNetwork));
     check("聚焦后显示完整动物饲料来源、数量与左右层级", ['milk','cow_feed','corn','soybean'].every((id) => cheeseNetwork.activeIds.includes(id)) && cheeseNetwork.hasSemanticQty && cheeseNetwork.leftToRight, JSON.stringify(cheeseNetwork));
     check("聚焦详情在图上方并直接显示配方", cheeseNetwork.mode === '聚焦' && cheeseNetwork.detailAboveGraph && cheeseNetwork.detail.includes('配方：') && cheeseNetwork.scale >= .9, JSON.stringify(cheeseNetwork));
+    const demandStorageBefore = await page.evaluate(() => JSON.stringify(Object.fromEntries(Object.keys(localStorage).sort().map((key) => [key, localStorage.getItem(key)]))));
+    await page.fill('#relationDemandQty', '6');
+    await page.click('#relationDemandRun');
+    const demandSimulation = await page.evaluate(() => ({
+      quantity: _relationDemandResult?.quantity,
+      targetId: _relationDemandResult?.rootId,
+      taskCount: _relationDemandResult?.tasks.length || 0,
+      materialCount: Object.keys(_relationDemandResult?.totalsById || {}).length,
+      nodeCount: document.querySelectorAll('[data-network-node]').length,
+      activeCount: document.querySelectorAll('.network-node.is-active').length,
+      resultText: document.querySelector('#relationDemandResult')?.textContent || '',
+      storage: JSON.stringify(Object.fromEntries(Object.keys(localStorage).sort().map((key) => [key, localStorage.getItem(key)]))),
+    }));
+    check("需求模拟按指定数量递归列出逐层材料与生产顺序", demandSimulation.quantity === 6 && demandSimulation.targetId === 'cheese_sandwich' && demandSimulation.taskCount > 3 && demandSimulation.materialCount > 5 && demandSimulation.resultText.includes('奶酪三明治 × 6') && demandSimulation.resultText.includes('逐层总需求') && demandSimulation.resultText.includes('生产顺序'), JSON.stringify(demandSimulation));
+    check("需求模拟只高亮相关路径且完整关系网仍保留", demandSimulation.nodeCount > 400 && demandSimulation.activeCount > 5 && demandSimulation.activeCount < demandSimulation.nodeCount, JSON.stringify(demandSimulation));
+    check("需求模拟只读库存，不改写任何本地存储", demandSimulation.storage === demandStorageBefore, JSON.stringify({ before: demandStorageBefore, after: demandSimulation.storage }));
     await page.locator('[data-network-node="cheese_sandwich"]').press('ArrowRight');
     const keyboardRelation = await page.evaluate(() => ({
       activeId: document.activeElement?.getAttribute('data-network-node'),
@@ -229,8 +377,9 @@ async function run() {
       quantity: _relationsNetwork.ingredientsById.cheese_sandwich.find((edge) => edge.to === 'cheese')?.q,
       label: Array.from(document.querySelectorAll('.network-edge-wrap.show-label .network-edge-label')).map((node) => node.textContent || '').find((text) => text.includes('7')),
       selected: document.querySelector('[data-network-node="cheese_sandwich"]')?.classList.contains('is-selected'),
+      simulatedCheese: _relationDemandResult?.totalsById?.cheese?.requested,
     }));
-    check("物品编辑保存后立即重算关系网和连线数量", liveEditState.quantity === 7 && Boolean(liveEditState.label) && liveEditState.selected, JSON.stringify(liveEditState));
+    check("物品编辑保存后立即重算关系网、连线数量与需求模拟", liveEditState.quantity === 7 && Boolean(liveEditState.label) && liveEditState.selected && liveEditState.simulatedCheese === 42, JSON.stringify(liveEditState));
     await page.evaluate((saved) => {
       if (saved === null) localStorage.removeItem('hd_edits');
       else localStorage.setItem('hd_edits', saved);
@@ -247,9 +396,37 @@ async function run() {
       selectedCount: document.querySelectorAll('.network-node.is-selected').length,
     }));
     check("返回全景会清除聚焦但保留完整关系网", restoredOverview.selectionHidden && restoredOverview.mode === '全景' && restoredOverview.allNodesRemain > 400 && restoredOverview.lowZoom && restoredOverview.selectedCount === 0, JSON.stringify(restoredOverview));
+    const alternativeInventory = await page.evaluate(() => {
+      const saved = { fish_fillet: S.fish_fillet, red_lure: S.red_lure, fishing_net: S.fishing_net };
+      S.fish_fillet = { n: 0, tg: 5 };S.red_lure = { n: 5, tg: 5 };S.fishing_net = { n: 0, tg: 5 };
+      selectRelationNode('fish_fillet', true);
+      document.querySelector('#relationDemandQty').value = '5';
+      runRelationDemandSimulation();
+      const state = {
+        choice: _relationDemandResult?.alternatives?.[0],
+        redActive: document.querySelector('[data-network-node="red_lure"]')?.classList.contains('is-active'),
+        netActive: document.querySelector('[data-network-node="fishing_net"]')?.classList.contains('is-active'),
+        allNodesRemain: document.querySelectorAll('[data-network-node]').length,
+        text: document.querySelector('#relationDemandResult')?.textContent || '',
+      };
+      for (const [id, value] of Object.entries(saved)) {
+        if (value == null) delete S[id]; else S[id] = value;
+      }
+      relationGraphFit(false);
+      return state;
+    });
+    check("多种来源不会重复相加，并优先采用当前库存可覆盖的路线", alternativeInventory.choice?.to === 'red_lure' && alternativeInventory.choice?.quantity === 5 && alternativeInventory.redActive && !alternativeInventory.netActive && alternativeInventory.allNodesRemain > 400 && alternativeInventory.text.includes('种来源择一'), JSON.stringify(alternativeInventory));
     await page.click('.app-view-tab[data-app-view="inventory"]');
     check("至少30个分组", (await page.$$(".section-header")).length >= 30);
     check("至少200个物品tile", (await page.$$(".item-tile")).length >= 200);
+    const firstGroupToggle = await page.$('.section-header .group-collapse-toggle');
+    await firstGroupToggle.click();
+    const groupCollapsed = await page.evaluate(() => {
+      const header=document.querySelector('.section-header'),button=header?.querySelector('.group-collapse-toggle');
+      return {hidden:header?.nextElementSibling?.classList.contains('hidden'),text:button?.textContent?.trim(),aria:button?.getAttribute('aria-expanded')};
+    });
+    check("物品分组使用统一展开收起按钮", groupCollapsed.hidden && groupCollapsed.text === '展开' && groupCollapsed.aria === 'false', JSON.stringify(groupCollapsed));
+    await firstGroupToggle.click();
 
     const firstInput = await page.$(".tile-input");
     check("存在库存输入框", firstInput !== null);
@@ -298,8 +475,9 @@ async function run() {
     await page.click('.tab[data-tab="plan"]');
     const rawPlanText = await page.textContent("#planResults");
     check("基础原料按独立来源安排", rawPlanText.includes("独立来源") && !rawPlanText.includes("动物与基础原料"));
-    const chainToggle = page.locator('#planResults .chain-depth-badge').filter({ hasText: /层级 [2-9]/ }).first();
-    if (await chainToggle.count()) {
+    const chainBadge = page.locator('#planResults .chain-depth-badge').filter({ hasText: /层级 [2-9]/ }).first();
+    if (await chainBadge.count()) {
+      const chainToggle = chainBadge.locator('..').locator('.chain-toggle');
       await chainToggle.click();
       const chainState = await chainToggle.evaluate((toggle) => {
         const tree = toggle.parentElement.querySelector('.chain-expanded');
@@ -308,8 +486,12 @@ async function run() {
           hasUndefined: tree.textContent.includes('undefined'),
           depths: rows.map((row) => Number(row.dataset.depth)),
           lefts: rows.map((row) => row.getBoundingClientRect().left),
+          toggleText: toggle.textContent.trim(),
+          expanded: toggle.getAttribute('aria-expanded'),
+          unified: toggle.classList.contains('collapse-toggle'),
         };
       });
+      check("生产链展开按钮遵循全局样式和文字规则", chainState.unified && chainState.toggleText === '收起' && chainState.expanded === 'true', JSON.stringify(chainState));
       check("生产链不显示 undefined", !chainState.hasUndefined, JSON.stringify(chainState));
       const alignedByDepth = chainState.depths.every((depth, index) =>
         chainState.lefts[index] === chainState.lefts[chainState.depths.indexOf(depth)]);
@@ -479,11 +661,11 @@ async function run() {
         return { label: button?.getAttribute('aria-label'), width: rect?.width || 0, height: rect?.height || 0 };
       }),
     }));
-    check("移动端默认收起设备筛选", mobileFilterState.visibleChips === 8 && mobileFilterState.toggleText === "更多设备", JSON.stringify(mobileFilterState));
+    check("移动端默认收起设备筛选", mobileFilterState.visibleChips === 8 && mobileFilterState.toggleText === "展开", JSON.stringify(mobileFilterState));
     check("移动端没有横向溢出", !mobileFilterState.hasOverflow, JSON.stringify(mobileFilterState));
     check("移动端摘要更紧凑且顶部操作保持可点和可读", mobileFilterState.statColumns === 3 && mobileFilterState.topActions.every((action) => action.label && action.width >= 44 && action.height >= 44), JSON.stringify(mobileFilterState));
     await page.click(".mobile-filter-toggle");
-    check("移动端可展开全部设备", (await page.locator("#filterRow .chip:visible").count()) > 30 && (await page.textContent(".mobile-filter-toggle")) === "收起设备");
+    check("移动端可展开全部设备", (await page.locator("#filterRow .chip:visible").count()) > 30 && (await page.textContent(".mobile-filter-toggle")) === "收起");
     await page.click('.tab[data-tab="items"]');
     await page.click('#itemsList .items-review-entry button');
     const mobileReviewState = await page.evaluate(() => ({
@@ -517,10 +699,14 @@ async function run() {
         detail: selection?.textContent || '',
         detailAboveGraph: selection?.getBoundingClientRect().bottom <= viewport?.getBoundingClientRect().top + 1,
         detailInFirstScreen: selection?.getBoundingClientRect().bottom <= innerHeight,
+        demandPlannerFits: document.querySelector('#relationDemandPlanner')?.getBoundingClientRect().width <= document.documentElement.clientWidth,
+        demandResultVisible: !document.querySelector('#relationDemandResult')?.hidden,
+        demandControlsHeight: document.querySelector('#relationDemandRun')?.getBoundingClientRect().height || 0,
       };
     });
     check("移动端全图不撑宽页面，并支持缩放与拖动", !mobileRelations.documentOverflow && mobileRelations.viewportFits && mobileRelations.touchPanEnabled && mobileRelations.zoomChanged && mobileRelations.nodeCount > 400, JSON.stringify(mobileRelations));
     check("移动端搜索进入可读聚焦且首屏可见配方", mobileRelations.focusScale >= .86 && mobileRelations.mode === '聚焦' && mobileRelations.detailAboveGraph && mobileRelations.detailInFirstScreen && mobileRelations.detail.includes('配方：'), JSON.stringify(mobileRelations));
+    check("移动端需求模拟不撑宽页面且操作按钮可点击", mobileRelations.demandPlannerFits && mobileRelations.demandResultVisible && mobileRelations.demandControlsHeight >= 40, JSON.stringify(mobileRelations));
 
     check("页面无 JS 异常", pageErrors.length === 0, pageErrors.join(" | "));
     check("控制台无错误", consoleErrors.length === 0, consoleErrors.join(" | "));

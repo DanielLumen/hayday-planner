@@ -209,6 +209,88 @@ assert.equal(sharedNetwork.nodes.filter((node) => node.id === "wheat").length, 1
 assert.deepEqual(sharedWheatNodes.map((node) => node.totalQty), [2, 3]);
 assert.equal(sharedWheatNodes.every((node) => node.status === "known"), true);
 
+const demandItems = [
+  { id: "wheat", nameCN: "小麦", t: 120, ing: [] },
+  { id: "corn", nameCN: "玉米", t: 300, ing: [] },
+  { id: "cow_feed", nameCN: "奶牛饲料", bld: "feed_mill", t: 600, ing: [{ i: "wheat", q: 2 }, { i: "corn", q: 1 }] },
+  { id: "milk", nameCN: "牛奶", bld: "cow", t: 1200, ing: [] },
+  { id: "red_lure", nameCN: "红色鱼饵", t: 1800, ing: [] },
+  { id: "fishing_net", nameCN: "渔网", t: 3600, ing: [] },
+  { id: "fish_fillet", nameCN: "鱼片", t: 0, ing: [] },
+];
+const demandNetwork = core.analyzeProductionNetwork(demandItems, {
+  relationsById: {
+    milk: [{ i: "cow_feed", q: 1, label: "每份需 1 袋饲料" }],
+    fish_fillet: [
+      { i: "red_lure", q: 1, mode: "alternative", label: "每片需 1 个鱼饵" },
+      { i: "fishing_net", q: 1, mode: "alternative", outputQty: 3, label: "每 3 片需 1 张" },
+    ],
+  },
+});
+const demandInventory = { milk: 0, cow_feed: 0, wheat: 10, corn: 1 };
+const demandInventoryBefore = JSON.parse(JSON.stringify(demandInventory));
+const milkDemand = core.simulateProductionDemand(demandNetwork, "milk", 5, demandInventory, {
+  batchOutputs: { cow_feed: 3 },
+});
+assert.deepEqual(demandInventory, demandInventoryBefore);
+assert.equal(milkDemand.root.productionNeeded, 5);
+assert.deepEqual(
+  milkDemand.tasks.map(({ id, productionNeeded, produced, batches, surplus }) => ({ id, productionNeeded, produced, batches, surplus })),
+  [
+    { id: "cow_feed", productionNeeded: 5, produced: 6, batches: 2, surplus: 1 },
+    { id: "milk", productionNeeded: 5, produced: 5, batches: 5, surplus: 0 },
+  ],
+);
+assert.deepEqual(milkDemand.shortages.map(({ id, shortage }) => ({ id, shortage })), [{ id: "corn", shortage: 1 }]);
+assert.deepEqual(milkDemand.equipment.map(({ id, batches }) => ({ id, batches })), [
+  { id: "feed_mill", batches: 2 },
+  { id: "cow", batches: 5 },
+]);
+assert.deepEqual(milkDemand.criticalPath.ids, ["milk", "cow_feed", "corn"]);
+assert.equal(milkDemand.nodeIds.includes("wheat") && milkDemand.edgeKeys.includes("milk\u0000cow_feed"), true);
+
+const fishDemand = core.simulateProductionDemand(
+  demandNetwork,
+  "fish_fillet",
+  5,
+  { red_lure: 5, fishing_net: 0 },
+);
+assert.deepEqual(fishDemand.alternatives, [{ from: "fish_fillet", to: "red_lure", quantity: 5, optionCount: 2 }]);
+assert.equal(fishDemand.nodeIds.includes("red_lure"), true);
+assert.equal(fishDemand.nodeIds.includes("fishing_net"), false);
+assert.deepEqual(fishDemand.shortages, []);
+
+const netDemand = core.simulateProductionDemand(
+  demandNetwork,
+  "fish_fillet",
+  5,
+  { red_lure: 0, fishing_net: 2 },
+);
+assert.deepEqual(netDemand.alternatives, [{ from: "fish_fillet", to: "fishing_net", quantity: 2, optionCount: 2 }]);
+assert.equal(netDemand.inventoryAfter.fishing_net, 0);
+assert.deepEqual(netDemand.shortages, []);
+
+const sharedBatchNetwork = core.analyzeProductionNetwork([
+  { id: "wheat", ing: [] },
+  { id: "corn", ing: [] },
+  { id: "cow_feed", ing: [{ i: "wheat", q: 2 }, { i: "corn", q: 1 }] },
+  { id: "left", ing: [{ i: "cow_feed", q: 2 }] },
+  { id: "right", ing: [{ i: "cow_feed", q: 2 }] },
+  { id: "root", ing: [{ i: "left", q: 1 }, { i: "right", q: 1 }] },
+]);
+const sharedBatchDemand = core.simulateProductionDemand(sharedBatchNetwork, "root", 1, {}, {
+  batchOutputs: { cow_feed: 3 },
+});
+assert.deepEqual(
+  (({ requested, stockUsed, productionNeeded, produced, batches, surplus }) => ({ requested, stockUsed, productionNeeded, produced, batches, surplus }))(sharedBatchDemand.totalsById.cow_feed),
+  { requested: 4, stockUsed: 0, productionNeeded: 3, produced: 6, batches: 2, surplus: 2 },
+);
+assert.equal(sharedBatchDemand.inventoryAfter.cow_feed, 2);
+
+const cycleDemand = core.simulateProductionDemand(network, "cycle_a", 1, {});
+assert.deepEqual(cycleDemand.cycles, [["cycle_a", "cycle_b", "cycle_a"]]);
+assert.equal(cycleDemand.shortages.some(({ id, shortage }) => id === "cycle_a" && shortage === 1), true);
+
 const appendedNetwork = core.analyzeProductionNetwork(
   [{ id: "raw_a", ing: [] }, { id: "raw_b", ing: [] }, { id: "product", ing: [{ i: "raw_a", q: 2 }] }],
   { relationsById: { product: [{ i: "raw_b", q: 3, label: "补充来源" }] } },

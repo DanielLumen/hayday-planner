@@ -1,6 +1,7 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 
 const base = __dirname;
 const dataFile = path.join(base, "data.json");
@@ -38,19 +39,23 @@ function parseStoredData(raw) {
   return data;
 }
 
-function loadData() {
+function loadData(file = dataFile) {
   try {
-    return parseStoredData(fs.readFileSync(dataFile));
+    return parseStoredData(fs.readFileSync(file));
   } catch (error) {
     error.status = 500;
     throw error;
   }
 }
 
-function saveData(obj) {
-  const tempFile = `${dataFile}.tmp`;
+function saveData(obj, file = dataFile) {
+  const tempFile = `${file}.tmp`;
   fs.writeFileSync(tempFile, `${JSON.stringify(obj, null, 2)}\n`, "utf-8");
-  fs.renameSync(tempFile, dataFile);
+  fs.renameSync(tempFile, file);
+}
+
+function revisionForData(data) {
+  return crypto.createHash("sha256").update(JSON.stringify(data)).digest("hex");
 }
 
 function readBody(req) {
@@ -114,11 +119,13 @@ function validateIncoming(incoming) {
   );
 }
 
-async function handleSave(req, res) {
+async function handleSave(req, res, storageFile) {
   if (req.method === "GET") {
     try {
-      send(res, 200, JSON.stringify(loadData()), {
+      const data = loadData(storageFile);
+      send(res, 200, JSON.stringify(data), {
         "Content-Type": "application/json; charset=utf-8",
+        "X-Hayday-Revision": revisionForData(data),
       });
     } catch (error) {
       send(res, 500, `err:${error.message}`, {
@@ -153,9 +160,24 @@ async function handleSave(req, res) {
     if (!validateIncoming(incoming)) {
       throw new Error("payload contains an unsupported key or value");
     }
-    saveData({ ...loadData(), ...incoming });
+    const current = loadData(storageFile);
+    const currentRevision = revisionForData(current);
+    const expectedRevision = String(req.headers["if-match"] || "").replace(/^W\//, "").replace(/^"|"$/g, "");
+    if (!expectedRevision) {
+      const error = new Error("save requires a base revision");
+      error.status = 428;
+      throw error;
+    }
+    if (expectedRevision !== currentRevision) {
+      const error = new Error("data changed since it was loaded");
+      error.status = 409;
+      throw error;
+    }
+    const next = { ...current, ...incoming };
+    saveData(next, storageFile);
     send(res, 200, JSON.stringify({ ok: true }), {
       "Content-Type": "application/json; charset=utf-8",
+      "X-Hayday-Revision": revisionForData(next),
     });
   } catch (error) {
     send(res, error.status || 400, `err:${error.message}`, {
@@ -194,12 +216,13 @@ function handleStatic(req, res, urlPath) {
   });
 }
 
-function createServer() {
+function createServer(options = {}) {
+  const storageFile = options.dataFile || dataFile;
   return http.createServer((req, res) => {
     const urlPath = req.url || "/";
 
     if (urlPath.split("?")[0] === "/api/save") {
-      handleSave(req, res);
+      handleSave(req, res, storageFile);
       return;
     }
 
@@ -233,6 +256,7 @@ module.exports = {
   isSameOrigin,
   loadData,
   parseStoredData,
+  revisionForData,
   resolveStaticPath,
   validateIncoming,
 };
