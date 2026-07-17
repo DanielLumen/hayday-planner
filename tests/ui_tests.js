@@ -338,6 +338,40 @@ async function run() {
     check("搜索只高亮并聚焦关系，不会把其他物品从全图移除", cheeseNetwork.allNodesRemain > 400 && cheeseNetwork.selected && cheeseNetwork.detail.includes('奶酪三明治'), JSON.stringify(cheeseNetwork));
     check("聚焦后显示完整动物饲料来源、数量与左右层级", ['milk','cow_feed','corn','soybean'].every((id) => cheeseNetwork.activeIds.includes(id)) && cheeseNetwork.hasSemanticQty && cheeseNetwork.leftToRight, JSON.stringify(cheeseNetwork));
     check("聚焦详情在图上方并直接显示配方", cheeseNetwork.mode === '聚焦' && cheeseNetwork.detailAboveGraph && cheeseNetwork.detail.includes('配方：') && cheeseNetwork.scale >= .9, JSON.stringify(cheeseNetwork));
+    const graphDragStart = await page.evaluate(() => {
+      const rect = document.querySelector('#relationGraphViewport').getBoundingClientRect();
+      return { x: rect.left + 12, y: rect.top + 12, viewX: _relationGraphView.x, viewY: _relationGraphView.y };
+    });
+    await page.mouse.move(graphDragStart.x, graphDragStart.y);
+    await page.mouse.down({ button: 'left' });
+    await page.mouse.move(graphDragStart.x + 70, graphDragStart.y + 35, { steps: 5 });
+    await page.mouse.up({ button: 'left' });
+    const afterLeftDrag = await page.evaluate(() => ({
+      selectedId: _relationsSelectedId,
+      selectedNode: document.querySelector('.network-node.is-selected')?.getAttribute('data-network-node'),
+      viewX: _relationGraphView.x,
+      viewY: _relationGraphView.y,
+    }));
+    check("鼠标左键拖动不会平移或误清除已选物品", afterLeftDrag.selectedId === 'cheese_sandwich' && afterLeftDrag.selectedNode === 'cheese_sandwich' && Math.abs(afterLeftDrag.viewX - graphDragStart.viewX) < .01 && Math.abs(afterLeftDrag.viewY - graphDragStart.viewY) < .01, JSON.stringify({ graphDragStart, afterLeftDrag }));
+    await page.mouse.move(graphDragStart.x, graphDragStart.y);
+    await page.mouse.down({ button: 'right' });
+    await page.mouse.move(graphDragStart.x + 90, graphDragStart.y + 45, { steps: 5 });
+    await page.mouse.up({ button: 'right' });
+    const afterRightDrag = await page.evaluate(() => {
+      const viewport = document.querySelector('#relationGraphViewport');
+      const contextEvent = new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2 });
+      const dispatchResult = viewport.dispatchEvent(contextEvent);
+      return {
+        selectedId: _relationsSelectedId,
+        selectedNode: document.querySelector('.network-node.is-selected')?.getAttribute('data-network-node'),
+        viewX: _relationGraphView.x,
+        viewY: _relationGraphView.y,
+        contextMenuPrevented: contextEvent.defaultPrevented && dispatchResult === false,
+        hint: document.querySelector('.relation-graph-hint')?.textContent || '',
+      };
+    });
+    check("鼠标右键可平移关系网并保持当前物品焦点", afterRightDrag.selectedId === 'cheese_sandwich' && afterRightDrag.selectedNode === 'cheese_sandwich' && afterRightDrag.viewX > afterLeftDrag.viewX + 70 && afterRightDrag.viewY > afterLeftDrag.viewY + 30, JSON.stringify({ afterLeftDrag, afterRightDrag }));
+    check("关系网内屏蔽浏览器右键菜单并明确显示拖动说明", afterRightDrag.contextMenuPrevented && afterRightDrag.hint.includes('鼠标右键') && afterRightDrag.hint.includes('触屏单指'), JSON.stringify(afterRightDrag));
     const demandStorageBefore = await page.evaluate(() => JSON.stringify(Object.fromEntries(Object.keys(localStorage).sort().map((key) => [key, localStorage.getItem(key)]))));
     await page.fill('#relationDemandQty', '6');
     await page.click('#relationDemandRun');
@@ -528,6 +562,67 @@ async function run() {
     }));
     check("数据校对从物品清单进入且不增加主导航", reviewWorkspace.visible && reviewWorkspace.inventoryHidden && reviewWorkspace.filters === 5 && reviewWorkspace.summary.includes('图片覆盖率'), JSON.stringify(reviewWorkspace));
     check("内置占位图不会被误算为真实图片", reviewWorkspace.missing > 0 && reviewWorkspace.honeyToast.placeholderImage && reviewWorkspace.honeyToast.missingImage, JSON.stringify(reviewWorkspace));
+    const editRecoveryBefore = await page.evaluate(() => ({
+      historyCount: loadEditHistory().length,
+      name: im.bread.nameCN,
+      target: gt('bread'),
+      stock: gs('bread'),
+      inventory: localStorage.getItem('hd_inv'),
+    }));
+    await page.evaluate(() => openEditModal('bread'));
+    await page.fill('#emName', `${editRecoveryBefore.name}恢复测试`);
+    await page.fill('#emTg', String(editRecoveryBefore.target + 3));
+    await page.click('#emSave');
+    await page.waitForTimeout(120);
+    const editRecoverySaved = await page.evaluate(() => ({
+      historyCount: loadEditHistory().length,
+      latestLabel: loadEditHistory()[0]?.label || '',
+      editedName: im.bread.nameCN,
+      editedTarget: gt('bread'),
+      localOnlyKey: !EDIT_HISTORY_STORAGE.startsWith('hd_'),
+      queuedForServer: Object.prototype.hasOwnProperty.call(_serverPending, EDIT_HISTORY_STORAGE),
+    }));
+    check("物品保存前自动创建本地恢复点", editRecoverySaved.historyCount === editRecoveryBefore.historyCount + 1 && editRecoverySaved.latestLabel.includes(editRecoveryBefore.name) && editRecoverySaved.editedName.endsWith('恢复测试') && editRecoverySaved.editedTarget === editRecoveryBefore.target + 3, JSON.stringify(editRecoverySaved));
+    await page.click('.edit-history-panel .collapse-toggle');
+    const editHistoryPanelState = await page.evaluate(() => ({
+      expanded: document.querySelector('.edit-history-panel .collapse-toggle')?.getAttribute('aria-expanded'),
+      unified: document.querySelector('.edit-history-panel .collapse-toggle')?.classList.contains('collapse-toggle'),
+      bodyVisible: !document.querySelector('#editHistoryBody')?.hidden,
+      localOnlyKey: !EDIT_HISTORY_STORAGE.startsWith('hd_'),
+      queuedForServer: Object.prototype.hasOwnProperty.call(_serverPending, EDIT_HISTORY_STORAGE),
+    }));
+    check("修改恢复使用统一按钮且记录不进入服务器同步", editHistoryPanelState.expanded === 'true' && editHistoryPanelState.unified && editHistoryPanelState.bodyVisible && editHistoryPanelState.localOnlyKey && !editHistoryPanelState.queuedForServer, JSON.stringify(editHistoryPanelState));
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.locator('#editHistoryList .edit-history-entry .btn').first().click();
+    await page.waitForTimeout(120);
+    const editRecoveryRestored = await page.evaluate(async () => {
+      const backup = await buildBackupData();
+      return {
+        name: im.bread.nameCN,
+        target: gt('bread'),
+        stock: gs('bread'),
+        inventory: localStorage.getItem('hd_inv'),
+        historyCount: loadEditHistory().length,
+        backupVersion: backup.version,
+        backupHasHistory: Object.prototype.hasOwnProperty.call(backup, 'editHistory'),
+      };
+    });
+    check("恢复物品编辑和目标时保持库存数量不变", editRecoveryRestored.name === editRecoveryBefore.name && editRecoveryRestored.target === editRecoveryBefore.target && editRecoveryRestored.stock === editRecoveryBefore.stock && editRecoveryRestored.inventory === editRecoveryBefore.inventory && editRecoveryRestored.historyCount === editRecoverySaved.historyCount + 1, JSON.stringify(editRecoveryRestored));
+    check("修改恢复记录不改变 v3 备份结构", editRecoveryRestored.backupVersion === 3 && !editRecoveryRestored.backupHasHistory, JSON.stringify(editRecoveryRestored));
+    const editHistoryClearBefore = await page.evaluate(() => ({
+      edits: localStorage.getItem('hd_edits'),
+      inventory: localStorage.getItem('hd_inv'),
+      name: im.bread.nameCN,
+    }));
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.click('#editHistoryList .edit-history-clear');
+    const editHistoryCleared = await page.evaluate(() => ({
+      historyCount: loadEditHistory().length,
+      edits: localStorage.getItem('hd_edits'),
+      inventory: localStorage.getItem('hd_inv'),
+      name: im.bread.nameCN,
+    }));
+    check("清空恢复记录不改动物品和库存", editHistoryCleared.historyCount === 0 && editHistoryCleared.edits === editHistoryClearBefore.edits && editHistoryCleared.inventory === editHistoryClearBefore.inventory && editHistoryCleared.name === editHistoryClearBefore.name, JSON.stringify(editHistoryCleared));
     await page.evaluate(() => setDataReviewFilter('all'));
     await page.evaluate(() => chooseItemImage('bread'));
     const imageInput = page.locator('input[type="file"][accept*="image/png"]');
@@ -624,6 +719,7 @@ async function run() {
     check("历史迁移仅修正名称和设备", migrationState.peanut.bld === "ice_cream_maker" && migrationState.fish.bld === "bbq_grill" && migrationState.fish.nameCN === "炸鱼薯条", JSON.stringify(migrationState));
 
     const importState = await page.evaluate(() => {
+      const historyBefore = loadEditHistory().length;
       const restored = importBackupData({
         gtSilo: 12,
         gtBarn: 9,
@@ -643,11 +739,41 @@ async function run() {
         target: gt("custom_review_item"),
         ingredients: savedEdits.add[0].ing,
         deletions: savedEdits.del,
+        historyBefore,
+        historyAfter: loadEditHistory().length,
       };
     });
     check("自定义物品备份完整恢复", importState.restored === 1 && importState.stock === 7 && importState.target === 9, JSON.stringify(importState));
     check("导入时规范重复原料和依赖删除", importState.ingredients.length === 1 && importState.ingredients[0].q === 3 && !importState.deletions.includes("lavender"), JSON.stringify(importState));
+    check("导入物品编辑前自动创建恢复点", importState.historyAfter === importState.historyBefore + 1, JSON.stringify(importState));
     check("导入旧版备份不会清空已有用户图片", await page.evaluate(() => hasCustomItemImage('bread')));
+    const deleteRecoveryBefore = await page.evaluate(() => ({
+      historyCount: loadEditHistory().length,
+      stock: gs('custom_review_item'),
+      inventory: localStorage.getItem('hd_inv'),
+    }));
+    await page.evaluate(() => openEditModal('custom_review_item'));
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.click('#emDelete');
+    await page.waitForTimeout(100);
+    const deleteRecoverySaved = await page.evaluate(() => ({
+      exists: Boolean(im.custom_review_item),
+      historyCount: loadEditHistory().length,
+      latestId: loadEditHistory()[0]?.id || '',
+      latestLabel: loadEditHistory()[0]?.label || '',
+      stock: gs('custom_review_item'),
+      inventory: localStorage.getItem('hd_inv'),
+    }));
+    check("删除物品前自动创建恢复点", !deleteRecoverySaved.exists && deleteRecoverySaved.historyCount === deleteRecoveryBefore.historyCount + 1 && deleteRecoverySaved.latestLabel.includes('删除') && deleteRecoverySaved.stock === deleteRecoveryBefore.stock && deleteRecoverySaved.inventory === deleteRecoveryBefore.inventory, JSON.stringify(deleteRecoverySaved));
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.evaluate((id) => restoreEditHistory(id), deleteRecoverySaved.latestId);
+    await page.waitForTimeout(100);
+    const deleteRecoveryRestored = await page.evaluate(() => ({
+      exists: Boolean(im.custom_review_item),
+      stock: gs('custom_review_item'),
+      inventory: localStorage.getItem('hd_inv'),
+    }));
+    check("恢复已删除物品时保留原库存", deleteRecoveryRestored.exists && deleteRecoveryRestored.stock === deleteRecoveryBefore.stock && deleteRecoveryRestored.inventory === deleteRecoveryBefore.inventory, JSON.stringify(deleteRecoveryRestored));
 
     await page.setViewportSize({ width: 390, height: 844 });
     const mobileFilterState = await page.evaluate(() => ({

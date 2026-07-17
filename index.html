@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>卡通农场 · 货仓助手 v2.20.0</title>
+<title>卡通农场 · 货仓助手 v2.21.0</title>
 <style>
 /* ====== 变量与重置 ====== */
 :root{--bg:#F8FAFC;--card:#FFFFFF;--text:#0F172A;--text-secondary:#475569;--muted:#64748B;--accent:#059669;--accent-hover:#047857;--warn:#D97706;--warn-light:#FFFBEB;--danger:#DC2626;--danger-light:#FEF2F2;--border:#E2E8F0;--shadow-sm:0 1px 2px rgba(0,0,0,.04);--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--radius:8px;--radius-sm:6px;--transition:150ms ease}
@@ -402,7 +402,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
 .relations-note{font-size:11px;color:var(--muted)}
 .relations-content{border:1px solid var(--border);border-radius:8px;background:var(--card);overflow:hidden}
 .relation-graph-viewport{position:relative;width:100%;height:var(--relation-viewport-height,calc(100vh - 220px));height:var(--relation-viewport-height,calc(100dvh - 220px));min-height:560px;overflow:hidden;background:var(--bg);cursor:grab;touch-action:none;user-select:none}
-.relation-graph-viewport.dragging{cursor:grabbing}.relation-graph-svg{display:block;width:100%;height:100%}
+.relation-graph-viewport.dragging,.relation-graph-viewport.dragging .network-node{cursor:grabbing}.relation-graph-svg{display:block;width:100%;height:100%}
 .network-band-line{fill:none;stroke:var(--border);stroke-width:1;stroke-dasharray:5 7;vector-effect:non-scaling-stroke}.network-band-label{fill:var(--muted);font-size:12px;font-weight:700;letter-spacing:.02em}
 .network-edge-path{fill:none;stroke:var(--border-strong);stroke-width:1;opacity:.27;vector-effect:non-scaling-stroke;transition:opacity .12s,stroke .12s}.network-edge-wrap.is-muted .network-edge-path{opacity:.025}.network-edge-wrap.is-active .network-edge-path{stroke:var(--accent);stroke-width:2;opacity:.95}.network-edge-wrap.alternative.is-active .network-edge-path{stroke:var(--info);stroke-dasharray:5 3}
 .network-edge-label{display:none;fill:var(--text-secondary);font-size:10px;font-weight:700;paint-order:stroke;stroke:var(--card);stroke-width:6px;stroke-linejoin:round;pointer-events:none}.network-edge-wrap.show-label .network-edge-label{display:block}
@@ -429,9 +429,10 @@ body.relation-pseudo-fullscreen-active{overflow:hidden}
 /* ====== 数据校对与用户图片 ====== */
 .data-review{padding:0 16px 22px}.data-review[hidden]{display:none}.data-review-heading{min-height:58px;padding:12px 0;display:flex;align-items:center;justify-content:space-between;gap:16px}.data-review-heading h2{font-size:17px}.data-review-heading p{margin-top:3px;color:var(--muted);font-size:11px}.data-review-summary{display:grid;grid-template-columns:minmax(180px,1.4fr) repeat(3,minmax(120px,.7fr));border:1px solid var(--border);border-radius:var(--radius);background:var(--card);margin-bottom:10px;overflow:hidden}.review-summary-primary,.review-summary-stat{min-height:64px;padding:10px 14px;display:flex;flex-direction:column;justify-content:center}.review-summary-stat{border-left:1px solid var(--border)}.review-summary-label{font-size:11px;color:var(--muted)}.review-summary-value{margin-top:2px;font-size:19px;font-weight:700}.review-summary-track{height:6px;margin-top:7px;border-radius:999px;background:#E8ECF1;overflow:hidden}.review-summary-track span{display:block;height:100%;background:var(--accent);border-radius:inherit}.data-review-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(330px,.9fr);gap:10px;align-items:start}.data-review-list-panel,.data-review-detail{border:1px solid var(--border);border-radius:var(--radius);background:var(--card);overflow:hidden}.data-review-filters{display:flex;padding:10px;border-bottom:1px solid var(--border);gap:6px;overflow-x:auto}.review-filter{border:1px solid var(--border);border-radius:6px;background:var(--card);padding:6px 10px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer}.review-filter[aria-selected="true"]{color:var(--accent);border-color:rgba(22,132,91,.45);background:var(--accent-light)}.data-review-columns,.data-review-row{display:grid;grid-template-columns:minmax(180px,1.4fr) minmax(100px,.8fr) minmax(105px,.7fr);align-items:center;gap:10px}.data-review-columns{padding:7px 12px;background:var(--bg);border-bottom:1px solid var(--border);font-size:10px;color:var(--muted)}.data-review-list{max-height:calc(100vh - 270px);overflow:auto}.data-review-row{width:100%;min-height:52px;padding:7px 12px;border:0;border-bottom:1px solid #EEF1F4;background:var(--card);text-align:left;cursor:pointer}.data-review-row:hover{background:#FAFBFC}.data-review-row.is-selected{background:var(--accent-light);box-shadow:inset 3px 0 0 var(--accent)}.review-item-cell{display:flex;align-items:center;gap:9px;min-width:0}.review-item-image{width:34px;height:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:var(--bg);overflow:hidden;color:var(--muted);font-size:9px;text-align:center;line-height:1.2}.review-item-image img{width:100%;height:100%;object-fit:contain}.review-item-name{font-size:12px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.review-item-meta{font-size:10px;color:var(--muted)}.review-device{font-size:11px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.review-status{display:inline-flex;width:max-content;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:600}.review-status.pending{color:var(--warn);background:var(--warn-light)}.review-status.verified{color:var(--accent);background:var(--accent-light)}.review-status.system{color:var(--muted);background:#F1F3F6}.review-status.missing{color:var(--danger);background:var(--danger-light)}.data-review-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:12px}.data-review-detail{position:sticky;top:58px;min-height:420px}.review-detail-head{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.review-detail-head h3{font-size:15px}.review-detail-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}.review-detail-body{padding:14px}.review-image-area{display:grid;grid-template-columns:132px minmax(0,1fr);gap:14px;align-items:stretch}.review-image-preview{min-height:132px;border:1px dashed var(--border-strong);border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--muted);font-size:11px;text-align:center;padding:8px}.review-image-preview img{width:100%;height:100%;max-height:132px;object-fit:contain}.review-image-actions{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:7px}.review-image-actions p{font-size:10px;color:var(--muted);line-height:1.5}.review-local-note{margin-top:12px;padding:9px 10px;border:1px solid #F2D5A6;border-radius:7px;background:var(--warn-light);color:#76501A;font-size:10px;line-height:1.5}.review-data-table{margin-top:14px;border-top:1px solid var(--border)}.review-data-row{display:grid;grid-template-columns:76px minmax(0,1fr);gap:10px;padding:8px 0;border-bottom:1px solid #EEF1F4;font-size:11px}.review-data-row dt{color:var(--muted)}.review-data-row dd{margin:0;color:var(--text-secondary);line-height:1.55}.review-detail-actions{display:flex;gap:8px;justify-content:flex-end;padding-top:14px}.items-review-entry{margin:8px 10px 4px;padding:10px;border:1px solid rgba(22,132,91,.25);border-radius:7px;background:var(--accent-light);display:flex;align-items:center;justify-content:space-between;gap:10px}.items-review-entry strong{font-size:12px}.items-review-entry span{font-size:10px;color:var(--muted)}.edit-image-control{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:center;padding:9px;margin-bottom:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg)}.edit-image-preview{width:64px;height:64px;border:1px dashed var(--border-strong);border-radius:7px;background:var(--card);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--muted);font-size:9px;text-align:center}.edit-image-preview img{width:100%;height:100%;object-fit:contain}.edit-image-copy{min-width:0}.edit-image-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.edit-image-note{font-size:10px;color:var(--muted);line-height:1.4}.image-busy{opacity:.6;pointer-events:none}
 .data-review-tools{display:flex;align-items:center;gap:8px;padding:10px;border-bottom:1px solid var(--border)}.data-review-tools .data-review-filters{min-width:0;padding:0;border:0}.review-search{margin-left:auto;width:190px;flex:0 0 190px;padding:6px 9px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:11px;outline:none}.review-search:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(22,132,91,.12)}.review-item-meta{display:block;margin-top:1px}
+.edit-history-panel{margin-bottom:10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);overflow:hidden}.edit-history-head{min-height:54px;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px}.edit-history-copy{min-width:0;display:flex;flex-direction:column;gap:2px}.edit-history-copy strong{font-size:12px}.edit-history-summary{color:var(--muted);font-size:10px;line-height:1.45}.edit-history-body{border-top:1px solid var(--border);padding:10px 12px}.edit-history-note{margin-bottom:8px;padding:8px 9px;border-radius:6px;background:var(--bg);color:var(--text-secondary);font-size:10px;line-height:1.55;display:flex;align-items:center;justify-content:space-between;gap:10px}.edit-history-note span{min-width:0}.edit-history-note .btn{flex:0 0 auto}.edit-history-list{display:grid;gap:6px}.edit-history-entry{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:8px 9px;border:1px solid #E8ECF1;border-radius:6px}.edit-history-label{display:block;font-size:11px;font-weight:650}.edit-history-time{display:block;margin-top:2px;color:var(--muted);font-size:9px}.edit-history-empty{padding:14px;text-align:center;color:var(--muted);font-size:11px}
 @media(max-width:640px){.app-view-nav{padding:5px 8px}.app-view-tab{min-width:82px;min-height:36px}.relations-shell{padding:10px 8px 20px}.relations-heading{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start}.relations-title{min-width:0;grid-column:1;grid-row:1}.relations-controls{width:100%;grid-column:1/-1;margin-top:3px;justify-content:stretch}.relations-heading>.relation-panel-toggle{grid-column:2;grid-row:1;margin-left:8px}.relations-heading>.relation-panel-collapsed-label{grid-column:1/-1}.relations-search{width:100%;min-width:0;flex:1 0 100%}.relation-zoom-controls{width:100%;justify-content:flex-end;flex-wrap:wrap}.relation-graph-viewport{height:var(--relation-viewport-height,58vh);height:var(--relation-viewport-height,58dvh);min-height:380px}.relations-context{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start}.relations-context-body{grid-column:1;grid-row:1;align-items:flex-start}.relations-context>.relation-panel-toggle{grid-column:2;grid-row:1;margin-left:8px}.relations-context>.relation-panel-collapsed-label{grid-column:1;grid-row:1}.relation-selection{align-items:center;flex-wrap:nowrap}.relation-selection-body{flex-wrap:wrap}.relation-selection-actions{width:100%;padding-left:0}.relation-selection-actions .btn{min-height:40px}.relation-demand-head{align-items:flex-start;flex-wrap:wrap}.relation-demand-title{min-width:0;flex:1;flex-direction:column;gap:2px}.relation-demand-actions{width:100%;align-items:center}.relation-demand-planner.is-collapsed .relation-demand-actions{width:auto}.relation-demand-controls{min-width:0;flex:1}.relation-demand-controls label{flex:1}.relation-demand-controls input{width:100%}.relation-demand-controls .btn{min-height:40px}.relation-demand-details{grid-template-columns:1fr;max-height:112px;overflow:auto;padding-right:4px}.relation-unplaced-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.collapse-toggle{min-width:68px;height:40px;min-height:40px}.topbar-actions .collapse-toggle{height:44px;min-height:44px}.collapse-toggle-compact{min-width:52px;height:28px;min-height:28px}}
 @media(max-width:880px){.data-review-layout{grid-template-columns:1fr}.data-review-detail{position:static}.data-review-list{max-height:52vh}.data-review-summary{grid-template-columns:repeat(3,1fr)}.review-summary-primary{grid-column:1/-1}.review-summary-stat:first-of-type{border-left:0}}
-@media(max-width:640px){.data-review{padding:0 8px 16px}.data-review-heading{align-items:flex-start}.data-review-heading p{max-width:230px}.data-review-summary{grid-template-columns:1fr 1fr}.review-summary-primary{grid-column:1/-1}.review-summary-stat{min-height:56px;padding:8px 10px}.review-summary-stat:nth-child(2){border-left:0}.data-review-columns{display:none}.data-review-row{grid-template-columns:minmax(0,1fr) 92px}.data-review-row .review-device{display:none}.review-image-area{grid-template-columns:104px minmax(0,1fr)}.review-image-preview{min-height:104px}.review-detail-actions{flex-direction:column}.review-detail-actions .btn{justify-content:center;min-height:42px}.edit-image-control{grid-template-columns:56px minmax(0,1fr)}.edit-image-preview{width:56px;height:56px}}
+@media(max-width:640px){.data-review{padding:0 8px 16px}.data-review-heading{align-items:flex-start}.data-review-heading p{max-width:230px}.data-review-summary{grid-template-columns:1fr 1fr}.review-summary-primary{grid-column:1/-1}.review-summary-stat{min-height:56px;padding:8px 10px}.review-summary-stat:nth-child(2){border-left:0}.data-review-columns{display:none}.data-review-row{grid-template-columns:minmax(0,1fr) 92px}.data-review-row .review-device{display:none}.review-image-area{grid-template-columns:104px minmax(0,1fr)}.review-image-preview{min-height:104px}.review-detail-actions{flex-direction:column}.review-detail-actions .btn{justify-content:center;min-height:42px}.edit-image-control{grid-template-columns:56px minmax(0,1fr)}.edit-image-preview{width:56px;height:56px}.edit-history-head{align-items:flex-start}.edit-history-note{align-items:flex-start;flex-direction:column}.edit-history-note .btn{min-height:40px;width:100%;justify-content:center}.edit-history-entry{grid-template-columns:1fr}.edit-history-entry .btn{min-height:40px;justify-content:center}}
 @media(max-width:640px){.data-review-tools{align-items:stretch;flex-direction:column}.data-review-tools .data-review-filters{width:100%}.review-search{width:100%;flex-basis:auto;margin-left:0;min-height:40px}}
 </style>
 <script src="./node_modules/pinyin-pro/dist/index.js"></script>
@@ -499,6 +500,13 @@ body.relation-pseudo-fullscreen-active{overflow:hidden}
     <button type="button" class="btn btn-outline" onclick="closeDataReview()">返回库存助手</button>
   </div>
   <div class="data-review-summary" id="dataReviewSummary"></div>
+  <section class="edit-history-panel" aria-labelledby="editHistoryTitle">
+    <div class="edit-history-head">
+      <div class="edit-history-copy"><strong id="editHistoryTitle">物品修改恢复</strong><span class="edit-history-summary" id="editHistorySummary">尚无本地恢复点</span></div>
+      <button type="button" class="collapse-toggle" onclick="toggleEditHistoryPanel(this)" aria-expanded="false" aria-controls="editHistoryBody">展开</button>
+    </div>
+    <div class="edit-history-body" id="editHistoryBody" hidden><div class="edit-history-list" id="editHistoryList"></div></div>
+  </section>
   <div class="data-review-layout">
     <div class="data-review-list-panel">
       <div class="data-review-tools"><div class="data-review-filters" id="dataReviewFilters" role="tablist" aria-label="数据校对筛选"></div><input type="search" class="review-search" id="dataReviewSearch" placeholder="搜索物品或设备" aria-label="搜索校对物品" oninput="onDataReviewSearch(this.value)"></div>
@@ -536,7 +544,7 @@ body.relation-pseudo-fullscreen-active{overflow:hidden}
       <span><i class="relations-dot base" aria-hidden="true"></i>基础来源</span>
       <span><i class="relations-dot source" aria-hidden="true"></i>特殊来源</span>
     </div>
-    <div class="relations-note">左侧是最终产物，右侧逐层追溯原料。点击节点查看数量和关系；普通模式可编辑物品。</div>
+    <div class="relations-note">左侧是最终产物，右侧逐层追溯原料。点击节点查看数量和关系；鼠标右键拖动画面，触屏单指拖动；普通模式可编辑物品。</div>
   </div>
   <span class="relation-panel-collapsed-label">图例与说明</span>
   <button type="button" class="collapse-toggle relation-panel-toggle" onclick="toggleRelationPanel('guide',this)" aria-expanded="true" aria-controls="relationGuideBody">收起</button>
@@ -562,9 +570,9 @@ body.relation-pseudo-fullscreen-active{overflow:hidden}
       <defs><marker id="relationArrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6 z" fill="var(--border-strong)"></path></marker></defs>
       <g id="relationsGraphWorld"></g>
     </svg>
-    <div class="relation-graph-hint">全图始终在这一张网里 · 点击节点聚焦关系</div>
+    <div class="relation-graph-hint">全图始终在这一张网里 · 点击节点聚焦关系 · 鼠标右键或触屏单指拖动</div>
   </div>
-  <p class="sr-only" id="relationsKeyboardHelp">按 Tab 进入关系网，使用方向键在相邻产品间移动，按回车聚焦；全屏时按 Escape 退出全屏，普通模式按 Escape 返回全景。</p>
+  <p class="sr-only" id="relationsKeyboardHelp">按 Tab 进入关系网，使用方向键在相邻产品间移动，按回车聚焦；鼠标使用右键拖动画面，触屏使用单指拖动；全屏时按 Escape 退出全屏，普通模式按 Escape 返回全景。</p>
 </div>
 <div id="relationsStandalone"></div>
 </section>
@@ -1108,9 +1116,10 @@ var RELATION_VIRTUAL_ITEMS=[
 ];
 var _relationsNetwork=null,_relationsLayout=null,_relationsItemsById={},_relationsDirty=true,_relationsQuery='',_relationsSelectedId='';
 var _relationDemandTargetId='',_relationDemandResult=null;
-var _relationGraphView={x:0,y:0,scale:1,autoFit:true,mode:'overview'},_relationGraphDrag=null,_relationResizeTimer=null,_relationFullscreenReturnFocus=null,_relationFullscreenWanted=false,_relationFullscreenEntering=false,_relationFullscreenCancelTimer=null;
+var _relationGraphView={x:0,y:0,scale:1,autoFit:true,mode:'overview'},_relationGraphDrag=null,_relationGraphPointerGesture=null,_relationGraphSuppressClick=false,_relationResizeTimer=null,_relationFullscreenReturnFocus=null,_relationFullscreenWanted=false,_relationFullscreenEntering=false,_relationFullscreenCancelTimer=null;
 var _relationPanelStates=Object.create(null),_relationPanelExpandedHeights=Object.create(null),_relationCompactLayout=false;
 var SERVER_PENDING_STORAGE='_hd_server_pending',SERVER_REVISION_STORAGE='_hd_server_revision';
+var EDIT_HISTORY_STORAGE='hayday_local_edit_history_v1',EDIT_HISTORY_LIMIT=20,_editHistoryExpanded=false,_editHistorySequence=0;
 var _serverPending={},_serverRevision='',_serverConflict=false,_serverSaveTimer=null,_serverRetryTimer=null,_serverSaving=false,_serverRetryDelay=1000;
 var _itemImageRecords={},_itemImageStorageAvailable=true,_dataReviewFilter='issues',_dataReviewSelectedId='',_dataReviewQuery='',_dataReviewReturnFocus=null,_dataReviewReturnScroll=0;
 function itemImageSrc(id){return (_itemImageRecords[id]&&_itemImageRecords[id].dataUrl)||ICONS[id]||'';}
@@ -1786,7 +1795,7 @@ function relationGraphApplyTransform(){
     viewport.classList.toggle('is-focus-mode',_relationGraphView.mode==='focus');
   }
   var hint=document.querySelector('.relation-graph-hint');
-  if(hint)hint.textContent=_relationGraphView.mode==='focus'?'聚焦模式 · 拖动查看完整上下游，返回全景可恢复总览':'全景模式 · 搜索或点击节点进入可读聚焦';
+  if(hint)hint.textContent=_relationGraphView.mode==='focus'?'聚焦模式 · 鼠标右键或触屏单指拖动查看完整上下游':'全景模式 · 搜索或点击节点聚焦 · 鼠标右键或触屏单指拖动';
 }
 function applyRelationPanelState(panel){
   if(!panel)return;
@@ -2122,22 +2131,42 @@ function bindRelationGraphInteractions(){
   if(!svg||!viewport||svg._relationBound)return;
   svg._relationBound=true;
   svg.addEventListener('pointerdown',function(event){
-    if(event.button!==0||event.target.closest('.network-node'))return;
+    var isMouse=event.pointerType==='mouse',isMousePan=isMouse&&event.button===2;
+    var isTouchPan=!isMouse&&event.button===0&&!event.target.closest('.network-node');
+    var guardLeftDrag=isMouse&&event.button===0&&!event.target.closest('.network-node');
+    if(!isMousePan&&!isTouchPan&&!guardLeftDrag)return;
+    _relationGraphPointerGesture={pointerId:event.pointerId,startX:event.clientX,startY:event.clientY,moved:false,pan:isMousePan||isTouchPan};
+    try{svg.setPointerCapture(event.pointerId);}catch(error){}
+    if(!_relationGraphPointerGesture.pan)return;
+    event.preventDefault();
     _relationGraphDrag={pointerId:event.pointerId,startX:event.clientX,startY:event.clientY,originX:_relationGraphView.x,originY:_relationGraphView.y};
     viewport.classList.add('dragging');_relationGraphView.autoFit=false;
-    try{svg.setPointerCapture(event.pointerId);}catch(error){}
   });
   svg.addEventListener('pointermove',function(event){
+    if(_relationGraphPointerGesture&&_relationGraphPointerGesture.pointerId===event.pointerId){
+      var dx=event.clientX-_relationGraphPointerGesture.startX,dy=event.clientY-_relationGraphPointerGesture.startY;
+      if(dx*dx+dy*dy>25)_relationGraphPointerGesture.moved=true;
+    }
     if(!_relationGraphDrag||_relationGraphDrag.pointerId!==event.pointerId)return;
+    event.preventDefault();
     _relationGraphView.x=_relationGraphDrag.originX+event.clientX-_relationGraphDrag.startX;
     _relationGraphView.y=_relationGraphDrag.originY+event.clientY-_relationGraphDrag.startY;
     relationGraphApplyTransform();
   });
   function endDrag(event){
-    if(!_relationGraphDrag||_relationGraphDrag.pointerId!==event.pointerId)return;
-    _relationGraphDrag=null;viewport.classList.remove('dragging');
+    if(_relationGraphPointerGesture&&_relationGraphPointerGesture.pointerId===event.pointerId){
+      if(_relationGraphPointerGesture.moved){
+        _relationGraphSuppressClick=true;
+        setTimeout(function(){_relationGraphSuppressClick=false;},0);
+      }
+      _relationGraphPointerGesture=null;
+    }
+    if(_relationGraphDrag&&_relationGraphDrag.pointerId===event.pointerId){
+      _relationGraphDrag=null;viewport.classList.remove('dragging');
+    }
   }
-  svg.addEventListener('pointerup',endDrag);svg.addEventListener('pointercancel',endDrag);
+  svg.addEventListener('pointerup',endDrag);svg.addEventListener('pointercancel',endDrag);svg.addEventListener('lostpointercapture',endDrag);
+  viewport.addEventListener('contextmenu',function(event){event.preventDefault();});
   svg.addEventListener('wheel',function(event){
     event.preventDefault();var rect=svg.getBoundingClientRect();
     relationGraphZoom(event.deltaY<0?1.14:.88,event.clientX-rect.left,event.clientY-rect.top);
@@ -2146,7 +2175,10 @@ function bindRelationGraphInteractions(){
     if(event.target.closest('.network-node'))return;var rect=svg.getBoundingClientRect();
     relationGraphZoom(1.4,event.clientX-rect.left,event.clientY-rect.top);
   });
-  svg.addEventListener('click',function(event){if(!event.target.closest('.network-node')&&!_relationGraphDrag)selectRelationNode('',false);});
+  svg.addEventListener('click',function(event){
+    if(_relationGraphSuppressClick){_relationGraphSuppressClick=false;event.preventDefault();return;}
+    if(!event.target.closest('.network-node')&&!_relationGraphDrag)selectRelationNode('',false);
+  });
   if(!window._relationResizeBound){
     window._relationResizeBound=true;
     window.addEventListener('resize',function(){
@@ -2714,6 +2746,87 @@ function loadChecked(){
   return checked&&typeof checked==='object'&&!Array.isArray(checked)?checked:{};
 }
 function saveChecked(c){persistJson('hd_checked',c);}
+function loadEditHistory(){
+  var history=readStoredJson(EDIT_HISTORY_STORAGE,[]);
+  if(!Array.isArray(history))return [];
+  return history.filter(function(entry){
+    return entry&&typeof entry==='object'&&typeof entry.id==='string'&&typeof entry.at==='string'&&typeof entry.label==='string'&&typeof entry.edits==='string'&&typeof entry.checked==='string';
+  }).slice(0,EDIT_HISTORY_LIMIT);
+}
+function currentEditTargets(){
+  var targets={};
+  Object.keys(S||{}).forEach(function(id){
+    if(id.charAt(0)==='_'||!S[id]||typeof S[id]!=='object'||S[id].tg==null)return;
+    targets[id]=Math.max(1,nonNegativeInt(S[id].tg,(im[id]&&im[id].tg)||5));
+  });
+  return targets;
+}
+function recordEditHistory(label,itemId){
+  var history=loadEditHistory(),now=new Date();
+  var entry={
+    version:1,
+    id:now.getTime().toString(36)+'-'+(++_editHistorySequence).toString(36),
+    at:now.toISOString(),
+    label:String(label||'物品修改前'),
+    itemId:String(itemId||''),
+    edits:JSON.stringify(loadEdits()),
+    checked:JSON.stringify(loadChecked()),
+    targets:JSON.stringify(currentEditTargets())
+  };
+  history.unshift(entry);
+  try{localStorage.setItem(EDIT_HISTORY_STORAGE,JSON.stringify(history.slice(0,EDIT_HISTORY_LIMIT)));}
+  catch(error){console.warn('无法保存物品修改恢复点:',error.message);return false;}
+  renderEditHistory();
+  return entry.id;
+}
+function formatEditHistoryTime(value){
+  var date=new Date(value);if(Number.isNaN(date.getTime()))return '';
+  return date.toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
+}
+function renderEditHistory(){
+  var panel=document.querySelector('.edit-history-panel');if(!panel)return;
+  var history=loadEditHistory(),summary=document.getElementById('editHistorySummary'),body=document.getElementById('editHistoryBody'),list=document.getElementById('editHistoryList'),button=panel.querySelector('.collapse-toggle');
+  if(summary)summary.textContent=history.length?(history.length+' 个本地恢复点 · 最近 '+formatEditHistoryTime(history[0].at)):'尚无本地恢复点';
+  if(body)body.hidden=!_editHistoryExpanded;
+  setCollapseToggleState(button,_editHistoryExpanded,'修改恢复记录');
+  if(!list)return;
+  var note='<div class="edit-history-note"><span>只恢复物品名称、设备、配方、生产时间、目标库存、新增/删除和核对状态；现有库存数量与用户图片不会改变。记录仅保存在当前浏览器，不改变 v3 备份结构。</span>'+(history.length?'<button type="button" class="btn btn-xs btn-outline edit-history-clear" onclick="clearEditHistory()">清空记录</button>':'')+'</div>';
+  if(!history.length){list.innerHTML=note+'<div class="edit-history-empty">保存、删除物品或导入物品编辑前，会自动留下恢复点。</div>';return;}
+  list.innerHTML=note+history.map(function(entry){
+    return '<div class="edit-history-entry"><div><span class="edit-history-label">'+esc(entry.label)+'</span><span class="edit-history-time">'+esc(formatEditHistoryTime(entry.at))+'</span></div><button type="button" class="btn btn-xs btn-outline" data-history-id="'+esc(entry.id)+'" onclick="restoreEditHistory(this.dataset.historyId)">恢复到此处</button></div>';
+  }).join('');
+}
+function toggleEditHistoryPanel(button){
+  _editHistoryExpanded=button?button.getAttribute('aria-expanded')!=='true':!_editHistoryExpanded;
+  renderEditHistory();
+}
+function clearEditHistory(){
+  if(!loadEditHistory().length)return true;
+  if(!confirm('清空全部物品修改恢复点？\n\n只会删除恢复记录，不会改变当前物品、库存、核对状态或图片。'))return false;
+  localStorage.removeItem(EDIT_HISTORY_STORAGE);renderEditHistory();toast('修改恢复记录已清空，当前数据未改变');return true;
+}
+function restoreEditHistory(id){
+  var entry=loadEditHistory().find(function(candidate){return candidate.id===id;});
+  if(!entry){toast('恢复点不存在或已经过期');return false;}
+  var edits,checked,targets;
+  try{
+    edits=normalizeImportedEdits(JSON.parse(entry.edits));
+    checked=JSON.parse(entry.checked);
+    targets=entry.targets?JSON.parse(entry.targets):{};
+    if(!checked||typeof checked!=='object'||Array.isArray(checked))throw new Error('核对状态格式错误');
+    if(!targets||typeof targets!=='object'||Array.isArray(targets))throw new Error('目标库存格式错误');
+  }catch(error){toast('恢复点已损坏，未改动当前数据');return false;}
+  if(!confirm('恢复到“'+entry.label+'”？\n\n物品编辑和目标库存会恢复；现有库存数量与用户图片不会改变。'))return false;
+  if(!recordEditHistory('恢复记录前自动保护',entry.itemId)){toast('无法创建恢复前保护点，已停止恢复');return false;}
+  saveEdits(edits);saveChecked(checked);applyEdits();
+  Object.keys(targets).forEach(function(itemId){
+    if(!S[itemId])S[itemId]={n:0,tg:Math.max(1,nonNegativeInt(targets[itemId],5))};
+    else S[itemId].tg=Math.max(1,nonNegativeInt(targets[itemId],(im[itemId]&&im[itemId].tg)||5));
+  });
+  sv();renderFilters();renderAll();calcPriority();renderEditHistory();
+  toast('物品修改已恢复，库存数量和图片保持不变');
+  return true;
+}
 function itemWasEdited(id,edits){
   edits=edits||loadEdits();
   return Boolean((edits.mod&&edits.mod[id])||(edits.add||[]).some(function(item){return item&&item.id===id;}));
@@ -2783,6 +2896,7 @@ function renderDataReview(){
   var panel=document.getElementById('dataReviewPanel');if(!panel||panel.hidden)return;
   var counts=getDataReviewCounts(),coverage=counts.total?Math.round(counts.withImage/counts.total*100):0;
   document.getElementById('dataReviewSummary').innerHTML='<div class="review-summary-primary"><span class="review-summary-label">图片覆盖率</span><strong class="review-summary-value">'+coverage+'%</strong><div class="review-summary-track"><span style="width:'+coverage+'%"></span></div></div><div class="review-summary-stat"><span class="review-summary-label">待处理问题</span><strong class="review-summary-value">'+counts.issues+'</strong></div><div class="review-summary-stat"><span class="review-summary-label">待核对修改</span><strong class="review-summary-value">'+counts.pending+'</strong></div><div class="review-summary-stat"><span class="review-summary-label">用户已核对</span><strong class="review-summary-value">'+counts.verified+'</strong></div>';
+  renderEditHistory();
   var filterCounts={issues:counts.issues,missing:counts.missing,pending:counts.pending,verified:counts.verified,all:counts.total};
   var filterLabels={issues:'全部问题',missing:'缺少图片',pending:'修改待核对',verified:'用户已核对',all:'全部物品'};
   document.getElementById('dataReviewFilters').innerHTML=['issues','missing','pending','verified','all'].map(function(filter){return '<button type="button" class="review-filter" role="tab" aria-selected="'+(_dataReviewFilter===filter?'true':'false')+'" onclick="setDataReviewFilter(\''+filter+'\')">'+filterLabels[filter]+' '+filterCounts[filter]+'</button>';}).join('');
@@ -3142,6 +3256,11 @@ function saveItem(){
     return;
   }
   showEditError('');
+  var historyName=_editId&&im[_editId]?(im[_editId].nameCN||_editId):name;
+  if(!recordEditHistory((_editId?'编辑 ':'新增 ')+historyName+' 前',_editId||'')){
+    showEditError('无法创建修改前恢复点，已停止保存。请先导出备份或清理浏览器存储。');
+    return;
+  }
   var ed=loadEdits();
   if(_editId){
     if(!ed.mod) ed.mod={};
@@ -3166,6 +3285,7 @@ function deleteItem(){
     return;
   }
   if(!confirm('删除 '+im[_editId].nameCN+' 吗？此操作会保存到本地。')) return;
+  if(!recordEditHistory('删除 '+(im[_editId].nameCN||_editId)+' 前',_editId)){toast('无法创建删除前恢复点，已停止删除');return;}
   var ed=loadEdits();
   if(!ed.del) ed.del=[];
   if(ed.del.indexOf(_editId)===-1) ed.del.push(_editId);
@@ -3188,6 +3308,12 @@ window.closeDataReview=closeDataReview;
 window.setDataReviewFilter=setDataReviewFilter;
 window.onDataReviewSearch=onDataReviewSearch;
 window.selectDataReviewItem=selectDataReviewItem;
+window.loadEditHistory=loadEditHistory;
+window.recordEditHistory=recordEditHistory;
+window.renderEditHistory=renderEditHistory;
+window.toggleEditHistoryPanel=toggleEditHistoryPanel;
+window.clearEditHistory=clearEditHistory;
+window.restoreEditHistory=restoreEditHistory;
 window.chooseItemImage=chooseItemImage;
 window.removeItemImage=removeItemImage;
 function hasLocalAppData(){
@@ -3429,6 +3555,7 @@ function validateImportedBackup(data){
 function importBackupData(data){
   validateImportedBackup(data);
   init();
+  if((data.edits!=null||data.checked!=null)&&!recordEditHistory('导入物品编辑前',''))throw new Error('无法创建导入前恢复点，已停止导入');
   if(data.edits!=null) saveEdits(normalizeImportedEdits(data.edits));
   applyEdits();
   var nextState={},restored=0;
