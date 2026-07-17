@@ -502,6 +502,257 @@
     return needs;
   }
 
+  function simulateProductionDemand(network, rootId, quantity, inventory, options) {
+    const graph = network && typeof network === "object" ? network : {};
+    const settings = options && typeof options === "object" ? options : {};
+    const itemsById = graph.itemsById || Object.create(null);
+    const ingredientsById = graph.ingredientsById || Object.create(null);
+    const batchOutputs = settings.batchOutputs && typeof settings.batchOutputs === "object"
+      ? settings.batchOutputs
+      : {};
+    const requestedId = String(rootId || "").trim();
+    const requestedQuantity = Math.max(1, Math.ceil(positiveQuantity(quantity, 1)));
+    const startingInventory = Object.create(null);
+    for (const [id, value] of Object.entries(inventory || {})) {
+      startingInventory[id] = Math.max(0, Number.parseInt(value, 10) || 0);
+    }
+
+    function createState() {
+      return {
+        available: { ...startingInventory },
+        generatedAvailable: Object.create(null),
+        totalsById: Object.create(null),
+        nodeIds: new Set(),
+        edgeKeys: new Set(),
+        alternatives: [],
+        cycles: [],
+        unknownIds: new Set(),
+      };
+    }
+
+    function cloneState(state) {
+      const totalsById = Object.create(null);
+      for (const [id, total] of Object.entries(state.totalsById)) totalsById[id] = { ...total };
+      return {
+        available: { ...state.available },
+        generatedAvailable: { ...state.generatedAvailable },
+        totalsById,
+        nodeIds: new Set(state.nodeIds),
+        edgeKeys: new Set(state.edgeKeys),
+        alternatives: state.alternatives.map((entry) => ({ ...entry })),
+        cycles: state.cycles.map((path) => path.slice()),
+        unknownIds: new Set(state.unknownIds),
+      };
+    }
+
+    function replaceState(target, source) {
+      target.available = source.available;
+      target.generatedAvailable = source.generatedAvailable;
+      target.totalsById = source.totalsById;
+      target.nodeIds = source.nodeIds;
+      target.edgeKeys = source.edgeKeys;
+      target.alternatives = source.alternatives;
+      target.cycles = source.cycles;
+      target.unknownIds = source.unknownIds;
+    }
+
+    function edgeKey(from, to) {
+      return `${String(from)}\u0000${String(to)}`;
+    }
+
+    function totalFor(state, id, depth) {
+      if (!state.totalsById[id]) {
+        state.totalsById[id] = {
+          id,
+          requested: 0,
+          stockUsed: 0,
+          productionNeeded: 0,
+          produced: 0,
+          batches: 0,
+          surplus: 0,
+          shortage: 0,
+          maxDepth: depth,
+        };
+      }
+      state.totalsById[id].maxDepth = Math.max(state.totalsById[id].maxDepth, depth);
+      return state.totalsById[id];
+    }
+
+    function shortageScore(state) {
+      return Object.values(state.totalsById).reduce((sum, total) => sum + total.shortage, 0);
+    }
+
+    function batchScore(state) {
+      return Object.values(state.totalsById).reduce((sum, total) => sum + total.batches, 0);
+    }
+
+    function relationQuantity(edge, producedUnits, batches) {
+      const unitQuantity = Math.max(1, Number.parseInt(edge && edge.q, 10) || 1);
+      if (edge && edge.origin === "recipe") return batches * unitQuantity;
+      const outputQuantity = Math.max(1, Number.parseInt(edge && edge.outputQty, 10) || 1);
+      return Math.ceil(producedUnits / outputQuantity) * unitQuantity;
+    }
+
+    function processRequirement(state, id, quantityNeeded, ancestors, depth) {
+      const needed = Math.max(0, Math.ceil(Number(quantityNeeded) || 0));
+      if (!needed) return { ids: [], seconds: 0 };
+      const total = totalFor(state, id, depth);
+      total.requested += needed;
+      state.nodeIds.add(id);
+
+      const available = Math.max(0, Number.parseInt(state.available[id], 10) || 0);
+      const generatedAvailable = Math.min(available, Math.max(0, Number.parseInt(state.generatedAvailable[id], 10) || 0));
+      const originalAvailable = available - generatedAvailable;
+      const originalUsed = Math.min(needed, originalAvailable);
+      const generatedUsed = Math.min(needed - originalUsed, generatedAvailable);
+      const used = originalUsed + generatedUsed;
+      total.stockUsed += originalUsed;
+      state.generatedAvailable[id] = generatedAvailable - generatedUsed;
+      state.available[id] = available - used;
+      const remaining = needed - used;
+      if (!remaining) return { ids: [id], seconds: 0 };
+
+      const cycleStart = ancestors.indexOf(id);
+      if (cycleStart >= 0) {
+        total.shortage += remaining;
+        const cyclePath = ancestors.slice(cycleStart).concat(id);
+        if (!state.cycles.some((path) => path.join("\u0000") === cyclePath.join("\u0000"))) {
+          state.cycles.push(cyclePath);
+        }
+        return { ids: [id], seconds: 0 };
+      }
+
+      const item = itemsById[id];
+      const relations = Array.isArray(ingredientsById[id]) ? ingredientsById[id] : [];
+      if (!item || !relations.length) {
+        total.shortage += remaining;
+        if (!item) state.unknownIds.add(id);
+        return { ids: [id], seconds: item ? Math.max(0, Number(item.t) || 0) : 0 };
+      }
+
+      const outputPerBatch = Math.max(1, Number.parseInt(batchOutputs[id], 10) || 1);
+      const batches = Math.ceil(remaining / outputPerBatch);
+      const produced = batches * outputPerBatch;
+      const surplus = produced - remaining;
+      total.productionNeeded += remaining;
+      total.produced += produced;
+      total.batches += batches;
+      if (surplus) {
+        state.available[id] = (state.available[id] || 0) + surplus;
+        state.generatedAvailable[id] = (state.generatedAvailable[id] || 0) + surplus;
+      }
+
+      const nextAncestors = ancestors.concat(id);
+      const mandatory = relations.filter((edge) => edge.mode !== "alternative");
+      const alternatives = relations.filter((edge) => edge.mode === "alternative");
+      const childResults = [];
+      for (const edge of mandatory) {
+        state.edgeKeys.add(edgeKey(id, edge.to));
+        childResults.push(processRequirement(
+          state,
+          edge.to,
+          relationQuantity(edge, produced, batches),
+          nextAncestors,
+          depth + 1,
+        ));
+      }
+
+      if (alternatives.length) {
+        let best = null;
+        alternatives.forEach((edge, index) => {
+          const trial = cloneState(state);
+          trial.edgeKeys.add(edgeKey(id, edge.to));
+          const childQuantity = relationQuantity(edge, produced, batches);
+          const result = processRequirement(trial, edge.to, childQuantity, nextAncestors, depth + 1);
+          trial.alternatives.push({
+            from: id,
+            to: edge.to,
+            quantity: childQuantity,
+            optionCount: alternatives.length,
+          });
+          const score = [shortageScore(trial), batchScore(trial), index];
+          if (!best || score[0] < best.score[0]
+            || (score[0] === best.score[0] && score[1] < best.score[1])
+            || (score[0] === best.score[0] && score[1] === best.score[1] && score[2] < best.score[2])) {
+            best = { state: trial, result, score };
+          }
+        });
+        if (best) {
+          replaceState(state, best.state);
+          childResults.push(best.result);
+        }
+      }
+
+      const longestChild = childResults.reduce(
+        (longest, child) => child.seconds > longest.seconds ? child : longest,
+        { ids: [], seconds: 0 },
+      );
+      return {
+        ids: [id].concat(longestChild.ids),
+        seconds: Math.max(0, Number(item.t) || 0) * batches + longestChild.seconds,
+      };
+    }
+
+    const state = createState();
+    const critical = requestedId && itemsById[requestedId]
+      ? processRequirement(state, requestedId, requestedQuantity, [], 0)
+      : { ids: requestedId ? [requestedId] : [], seconds: 0 };
+    if (requestedId && !itemsById[requestedId]) {
+      const total = totalFor(state, requestedId, 0);
+      total.requested = requestedQuantity;
+      total.shortage = requestedQuantity;
+      state.nodeIds.add(requestedId);
+      state.unknownIds.add(requestedId);
+    }
+
+    const totals = Object.values(state.totalsById);
+    totals.forEach((total) => { total.surplus = state.generatedAvailable[total.id] || 0; });
+    const tasks = totals
+      .filter((total) => total.productionNeeded > 0)
+      .map((total) => ({ ...total, item: itemsById[total.id] || null }))
+      .sort((left, right) => right.maxDepth - left.maxDepth || left.id.localeCompare(right.id));
+    const shortages = totals
+      .filter((total) => total.shortage > 0)
+      .map((total) => ({ ...total, item: itemsById[total.id] || null }))
+      .sort((left, right) => right.maxDepth - left.maxDepth || right.shortage - left.shortage || left.id.localeCompare(right.id));
+    const equipmentById = Object.create(null);
+    for (const task of tasks) {
+      const buildingId = task.item && task.item.bld;
+      if (!buildingId) continue;
+      if (!equipmentById[buildingId]) equipmentById[buildingId] = { id: buildingId, itemIds: [], batches: 0, seconds: 0 };
+      equipmentById[buildingId].itemIds.push(task.id);
+      equipmentById[buildingId].batches += task.batches;
+      equipmentById[buildingId].seconds += Math.max(0, Number(task.item.t) || 0) * task.batches;
+    }
+    const rootTotal = state.totalsById[requestedId] || {
+      requested: requestedQuantity,
+      stockUsed: 0,
+      productionNeeded: 0,
+      produced: 0,
+      batches: 0,
+      surplus: 0,
+      shortage: requestedQuantity,
+    };
+
+    return {
+      rootId: requestedId,
+      quantity: requestedQuantity,
+      root: { ...rootTotal },
+      totalsById: state.totalsById,
+      tasks,
+      shortages,
+      equipment: Object.values(equipmentById),
+      criticalPath: { ids: critical.ids, seconds: critical.seconds },
+      alternatives: state.alternatives,
+      cycles: state.cycles,
+      unknownIds: Array.from(state.unknownIds),
+      nodeIds: Array.from(state.nodeIds),
+      edgeKeys: Array.from(state.edgeKeys),
+      inventoryAfter: { ...state.available },
+      readyFromInventory: rootTotal.stockUsed >= requestedQuantity,
+    };
+  }
+
   function createsCycle(items, itemId, ingredients) {
     const itemMap = new Map(items.map((item) => [item.id, item]));
     function reachesItem(id, visited) {
@@ -590,5 +841,6 @@
     layoutProductionNetwork,
     normalizeIngredients,
     rankShortages,
+    simulateProductionDemand,
   };
 });
