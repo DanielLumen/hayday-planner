@@ -57,8 +57,7 @@ npx playwright install chromium
 - `index.html`：主应用。
 - `planner-core.js`：库存需求与配方关系的纯计算模块。
 - `catalog-migration.js`：目录 ID、浏览器数据与旧备份的一次性兼容迁移。
-- `catalog-id-image-mapping.json`：人工确认的中文名、规范 ID 与本地图片来源映射。
-- `TEMPORARY_CATALOG_TOOL.md`：临时目录对照工具、迁移脚本和后续删除边界记录。
+- `catalog-id-image-mapping.json`：保留的人工确认审计记录，不参与网页日常运行，也不通过本地服务器公开。
 - `data.json`：当前库存与生产数据。
 - `icons/`：物品和设备图标。
 - `server.js`：静态服务和保存接口。
@@ -67,6 +66,13 @@ npx playwright install chromium
 - `tests/`：浏览器冒烟测试。
 
 ## 版本记录
+
+### v2.24.0
+
+- 使用用户确认的 `Golden_Voucher` 图片替换金色礼券占位图，并沿用其他礼券的本地图片尺寸与格式规则。
+- 删除已经完成使命的目录对照网页、内嵌快照及一次性目录生成、下载和审计脚本，同时撤销这些临时资源的本地服务器访问入口。
+- 保留人工确认的映射审计记录、正式 ID 迁移、旧备份兼容、用户上传图片迁移以及全部已安装本地图标；不改写用户 `data.json`。
+- 增加金色礼券真实图片识别和临时目录资源不可访问的回归检查。
 
 ### v2.23.0
 

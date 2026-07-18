@@ -14,13 +14,6 @@ const publicFiles = new Set([
   "catalog-migration.js",
   "icon-status.js",
   "item-image-store.js",
-  "catalog-mapping.html",
-  "catalog-mapping.css",
-  "catalog-mapping.js",
-  "catalog-mapping-data.js",
-  "catalog-id-image-mapping.json",
-  "catalog-reference.json",
-  "catalog-local-base.json",
   "node_modules/pinyin-pro/dist/index.js",
 ]);
 

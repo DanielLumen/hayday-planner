@@ -635,9 +635,10 @@ async function run() {
       summary: document.querySelector('#dataReviewSummary').textContent,
       missing: getDataReviewCounts().missing,
       honeyToast: getDataReviewState(im.honey_toast, loadEdits(), loadChecked()),
+      goldVoucher: getDataReviewState(im.gold_voucher, loadEdits(), loadChecked()),
     }));
     check("数据校对从物品清单进入且不增加主导航", reviewWorkspace.visible && reviewWorkspace.inventoryHidden && reviewWorkspace.filters === 5 && reviewWorkspace.summary.includes('图片覆盖率'), JSON.stringify(reviewWorkspace));
-    check("已确认目录图片被识别为真实内置图片", reviewWorkspace.missing > 0 && !reviewWorkspace.honeyToast.placeholderImage && !reviewWorkspace.honeyToast.missingImage, JSON.stringify(reviewWorkspace));
+    check("已确认目录图片被识别为真实内置图片", reviewWorkspace.missing > 0 && !reviewWorkspace.honeyToast.placeholderImage && !reviewWorkspace.honeyToast.missingImage && !reviewWorkspace.goldVoucher.placeholderImage && !reviewWorkspace.goldVoucher.missingImage, JSON.stringify(reviewWorkspace));
     const editRecoveryBefore = await page.evaluate(() => ({
       historyCount: loadEditHistory().length,
       name: im.bread.nameCN,
