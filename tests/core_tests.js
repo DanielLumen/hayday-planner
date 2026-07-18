@@ -7,6 +7,7 @@ const placeholderIconIds = require("../icon-status");
 const catalogMigration = require("../catalog-migration");
 
 assert.equal(placeholderIconIds.includes("bacon_omelet"), true);
+assert.equal(placeholderIconIds.includes("gold_voucher"), false);
 assert.equal(placeholderIconIds.includes("bread"), false);
 
 const legacyBackup = {
