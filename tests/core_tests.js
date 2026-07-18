@@ -4,9 +4,56 @@ const assert = require("node:assert/strict");
 const core = require("../planner-core");
 const itemImages = require("../item-image-store");
 const placeholderIconIds = require("../icon-status");
+const catalogMigration = require("../catalog-migration");
 
-assert.equal(placeholderIconIds.includes("cheese_sandwich"), true);
+assert.equal(placeholderIconIds.includes("bacon_omelet"), true);
 assert.equal(placeholderIconIds.includes("bread"), false);
+
+const legacyBackup = {
+  version: 3,
+  items: {
+    fish_taco: { n: 2, tg: 4 },
+    veggie_taco: { n: 7, tg: 6 },
+    peanut: { n: 9, tg: 5 },
+  },
+  edits: {
+    mod: {
+      veggie_taco: { bld: "hotdog_stand", ing: [{ i: "soybean", q: 2 }] },
+    },
+    add: [],
+    del: ["apple_donut"],
+  },
+  checked: { peanut: true },
+  itemOrders: { hotdog_stand: ["veggie_taco", "fish_taco"] },
+  filterOrder: [{ bld: "hotdog_stand" }],
+  order: ["hotdog_stand"],
+  itemImages: { peanut: { id: "peanut", dataUrl: "data:image/png;base64,AA==" } },
+};
+const migratedBackup = catalogMigration.migrateBackupData(legacyBackup);
+assert.equal(migratedBackup.version, 4);
+assert.equal(migratedBackup.catalogIdVersion, 2);
+assert.deepEqual(migratedBackup.items.fish_taco, { n: 7, tg: 6 });
+assert.deepEqual(migratedBackup.items.taco, { n: 2, tg: 4 });
+assert.deepEqual(migratedBackup.items.peanuts, { n: 9, tg: 5 });
+assert.equal(migratedBackup.edits.mod.fish_taco.bld, "hot_dog_stand");
+assert.deepEqual(migratedBackup.edits.mod.fish_taco.ing, [{ i: "soyabean", q: 2 }]);
+assert.deepEqual(migratedBackup.edits.del, ["bacon_donut"]);
+assert.deepEqual(migratedBackup.itemOrders.hot_dog_stand, ["fish_taco", "taco"]);
+assert.equal(migratedBackup.itemImages.peanuts.id, "peanuts");
+assert.deepEqual(catalogMigration.migrateBackupData(migratedBackup), migratedBackup);
+
+const storedMigration = catalogMigration.migrateStoredValues({
+  hd_inv: JSON.stringify(legacyBackup.items),
+  hd_edits: JSON.stringify(legacyBackup.edits),
+  hd_checked: JSON.stringify(legacyBackup.checked),
+});
+assert.equal(storedMigration.migrated, true);
+assert.equal(storedMigration.values.hd_catalog_id_version, "2");
+assert.deepEqual(JSON.parse(storedMigration.values.hd_inv), migratedBackup.items);
+assert.deepEqual(
+  catalogMigration.migrateStoredValues(storedMigration.values),
+  { values: storedMigration.values, changedKeys: [], migrated: false },
+);
 
 const tinyPng = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
 const normalizedImage = itemImages.normalizeRecord("bread", { dataUrl: tinyPng, width: 1, height: 1, updatedAt: "2026-07-16T00:00:00.000Z" });
@@ -25,6 +72,7 @@ assert.equal(itemImages.shouldReplace(null, normalizedImage), true);
 assert.equal(itemImages.shouldReplace({ updatedAt: "2026-07-17T00:00:00.000Z" }, normalizedImage), false);
 assert.equal(itemImages.shouldReplace({ updatedAt: "2026-07-15T00:00:00.000Z" }, normalizedImage), true);
 assert.equal(itemImages.shouldReplace({ updatedAt: "" }, normalizedImage), false);
+assert.equal(typeof itemImages.migrateIds, "function");
 
 const items = [
   { id: "wheat", ing: [] },

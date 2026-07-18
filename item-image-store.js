@@ -112,6 +112,40 @@
       });
     });
   }
+  function migrateIds(idMap){
+    if(!idMap||typeof idMap!=='object'||Array.isArray(idMap)) return Promise.reject(new Error('图片编号映射格式错误'));
+    var keys=Object.keys(idMap).filter(function(id){return validId(id)&&validId(idMap[id])&&id!==idMap[id];});
+    if(!keys.length) return Promise.resolve(0);
+    return openDb().then(function(db){
+      return new Promise(function(resolve,reject){
+        var transaction=db.transaction(STORE_NAME,'readwrite');
+        var store=transaction.objectStore(STORE_NAME);
+        var request=store.getAll();
+        var migrated=0,migrationError=null;
+        request.onsuccess=function(){
+          var records=request.result||[],byTarget={};
+          records.forEach(function(record){
+            var target=Object.prototype.hasOwnProperty.call(idMap,record.id)?idMap[record.id]:record.id;
+            var next=normalizeRecord(target,record);
+            if(!next&&target!==record.id)migrationError=new Error('用户图片记录损坏，已停止编号迁移: '+record.id);
+            if(!next)return;
+            var existing=byTarget[target];
+            if(!existing||shouldReplace(existing,next))byTarget[target]=next;
+          });
+          if(migrationError){transaction.abort();return;}
+          records.forEach(function(record){
+            var target=Object.prototype.hasOwnProperty.call(idMap,record.id)?idMap[record.id]:record.id;
+            if(target!==record.id){store.delete(record.id);migrated++;}
+          });
+          Object.keys(byTarget).forEach(function(id){store.put(byTarget[id]);});
+        };
+        request.onerror=function(){transaction.abort();};
+        transaction.oncomplete=function(){db.close();resolve(migrated);};
+        transaction.onerror=function(){db.close();reject(transaction.error||request.error||new Error('用户图片编号迁移失败'));};
+        transaction.onabort=function(){db.close();reject(migrationError||transaction.error||request.error||new Error('用户图片编号迁移已取消'));};
+      });
+    });
+  }
   function exportMap(){
     return getAll().then(function(records){
       var result={};
@@ -172,6 +206,7 @@
     put:put,
     remove:remove,
     mergeBackup:mergeBackup,
+    migrateIds:migrateIds,
     exportMap:exportMap,
     prepareFile:prepareFile
   };
