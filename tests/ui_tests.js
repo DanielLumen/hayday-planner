@@ -72,6 +72,82 @@ async function testSyncRetry(browser) {
   }
 }
 
+async function testPublicShowcaseDefaults(browser) {
+  const server = createServer();
+  await new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", resolve);
+  });
+  const showcasePage = await browser.newPage();
+  try {
+    await showcasePage.route("**/api/save", (route) =>
+      route.fulfill({ status: 404, contentType: "text/plain", body: "not found" }),
+    );
+    await showcasePage.route("**/data.json", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          hd_catalog_id_version: "2",
+          hd_edits: '{"mod":{},"add":[],"del":[]}',
+        }),
+      }),
+    );
+    const port = server.address().port;
+    await showcasePage.goto(`http://127.0.0.1:${port}/`, { waitUntil: "networkidle" });
+    const showcaseState = await showcasePage.evaluate(() => {
+      const siloIds = D.items.filter((item) => item.st.indexOf("silo") === 0).map((item) => item.id);
+      const barnIds = D.items.filter((item) => item.st.indexOf("silo") !== 0).map((item) => item.id);
+      const siloValues = siloIds.map(gs);
+      const barnValues = barnIds.map(gs);
+      return {
+        siloCap: S._sc,
+        barnCap: S._bc,
+        siloTotal: siloValues.reduce((sum, value) => sum + value, 0),
+        barnTotal: barnValues.reduce((sum, value) => sum + value, 0),
+        siloSpread: Math.max(...siloValues) - Math.min(...siloValues),
+        barnSpread: Math.max(...barnValues) - Math.min(...barnValues),
+        persisted: localStorage.getItem("hd_inv") !== null,
+      };
+    });
+    check(
+      "静态网页新访客获得两仓各 8000 的均匀展示库存",
+      showcaseState.siloCap === 8000 &&
+        showcaseState.barnCap === 8000 &&
+        showcaseState.siloTotal === 8000 &&
+        showcaseState.barnTotal === 8000 &&
+        showcaseState.siloSpread <= 1 &&
+        showcaseState.barnSpread <= 1 &&
+        showcaseState.persisted,
+      JSON.stringify(showcaseState),
+    );
+
+    await showcasePage.evaluate(() => {
+      localStorage.setItem("hd_inv", JSON.stringify({
+        wheat: { n: 7, tg: 30 },
+        _sc: 321,
+        _bc: 654,
+        _gtSilo: 10,
+        _gtBarn: 5,
+      }));
+    });
+    await showcasePage.reload({ waitUntil: "networkidle" });
+    const existingState = await showcasePage.evaluate(() => ({
+      wheat: gs("wheat"),
+      siloCap: S._sc,
+      barnCap: S._bc,
+    }));
+    check(
+      "静态网页已有库存不会被展示默认值覆盖",
+      existingState.wheat === 7 && existingState.siloCap === 321 && existingState.barnCap === 654,
+      JSON.stringify(existingState),
+    );
+  } finally {
+    await showcasePage.close();
+    await new Promise((resolve) => server.close(resolve));
+  }
+}
+
 async function run() {
   console.log("=== 卡通农场 UI 测试 ===\n");
 
@@ -838,6 +914,7 @@ async function run() {
     check("页面无 JS 异常", pageErrors.length === 0, pageErrors.join(" | "));
     check("控制台无错误", consoleErrors.length === 0, consoleErrors.join(" | "));
 
+    await testPublicShowcaseDefaults(browser);
     await testSyncRetry(browser);
 
     if (results.failed > 0) {

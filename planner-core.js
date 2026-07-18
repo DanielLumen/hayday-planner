@@ -20,6 +20,33 @@
     return Number.isFinite(quantity) && quantity > 0 ? quantity : fallback;
   }
 
+  function allocateEvenInventory(ids, capacity) {
+    const itemIds = Array.from(
+      new Set(
+        (Array.isArray(ids) ? ids : [])
+          .map((id) => String(id || "").trim())
+          .filter(Boolean),
+      ),
+    );
+    const totalCapacity = Math.max(0, Number.parseInt(capacity, 10) || 0);
+    const quantities = {};
+    if (!itemIds.length) {
+      return { quantities, total: 0, itemCount: 0, min: 0, max: 0 };
+    }
+    const base = Math.floor(totalCapacity / itemIds.length);
+    const remainder = totalCapacity % itemIds.length;
+    itemIds.forEach((id, index) => {
+      quantities[id] = base + (index < remainder ? 1 : 0);
+    });
+    return {
+      quantities,
+      total: totalCapacity,
+      itemCount: itemIds.length,
+      min: base,
+      max: base + (remainder ? 1 : 0),
+    };
+  }
+
   function relationTarget(relation) {
     if (!relation || typeof relation !== "object") return "";
     return String(relation.i || relation.to || relation.id || "").trim();
@@ -834,6 +861,7 @@
 
   return {
     analyzeProductionNetwork,
+    allocateEvenInventory,
     allocateReadyQuantities,
     calculateNeeds,
     createsCycle,

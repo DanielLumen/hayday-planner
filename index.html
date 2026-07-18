@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>卡通农场 · 货仓助手 v2.22.0</title>
+<title>卡通农场 · 货仓助手 v2.23.0</title>
 <style>
 /* ====== 变量与重置 ====== */
 :root{--bg:#F8FAFC;--card:#FFFFFF;--text:#0F172A;--text-secondary:#475569;--muted:#64748B;--accent:#059669;--accent-hover:#047857;--warn:#D97706;--warn-light:#FFFBEB;--danger:#DC2626;--danger-light:#FEF2F2;--border:#E2E8F0;--shadow-sm:0 1px 2px rgba(0,0,0,.04);--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--radius:8px;--radius-sm:6px;--transition:150ms ease}
@@ -1124,6 +1124,7 @@ var _relationDemandTargetId='',_relationDemandResult=null;
 var _relationGraphView={x:0,y:0,scale:1,autoFit:true,mode:'overview'},_relationGraphDrag=null,_relationGraphPointerGesture=null,_relationGraphSuppressClick=false,_relationResizeTimer=null,_relationFullscreenReturnFocus=null,_relationFullscreenWanted=false,_relationFullscreenEntering=false,_relationFullscreenCancelTimer=null;
 var _relationPanelStates=Object.create(null),_relationPanelExpandedHeights=Object.create(null),_relationCompactLayout=false;
 var SERVER_PENDING_STORAGE='_hd_server_pending',SERVER_REVISION_STORAGE='_hd_server_revision';
+var PUBLIC_SHOWCASE_CAPACITY=8000,_publicShowcaseInventoryPending=false;
 var EDIT_HISTORY_STORAGE='hayday_local_edit_history_v1',EDIT_HISTORY_LIMIT=20,_editHistoryExpanded=false,_editHistorySequence=0;
 var _serverPending={},_serverRevision='',_serverConflict=false,_serverSaveTimer=null,_serverRetryTimer=null,_serverSaving=false,_serverRetryDelay=1000;
 var _itemImageRecords={},_itemImageStorageAvailable=true,_dataReviewFilter='issues',_dataReviewSelectedId='',_dataReviewQuery='',_dataReviewReturnFocus=null,_dataReviewReturnScroll=0;
@@ -3324,6 +3325,30 @@ window.removeItemImage=removeItemImage;
 function hasLocalAppData(){
   return localStorage.getItem('hd_inv')!==null||localStorage.getItem('hd_edits')!==null;
 }
+function applyPublicShowcaseInventory(){
+  if(!_publicShowcaseInventoryPending||!S||!window.HayDayPlannerCore)return false;
+  var siloIds=[],barnIds=[];
+  D.items.forEach(function(item){
+    (item.st.indexOf('silo')===0?siloIds:barnIds).push(item.id);
+  });
+  var siloAllocation=HayDayPlannerCore.allocateEvenInventory(siloIds,PUBLIC_SHOWCASE_CAPACITY);
+  var barnAllocation=HayDayPlannerCore.allocateEvenInventory(barnIds,PUBLIC_SHOWCASE_CAPACITY);
+  [siloAllocation,barnAllocation].forEach(function(allocation){
+    Object.keys(allocation.quantities).forEach(function(id){
+      if(!S[id]||typeof S[id]!=='object')S[id]={n:0,tg:(im[id]&&im[id].tg)||5};
+      S[id].n=allocation.quantities[id];
+    });
+  });
+  S._sc=PUBLIC_SHOWCASE_CAPACITY;
+  S._bc=PUBLIC_SHOWCASE_CAPACITY;
+  localStorage.setItem('hd_inv',JSON.stringify(S));
+  _publicShowcaseInventoryPending=false;
+  updateTargetMax();
+  return {
+    silo:siloAllocation,
+    barn:barnAllocation
+  };
+}
 function applyStoredSnapshot(data,editsOnly,excludedKeys){
   if(!data||typeof data!=='object') return false;
   var applied=false,localCatalogVersion=localStorage.getItem('hd_catalog_id_version'),incomingCatalogVersion=data.hd_catalog_id_version;
@@ -3346,6 +3371,7 @@ async function fetchStoredSnapshot(url){
 }
 async function hydrateStoredData(){
   if(location.protocol==='file:') return;
+  var hadLocalAppData=hasLocalAppData();
   var pending=readStoredJson(SERVER_PENDING_STORAGE,{}),pendingKeys=new Set(),storedRevision=localStorage.getItem(SERVER_REVISION_STORAGE)||'';
   if(pending&&typeof pending==='object'&&!Array.isArray(pending))Object.keys(pending).forEach(function(key){if(/^hd_[a-z0-9_]+$/.test(key)&&typeof pending[key]==='string')pendingKeys.add(key);});
   try{
@@ -3363,8 +3389,10 @@ async function hydrateStoredData(){
       return;
     }
   }catch(e){}
-  if(!hasLocalAppData()){
-    try{applyStoredSnapshot((await fetchStoredSnapshot('data.json')).data,false);}catch(e){}
+  if(!hadLocalAppData){
+    try{
+      if(applyStoredSnapshot((await fetchStoredSnapshot('data.json')).data,false))_publicShowcaseInventoryPending=true;
+    }catch(e){}
   }else if(localStorage.getItem('hd_edits')===null){
     try{applyStoredSnapshot((await fetchStoredSnapshot('data.json')).data,true);}catch(e){}
   }
@@ -3389,6 +3417,7 @@ async function bootstrap(){
   });
   migrateFilterOrderV2();
   init();
+  applyPublicShowcaseInventory();
   var search=document.getElementById('searchInput');
   if(search) search.value=localStorage.getItem('hd_ui_search')||'';
   renderFilters();
