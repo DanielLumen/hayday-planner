@@ -11,6 +11,7 @@ HTML = ROOT / "index.html"
 DATA = ROOT / "data.json"
 WIKI = ROOT / "wiki_products.json"
 ICONS = ROOT / "icons"
+CATALOG_MIGRATION = ROOT / "catalog-migration.js"
 
 ITEM_RE = re.compile(
     r'\{id:"([^"]+)",nameCN:"([^"]+)",emoji:"[^"]*",'
@@ -83,12 +84,63 @@ def parse_buildings(html):
     return buildings
 
 
+def catalog_id_maps():
+    source = CATALOG_MIGRATION.read_text(encoding="utf-8")
+    item_match = re.search(r"var ITEM_IDS=/\* CATALOG_ITEM_IDS \*/(\{.*?\});", source)
+    building_match = re.search(r"var BUILDING_IDS=/\* CATALOG_BUILDING_IDS \*/(\{.*?\});", source)
+    if not item_match or not building_match:
+        raise ValueError("Cannot parse catalog ID migration maps")
+    return json.loads(item_match.group(1)), json.loads(building_match.group(1))
+
+
+def migrate_item_record(item, item_ids, building_ids):
+    if not isinstance(item, dict):
+        return copy.deepcopy(item)
+    result = copy.deepcopy(item)
+    if isinstance(result.get("id"), str):
+        result["id"] = item_ids.get(result["id"], result["id"])
+    if isinstance(result.get("bld"), str):
+        result["bld"] = building_ids.get(result["bld"], result["bld"])
+    if isinstance(result.get("ing"), list):
+        for ingredient in result["ing"]:
+            if isinstance(ingredient, dict) and isinstance(ingredient.get("i"), str):
+                ingredient["i"] = item_ids.get(ingredient["i"], ingredient["i"])
+    return result
+
+
+def migrate_edits(edits, item_ids, building_ids):
+    if not isinstance(edits, dict):
+        return edits
+    result = copy.deepcopy(edits)
+    modified = {}
+    for source_id, changes in result.get("mod", {}).items():
+        target_id = item_ids.get(source_id, source_id)
+        if target_id in modified:
+            raise ValueError(f"Edit ID migration collision: {source_id} -> {target_id}")
+        migrated = migrate_item_record(changes, item_ids, building_ids)
+        if isinstance(migrated, dict):
+            migrated.pop("id", None)
+        modified[target_id] = migrated
+    result["mod"] = modified
+    result["add"] = [
+        migrate_item_record(item, item_ids, building_ids)
+        for item in result.get("add", [])
+    ]
+    result["del"] = list(
+        dict.fromkeys(item_ids.get(item_id, item_id) for item_id in result.get("del", []))
+    )
+    return result
+
+
 def load_edits():
     if not DATA.exists():
         return {}
     saved = json.loads(DATA.read_text(encoding="utf-8-sig"))
     raw = saved.get("hd_edits", "{}")
     edits = json.loads(raw) if isinstance(raw, str) else raw
+    if str(saved.get("hd_catalog_id_version", "")) != "2":
+        item_ids, building_ids = catalog_id_maps()
+        edits = migrate_edits(edits, item_ids, building_ids)
     return edits if isinstance(edits, dict) else {}
 
 

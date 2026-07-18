@@ -244,7 +244,7 @@ async function run() {
     await page.click('#relationDemandPlanner .relation-panel-toggle');
     await page.waitForTimeout(320);
 
-    await page.evaluate(() => selectRelationNode('cheese_sandwich', true));
+    await page.evaluate(() => selectRelationNode('honey_toast', true));
     const selectionPanelBefore = await page.evaluate(() => ({
       height: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().height || 0,
       panelHeight: document.querySelector('#relationSelection')?.getBoundingClientRect().height || 0,
@@ -260,14 +260,14 @@ async function run() {
       viewportHeightStyle: getComputedStyle(document.querySelector('#relationGraphViewport')).height,
       collapsed: document.querySelector('#relationSelection')?.classList.contains('is-collapsed'),
       copyDisplay: getComputedStyle(document.querySelector('#relationSelection .relation-selection-copy')).display,
-      selected: document.querySelector('[data-network-node="cheese_sandwich"]')?.classList.contains('is-selected'),
+      selected: document.querySelector('[data-network-node="honey_toast"]')?.classList.contains('is-selected'),
       toggle: document.querySelector('#relationSelection .relation-panel-toggle')?.getAttribute('aria-expanded'),
     }));
     check("物品详情可独立收起且不清除当前关系", selectionPanelBefore.detailVisible && selectionPanelBefore.toggle === 'true' && selectionPanelCollapsed.collapsed && selectionPanelCollapsed.copyDisplay === 'none' && selectionPanelCollapsed.selected && selectionPanelCollapsed.toggle === 'false' && selectionPanelCollapsed.height > selectionPanelBefore.height, JSON.stringify({ selectionPanelBefore, selectionPanelCollapsed }));
     await page.click('#relationSelection .relation-panel-toggle');
     await page.waitForTimeout(220);
     const editActionBeforeFullscreen = await page.evaluate(() => {
-      const button = document.querySelector('#relationSelection [data-edit-id="cheese_sandwich"]');
+      const button = document.querySelector('#relationSelection [data-edit-id="honey_toast"]');
       return Boolean(button && getComputedStyle(button).display !== 'none');
     });
     await page.click('#relationFullscreenButton');
@@ -280,12 +280,12 @@ async function run() {
         viewHeight: document.querySelector('#relationsView')?.getBoundingClientRect().height || 0,
         viewportWidth: innerWidth,
         viewportHeight: innerHeight,
-        editActionDisplay: getComputedStyle(document.querySelector('#relationSelection [data-edit-id="cheese_sandwich"]')).display,
+        editActionDisplay: getComputedStyle(document.querySelector('#relationSelection [data-edit-id="honey_toast"]')).display,
         editModalHidden: document.querySelector('#editModal')?.classList.contains('hidden'),
     }));
     check("全屏按钮让关系网占满屏幕并切换为退出状态", fullscreenState.active && fullscreenState.pressed === 'true' && fullscreenState.label === '退出全屏' && fullscreenState.viewWidth >= fullscreenState.viewportWidth - 2 && fullscreenState.viewHeight >= fullscreenState.viewportHeight - 2, JSON.stringify(fullscreenState));
     check("全屏专注查看时隐藏编辑物品入口", editActionBeforeFullscreen && fullscreenState.editActionDisplay === 'none' && fullscreenState.editModalHidden, JSON.stringify({ editActionBeforeFullscreen, fullscreenState }));
-    await page.evaluate(() => openEditModal('cheese_sandwich'));
+    await page.evaluate(() => openEditModal('honey_toast'));
     const fullscreenEditGuard = await page.evaluate(() => ({
       modalHidden: document.querySelector('#editModal')?.classList.contains('hidden'),
       message: document.querySelector('#toast')?.textContent || '',
@@ -301,7 +301,7 @@ async function run() {
         active: Boolean(document.fullscreenElement || document.querySelector('#relationsView')?.classList.contains('is-pseudo-fullscreen')),
         pressed: document.querySelector('#relationFullscreenButton')?.getAttribute('aria-pressed'),
         label: document.querySelector('#relationFullscreenButton')?.textContent?.trim(),
-        editActionDisplay: getComputedStyle(document.querySelector('#relationSelection [data-edit-id="cheese_sandwich"]')).display,
+        editActionDisplay: getComputedStyle(document.querySelector('#relationSelection [data-edit-id="honey_toast"]')).display,
     }));
     check("再次操作或 Escape 可退出关系网全屏并恢复编辑入口", !restoredFullscreenState.active && restoredFullscreenState.pressed === 'false' && restoredFullscreenState.label === '全屏' && restoredFullscreenState.editActionDisplay !== 'none', JSON.stringify(restoredFullscreenState));
 
@@ -317,10 +317,10 @@ async function run() {
       red: [], green: [{ i: 'green_voucher', q: 1 }], blue: [{ i: 'blue_voucher', q: 1 }], purple: [{ i: 'purple_voucher', q: 1 }], gold: [{ i: 'gold_voucher', q: 1 }], net: [],
     }), JSON.stringify(fishingSources));
 
-    await page.fill('#relationsSearch', '奶酪三明治');
+    await page.fill('#relationsSearch', '蜂蜜吐司');
     await page.press('#relationsSearch', 'Enter');
     const cheeseNetwork = await page.evaluate(() => {
-      const root = document.querySelector('[data-network-node="cheese_sandwich"]');
+      const root = document.querySelector('[data-network-node="honey_toast"]');
       const milk = document.querySelector('[data-network-node="milk"]');
       const activeLabels = Array.from(document.querySelectorAll('.network-edge-wrap.show-label .network-edge-label')).map((label) => label.textContent || '');
       return {
@@ -335,8 +335,8 @@ async function run() {
         scale: _relationGraphView.scale,
       };
     });
-    check("搜索只高亮并聚焦关系，不会把其他物品从全图移除", cheeseNetwork.allNodesRemain > 400 && cheeseNetwork.selected && cheeseNetwork.detail.includes('奶酪三明治'), JSON.stringify(cheeseNetwork));
-    check("聚焦后显示完整动物饲料来源、数量与左右层级", ['milk','cow_feed','corn','soybean'].every((id) => cheeseNetwork.activeIds.includes(id)) && cheeseNetwork.hasSemanticQty && cheeseNetwork.leftToRight, JSON.stringify(cheeseNetwork));
+    check("搜索只高亮并聚焦关系，不会把其他物品从全图移除", cheeseNetwork.allNodesRemain > 400 && cheeseNetwork.selected && cheeseNetwork.detail.includes('蜂蜜吐司'), JSON.stringify(cheeseNetwork));
+    check("聚焦后显示完整动物饲料来源、数量与左右层级", ['milk','cow_feed','corn','soyabean'].every((id) => cheeseNetwork.activeIds.includes(id)) && cheeseNetwork.hasSemanticQty && cheeseNetwork.leftToRight, JSON.stringify(cheeseNetwork));
     check("聚焦详情在图上方并直接显示配方", cheeseNetwork.mode === '聚焦' && cheeseNetwork.detailAboveGraph && cheeseNetwork.detail.includes('配方：') && cheeseNetwork.scale >= .9, JSON.stringify(cheeseNetwork));
     const graphDragStart = await page.evaluate(() => {
       const rect = document.querySelector('#relationGraphViewport').getBoundingClientRect();
@@ -352,7 +352,7 @@ async function run() {
       viewX: _relationGraphView.x,
       viewY: _relationGraphView.y,
     }));
-    check("鼠标左键拖动不会平移或误清除已选物品", afterLeftDrag.selectedId === 'cheese_sandwich' && afterLeftDrag.selectedNode === 'cheese_sandwich' && Math.abs(afterLeftDrag.viewX - graphDragStart.viewX) < .01 && Math.abs(afterLeftDrag.viewY - graphDragStart.viewY) < .01, JSON.stringify({ graphDragStart, afterLeftDrag }));
+    check("鼠标左键拖动不会平移或误清除已选物品", afterLeftDrag.selectedId === 'honey_toast' && afterLeftDrag.selectedNode === 'honey_toast' && Math.abs(afterLeftDrag.viewX - graphDragStart.viewX) < .01 && Math.abs(afterLeftDrag.viewY - graphDragStart.viewY) < .01, JSON.stringify({ graphDragStart, afterLeftDrag }));
     await page.mouse.move(graphDragStart.x, graphDragStart.y);
     await page.mouse.down({ button: 'right' });
     await page.mouse.move(graphDragStart.x + 90, graphDragStart.y + 45, { steps: 5 });
@@ -370,7 +370,7 @@ async function run() {
         hint: document.querySelector('.relation-graph-hint')?.textContent || '',
       };
     });
-    check("鼠标右键可平移关系网并保持当前物品焦点", afterRightDrag.selectedId === 'cheese_sandwich' && afterRightDrag.selectedNode === 'cheese_sandwich' && afterRightDrag.viewX > afterLeftDrag.viewX + 70 && afterRightDrag.viewY > afterLeftDrag.viewY + 30, JSON.stringify({ afterLeftDrag, afterRightDrag }));
+    check("鼠标右键可平移关系网并保持当前物品焦点", afterRightDrag.selectedId === 'honey_toast' && afterRightDrag.selectedNode === 'honey_toast' && afterRightDrag.viewX > afterLeftDrag.viewX + 70 && afterRightDrag.viewY > afterLeftDrag.viewY + 30, JSON.stringify({ afterLeftDrag, afterRightDrag }));
     check("关系网内屏蔽浏览器右键菜单并明确显示拖动说明", afterRightDrag.contextMenuPrevented && afterRightDrag.hint.includes('鼠标右键') && afterRightDrag.hint.includes('触屏单指'), JSON.stringify(afterRightDrag));
     const demandStorageBefore = await page.evaluate(() => JSON.stringify(Object.fromEntries(Object.keys(localStorage).sort().map((key) => [key, localStorage.getItem(key)]))));
     await page.fill('#relationDemandQty', '6');
@@ -385,22 +385,22 @@ async function run() {
       resultText: document.querySelector('#relationDemandResult')?.textContent || '',
       storage: JSON.stringify(Object.fromEntries(Object.keys(localStorage).sort().map((key) => [key, localStorage.getItem(key)]))),
     }));
-    check("需求模拟按指定数量递归列出逐层材料与生产顺序", demandSimulation.quantity === 6 && demandSimulation.targetId === 'cheese_sandwich' && demandSimulation.taskCount > 3 && demandSimulation.materialCount > 5 && demandSimulation.resultText.includes('奶酪三明治 × 6') && demandSimulation.resultText.includes('逐层总需求') && demandSimulation.resultText.includes('生产顺序'), JSON.stringify(demandSimulation));
+    check("需求模拟按指定数量递归列出逐层材料与生产顺序", demandSimulation.quantity === 6 && demandSimulation.targetId === 'honey_toast' && demandSimulation.taskCount > 3 && demandSimulation.materialCount > 5 && demandSimulation.resultText.includes('蜂蜜吐司 × 6') && demandSimulation.resultText.includes('逐层总需求') && demandSimulation.resultText.includes('生产顺序'), JSON.stringify(demandSimulation));
     check("需求模拟只高亮相关路径且完整关系网仍保留", demandSimulation.nodeCount > 400 && demandSimulation.activeCount > 5 && demandSimulation.activeCount < demandSimulation.nodeCount, JSON.stringify(demandSimulation));
     check("需求模拟只读库存，不改写任何本地存储", demandSimulation.storage === demandStorageBefore, JSON.stringify({ before: demandStorageBefore, after: demandSimulation.storage }));
-    await page.locator('[data-network-node="cheese_sandwich"]').press('ArrowRight');
+    await page.locator('[data-network-node="honey_toast"]').press('ArrowRight');
     const keyboardRelation = await page.evaluate(() => ({
       activeId: document.activeElement?.getAttribute('data-network-node'),
       selectedId: document.querySelector('.network-node.is-selected')?.getAttribute('data-network-node'),
       tabbableNodes: document.querySelectorAll('.network-node[tabindex="0"]').length,
     }));
-    check("方向键可沿关系移动且始终只有一个键盘入口", keyboardRelation.activeId && keyboardRelation.activeId !== 'cheese_sandwich' && keyboardRelation.selectedId === keyboardRelation.activeId && keyboardRelation.tabbableNodes === 1, JSON.stringify(keyboardRelation));
+    check("方向键可沿关系移动且始终只有一个键盘入口", keyboardRelation.activeId && keyboardRelation.activeId !== 'honey_toast' && keyboardRelation.selectedId === keyboardRelation.activeId && keyboardRelation.tabbableNodes === 1, JSON.stringify(keyboardRelation));
     await page.press('#relationsSearch', 'Enter');
 
     const previousEdits = await page.evaluate(() => localStorage.getItem('hd_edits'));
-    await page.click('#relationSelection [data-edit-id="cheese_sandwich"]');
+    await page.click('#relationSelection [data-edit-id="honey_toast"]');
     await page.evaluate(() => {
-      const index = _ingRows.findIndex((row) => row.i === 'cheese');
+      const index = _ingRows.findIndex((row) => row.i === 'milk');
       _ingRows[index].q = 7;
       refreshIngUI();
       updateEditSaveState();
@@ -408,12 +408,12 @@ async function run() {
     await page.click('#emSave');
     await page.waitForTimeout(150);
     const liveEditState = await page.evaluate(() => ({
-      quantity: _relationsNetwork.ingredientsById.cheese_sandwich.find((edge) => edge.to === 'cheese')?.q,
+      quantity: _relationsNetwork.ingredientsById.honey_toast.find((edge) => edge.to === 'milk')?.q,
       label: Array.from(document.querySelectorAll('.network-edge-wrap.show-label .network-edge-label')).map((node) => node.textContent || '').find((text) => text.includes('7')),
-      selected: document.querySelector('[data-network-node="cheese_sandwich"]')?.classList.contains('is-selected'),
-      simulatedCheese: _relationDemandResult?.totalsById?.cheese?.requested,
+      selected: document.querySelector('[data-network-node="honey_toast"]')?.classList.contains('is-selected'),
+      simulatedMilk: _relationDemandResult?.totalsById?.milk?.requested,
     }));
-    check("物品编辑保存后立即重算关系网、连线数量与需求模拟", liveEditState.quantity === 7 && Boolean(liveEditState.label) && liveEditState.selected && liveEditState.simulatedCheese === 42, JSON.stringify(liveEditState));
+    check("物品编辑保存后立即重算关系网、连线数量与需求模拟", liveEditState.quantity === 7 && Boolean(liveEditState.label) && liveEditState.selected && liveEditState.simulatedMilk === 42, JSON.stringify(liveEditState));
     await page.evaluate((saved) => {
       if (saved === null) localStorage.removeItem('hd_edits');
       else localStorage.setItem('hd_edits', saved);
@@ -558,10 +558,10 @@ async function run() {
       filters: document.querySelectorAll('#dataReviewFilters .review-filter').length,
       summary: document.querySelector('#dataReviewSummary').textContent,
       missing: getDataReviewCounts().missing,
-      honeyToast: getDataReviewState(im.cheese_sandwich, loadEdits(), loadChecked()),
+      honeyToast: getDataReviewState(im.honey_toast, loadEdits(), loadChecked()),
     }));
     check("数据校对从物品清单进入且不增加主导航", reviewWorkspace.visible && reviewWorkspace.inventoryHidden && reviewWorkspace.filters === 5 && reviewWorkspace.summary.includes('图片覆盖率'), JSON.stringify(reviewWorkspace));
-    check("内置占位图不会被误算为真实图片", reviewWorkspace.missing > 0 && reviewWorkspace.honeyToast.placeholderImage && reviewWorkspace.honeyToast.missingImage, JSON.stringify(reviewWorkspace));
+    check("已确认目录图片被识别为真实内置图片", reviewWorkspace.missing > 0 && !reviewWorkspace.honeyToast.placeholderImage && !reviewWorkspace.honeyToast.missingImage, JSON.stringify(reviewWorkspace));
     const editRecoveryBefore = await page.evaluate(() => ({
       historyCount: loadEditHistory().length,
       name: im.bread.nameCN,
@@ -604,11 +604,12 @@ async function run() {
         inventory: localStorage.getItem('hd_inv'),
         historyCount: loadEditHistory().length,
         backupVersion: backup.version,
+        catalogIdVersion: backup.catalogIdVersion,
         backupHasHistory: Object.prototype.hasOwnProperty.call(backup, 'editHistory'),
       };
     });
     check("恢复物品编辑和目标时保持库存数量不变", editRecoveryRestored.name === editRecoveryBefore.name && editRecoveryRestored.target === editRecoveryBefore.target && editRecoveryRestored.stock === editRecoveryBefore.stock && editRecoveryRestored.inventory === editRecoveryBefore.inventory && editRecoveryRestored.historyCount === editRecoverySaved.historyCount + 1, JSON.stringify(editRecoveryRestored));
-    check("修改恢复记录不改变 v3 备份结构", editRecoveryRestored.backupVersion === 3 && !editRecoveryRestored.backupHasHistory, JSON.stringify(editRecoveryRestored));
+    check("修改恢复记录不进入 v4 备份结构", editRecoveryRestored.backupVersion === 4 && editRecoveryRestored.catalogIdVersion === 2 && !editRecoveryRestored.backupHasHistory, JSON.stringify(editRecoveryRestored));
     const editHistoryClearBefore = await page.evaluate(() => ({
       edits: localStorage.getItem('hd_edits'),
       inventory: localStorage.getItem('hd_inv'),
@@ -643,7 +644,7 @@ async function run() {
     }, userDataBeforeImage);
     check("用户图片保存在独立图片库并立即显示", uploadedImageState.custom && uploadedImageState.source.startsWith('data:image/') && uploadedImageState.detailUsesUpload, JSON.stringify(uploadedImageState));
     check("上传图片不改写物品编辑和库存", uploadedImageState.editsUntouched && uploadedImageState.inventoryUntouched, JSON.stringify(uploadedImageState));
-    check("新备份使用 v3 并包含用户图片", uploadedImageState.version === 3 && uploadedImageState.backupHasImage, JSON.stringify(uploadedImageState));
+    check("新备份使用 v4 并包含用户图片", uploadedImageState.version === 4 && uploadedImageState.backupHasImage, JSON.stringify(uploadedImageState));
     const staleImageState = await page.evaluate(async (tinyPng) => {
       const before = itemImageSrc('bread');
       const stale = await buildBackupData();
@@ -805,7 +806,7 @@ async function run() {
     await page.click('#dataReviewPanel .data-review-heading .btn');
 
     await page.click('.app-view-tab[data-app-view="relations"]');
-    await page.fill('#relationsSearch', '奶酪三明治');
+    await page.fill('#relationsSearch', '蜂蜜吐司');
     await page.press('#relationsSearch', 'Enter');
     const mobileRelations = await page.evaluate(() => {
       const viewport = document.querySelector('#relationGraphViewport');
@@ -848,13 +849,20 @@ async function run() {
   }
 }
 
-run()
-  .catch((error) => {
+async function runAndReport() {
+  try {
+    await run();
+  } catch (error) {
     check("测试运行", false, error.stack || error.message);
-  })
-  .finally(() => {
-    const total = results.passed + results.failed;
-    console.log(`\n═══ ${results.failed === 0 ? "全部通过" : "有失败"} ═══`);
-    console.log(`通过: ${results.passed}/${total}  失败: ${results.failed}/${total}`);
-    process.exit(results.failed > 0 ? 1 : 0);
-  });
+  }
+  const total = results.passed + results.failed;
+  console.log(`\n═══ ${results.failed === 0 ? "全部通过" : "有失败"} ═══`);
+  console.log(`通过: ${results.passed}/${total}  失败: ${results.failed}/${total}`);
+  return results;
+}
+
+if (require.main === module) {
+  runAndReport().then(() => process.exit(results.failed > 0 ? 1 : 0));
+}
+
+module.exports = { runAndReport, results };

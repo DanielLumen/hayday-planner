@@ -1,0 +1,3049 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "legacyId": "wheat",
+      "nameCN": "小麦",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "corn",
+      "nameCN": "玉米",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "soybean",
+      "nameCN": "大豆",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "sugarcane",
+      "nameCN": "甘蔗",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "carrot",
+      "nameCN": "胡萝卜",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "indigo",
+      "nameCN": "木兰",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pumpkin",
+      "nameCN": "南瓜",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cotton",
+      "nameCN": "棉花",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chili_pepper",
+      "nameCN": "辣椒",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tomato",
+      "nameCN": "西红柿",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "strawberry",
+      "nameCN": "草莓",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "potato",
+      "nameCN": "土豆",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "rice",
+      "nameCN": "大米",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tea_leaf",
+      "nameCN": "茶叶",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lettuce",
+      "nameCN": "生菜",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "sunflower",
+      "nameCN": "向日葵",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "apple",
+      "nameCN": "苹果",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cherry",
+      "nameCN": "樱桃",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "raspberry",
+      "nameCN": "树莓",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blackberry",
+      "nameCN": "黑莓",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "coffee_bean",
+      "nameCN": "咖啡豆",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "olive",
+      "nameCN": "橄榄",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lemon",
+      "nameCN": "柠檬",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "banana",
+      "nameCN": "香蕉",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pineapple",
+      "nameCN": "菠萝",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "peach",
+      "nameCN": "桃子",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mushroom",
+      "nameCN": "蘑菇",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "eggplant",
+      "nameCN": "茄子",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lavender",
+      "nameCN": "薰衣草",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cucumber",
+      "nameCN": "黄瓜",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "peanut",
+      "nameCN": "花生",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "onion",
+      "nameCN": "洋葱",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "ginger",
+      "nameCN": "生姜",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "garlic",
+      "nameCN": "大蒜",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "jasmine",
+      "nameCN": "茉莉",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "milk",
+      "nameCN": "牛奶",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "egg",
+      "nameCN": "鸡蛋",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "wool",
+      "nameCN": "羊毛",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "goat_milk",
+      "nameCN": "羊奶",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "bacon",
+      "nameCN": "培根",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cow_feed",
+      "nameCN": "牛饲料",
+      "buildingId": "feed_mill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chicken_feed",
+      "nameCN": "鸡饲料",
+      "buildingId": "feed_mill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pig_feed",
+      "nameCN": "猪饲料",
+      "buildingId": "feed_mill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "sheep_feed",
+      "nameCN": "羊饲料",
+      "buildingId": "feed_mill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "goat_feed",
+      "nameCN": "山羊饲料",
+      "buildingId": "feed_mill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lamb_feed",
+      "nameCN": "羊羔饲料",
+      "buildingId": "feed_mill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "wheat_bundle",
+      "nameCN": "小麦捆",
+      "buildingId": "feed_mill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "meat_bucket",
+      "nameCN": "肉桶",
+      "buildingId": "feed_mill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "bread",
+      "nameCN": "面包",
+      "buildingId": "bakery",
+      "kind": "item"
+    },
+    {
+      "legacyId": "corn_bread",
+      "nameCN": "玉米面包",
+      "buildingId": "bakery",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cookie",
+      "nameCN": "曲奇饼",
+      "buildingId": "bakery",
+      "kind": "item"
+    },
+    {
+      "legacyId": "raspberry_muffin",
+      "nameCN": "树莓松饼",
+      "buildingId": "bakery",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pizza",
+      "nameCN": "披萨",
+      "buildingId": "bakery",
+      "kind": "item"
+    },
+    {
+      "legacyId": "spicy_pizza",
+      "nameCN": "辣味披萨",
+      "buildingId": "bakery",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blackberry_muffin",
+      "nameCN": "黑莓松饼",
+      "buildingId": "bakery",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blueberry_muffin",
+      "nameCN": "蓝莓松饼",
+      "buildingId": "bakery",
+      "kind": "item"
+    },
+    {
+      "legacyId": "potato_bread",
+      "nameCN": "土豆面包",
+      "buildingId": "bakery",
+      "kind": "item"
+    },
+    {
+      "legacyId": "frutti_pizza",
+      "nameCN": "海鲜披萨",
+      "buildingId": "bakery",
+      "kind": "item"
+    },
+    {
+      "legacyId": "gingerbread",
+      "nameCN": "姜饼曲奇",
+      "buildingId": "bakery",
+      "kind": "item"
+    },
+    {
+      "legacyId": "banana_bread",
+      "nameCN": "香蕉面包",
+      "buildingId": "bakery",
+      "kind": "item"
+    },
+    {
+      "legacyId": "macaroon",
+      "nameCN": "马卡龙",
+      "buildingId": "bakery",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pineapple_bars",
+      "nameCN": "菠萝椰子条",
+      "buildingId": "bakery",
+      "kind": "item"
+    },
+    {
+      "legacyId": "brown_sugar",
+      "nameCN": "红糖",
+      "buildingId": "sugar_mill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "white_sugar",
+      "nameCN": "白糖",
+      "buildingId": "sugar_mill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "syrup",
+      "nameCN": "糖浆",
+      "buildingId": "sugar_mill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cream",
+      "nameCN": "奶油",
+      "buildingId": "dairy",
+      "kind": "item"
+    },
+    {
+      "legacyId": "butter",
+      "nameCN": "黄油",
+      "buildingId": "dairy",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cheese",
+      "nameCN": "奶酪",
+      "buildingId": "dairy",
+      "kind": "item"
+    },
+    {
+      "legacyId": "goat_cheese",
+      "nameCN": "山羊奶酪",
+      "buildingId": "dairy",
+      "kind": "item"
+    },
+    {
+      "legacyId": "popcorn",
+      "nameCN": "爆米花",
+      "buildingId": "popcorn_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "butter_popcorn",
+      "nameCN": "黄油爆米花",
+      "buildingId": "popcorn_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chili_popcorn",
+      "nameCN": "辣味爆米花",
+      "buildingId": "popcorn_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "honey_popcorn",
+      "nameCN": "蜂蜜爆米花",
+      "buildingId": "popcorn_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chocolate_popcorn",
+      "nameCN": "巧克力爆米花",
+      "buildingId": "popcorn_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "snack_mix",
+      "nameCN": "混合零食",
+      "buildingId": "popcorn_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pancake",
+      "nameCN": "煎饼",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "bacon_eggs",
+      "nameCN": "培根煎蛋",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "hamburger",
+      "nameCN": "汉堡",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "roasted_tomato",
+      "nameCN": "烤西红柿",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "baked_potato",
+      "nameCN": "烤土豆",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lamb_skewer",
+      "nameCN": "烤羊肉串",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fish_burger",
+      "nameCN": "鱼肉汉堡",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lobster_skewer",
+      "nameCN": "烤龙虾串",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "garlic_bread",
+      "nameCN": "蒜香面包",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "grilled_asparagus",
+      "nameCN": "烤芦笋",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "grilled_onion",
+      "nameCN": "烤洋葱",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "winter_veggies",
+      "nameCN": "冬日烤蔬菜",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "stuffed_peppers",
+      "nameCN": "酿甜椒",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "grilled_eggplant",
+      "nameCN": "烤茄子",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "banana_pancakes",
+      "nameCN": "香蕉煎饼",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fish_skewer",
+      "nameCN": "烤鱼串",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "carrot_pie",
+      "nameCN": "胡萝卜派",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pumpkin_pie",
+      "nameCN": "南瓜派",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "apple_pie",
+      "nameCN": "苹果派",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "bacon_pie",
+      "nameCN": "培根派",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fish_pie",
+      "nameCN": "鱼肉派",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "feta_pie",
+      "nameCN": "羊乳酪派",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "casserole",
+      "nameCN": "砂锅菜",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "shepherds_pie",
+      "nameCN": "牧羊人派",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "asparagus_quiche",
+      "nameCN": "芦笋蛋饼",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chocolate_pie",
+      "nameCN": "巧克力派",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lemon_pie",
+      "nameCN": "柠檬派",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "peach_tart",
+      "nameCN": "蜜桃挞",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "passion_pie",
+      "nameCN": "百香果派",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mushroom_pie",
+      "nameCN": "蘑菇派",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "eggplant_parmesan",
+      "nameCN": "茄子帕玛森",
+      "buildingId": "pie_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "carrot_cake",
+      "nameCN": "胡萝卜蛋糕",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cream_cake",
+      "nameCN": "奶油蛋糕",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "strawberry_cake",
+      "nameCN": "草莓蛋糕",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "berry_cake",
+      "nameCN": "红莓蛋糕",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cheesecake",
+      "nameCN": "芝士蛋糕",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blueberry_cheesecake",
+      "nameCN": "蓝莓芝士蛋糕",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chocolate_cake",
+      "nameCN": "巧克力蛋糕",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "potato_feta_cake",
+      "nameCN": "土豆羊乳酪蛋糕",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "honey_apple_cake",
+      "nameCN": "蜂蜜苹果蛋糕",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fancy_cake",
+      "nameCN": "花式蛋糕",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pineapple_cake",
+      "nameCN": "菠萝蛋糕",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lemon_cake",
+      "nameCN": "柠檬蛋糕",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fruit_cake",
+      "nameCN": "水果蛋糕",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chocolate_roll",
+      "nameCN": "巧克力卷",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pomegranate_cake",
+      "nameCN": "石榴蛋糕",
+      "buildingId": "cake_oven",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cotton_fabric",
+      "nameCN": "棉布",
+      "buildingId": "loom",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blue_sweater",
+      "nameCN": "蓝色毛衣",
+      "buildingId": "loom",
+      "kind": "item"
+    },
+    {
+      "legacyId": "red_scarf",
+      "nameCN": "红色围巾",
+      "buildingId": "loom",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cotton_shirt",
+      "nameCN": "棉质衬衫",
+      "buildingId": "loom",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blue_hat",
+      "nameCN": "蓝色毛线帽",
+      "buildingId": "loom",
+      "kind": "item"
+    },
+    {
+      "legacyId": "flower_shawl",
+      "nameCN": "花披肩",
+      "buildingId": "loom",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cloth_shoe",
+      "nameCN": "布鞋",
+      "buildingId": "sewing_machine",
+      "kind": "item"
+    },
+    {
+      "legacyId": "violet_dress",
+      "nameCN": "紫罗兰裙",
+      "buildingId": "sewing_machine",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pillow",
+      "nameCN": "枕头",
+      "buildingId": "sewing_machine",
+      "kind": "item"
+    },
+    {
+      "legacyId": "wooly_chaps",
+      "nameCN": "羊毛护腿",
+      "buildingId": "sewing_machine",
+      "kind": "item"
+    },
+    {
+      "legacyId": "soothing_pad",
+      "nameCN": "舒缓垫",
+      "buildingId": "sewing_machine",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blanket",
+      "nameCN": "毛毯",
+      "buildingId": "sewing_machine",
+      "kind": "item"
+    },
+    {
+      "legacyId": "apple_juice",
+      "nameCN": "苹果汁",
+      "buildingId": "juice_press",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cherry_juice",
+      "nameCN": "樱桃汁",
+      "buildingId": "juice_press",
+      "kind": "item"
+    },
+    {
+      "legacyId": "carrot_juice",
+      "nameCN": "胡萝卜汁",
+      "buildingId": "juice_press",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tomato_juice",
+      "nameCN": "西红柿汁",
+      "buildingId": "juice_press",
+      "kind": "item"
+    },
+    {
+      "legacyId": "berry_juice",
+      "nameCN": "浆果汁",
+      "buildingId": "juice_press",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pineapple_juice",
+      "nameCN": "菠萝汁",
+      "buildingId": "juice_press",
+      "kind": "item"
+    },
+    {
+      "legacyId": "orange_juice",
+      "nameCN": "橙汁",
+      "buildingId": "juice_press",
+      "kind": "item"
+    },
+    {
+      "legacyId": "grape_juice",
+      "nameCN": "葡萄汁",
+      "buildingId": "juice_press",
+      "kind": "item"
+    },
+    {
+      "legacyId": "passion_fruit_juice",
+      "nameCN": "百香果汁",
+      "buildingId": "juice_press",
+      "kind": "item"
+    },
+    {
+      "legacyId": "watermelon_juice",
+      "nameCN": "西瓜汁",
+      "buildingId": "juice_press",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mango_juice",
+      "nameCN": "芒果汁",
+      "buildingId": "juice_press",
+      "kind": "item"
+    },
+    {
+      "legacyId": "guava_juice",
+      "nameCN": "番石榴汁",
+      "buildingId": "juice_press",
+      "kind": "item"
+    },
+    {
+      "legacyId": "vanilla_ice_cream",
+      "nameCN": "香草冰淇淋",
+      "buildingId": "ice_cream_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "strawberry_ice_cream",
+      "nameCN": "草莓冰淇淋",
+      "buildingId": "ice_cream_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cherry_popsicle",
+      "nameCN": "樱桃冰棒",
+      "buildingId": "ice_cream_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chocolate_ice_cream",
+      "nameCN": "巧克力冰淇淋",
+      "buildingId": "ice_cream_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "sesame_ice_cream",
+      "nameCN": "芝麻冰淇淋",
+      "buildingId": "ice_cream_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "orange_sorbet",
+      "nameCN": "橙子雪芭",
+      "buildingId": "ice_cream_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "affogato",
+      "nameCN": "阿芙佳朵",
+      "buildingId": "ice_cream_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "peach_ice_cream",
+      "nameCN": "蜜桃冰淇淋",
+      "buildingId": "ice_cream_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mint_ice_cream",
+      "nameCN": "薄荷冰淇淋",
+      "buildingId": "ice_cream_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "banana_split",
+      "nameCN": "香蕉船",
+      "buildingId": "ice_cream_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "coconut_ice_cream",
+      "nameCN": "椰子冰淇淋",
+      "buildingId": "ice_cream_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fruit_sorbet",
+      "nameCN": "水果雪芭",
+      "buildingId": "ice_cream_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "peanut_milkshake",
+      "nameCN": "花生奶昔",
+      "buildingId": "ice_cream_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "apple_jam",
+      "nameCN": "苹果酱",
+      "buildingId": "jam_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "raspberry_jam",
+      "nameCN": "树莓酱",
+      "buildingId": "jam_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blackberry_jam",
+      "nameCN": "黑莓酱",
+      "buildingId": "jam_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cherry_jam",
+      "nameCN": "樱桃酱",
+      "buildingId": "jam_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "strawberry_jam",
+      "nameCN": "草莓酱",
+      "buildingId": "jam_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blueberry_chutney",
+      "nameCN": "蓝莓酱",
+      "buildingId": "jam_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "marmalade",
+      "nameCN": "橘子酱",
+      "buildingId": "jam_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "peach_jam",
+      "nameCN": "桃子酱",
+      "buildingId": "jam_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "grape_jam",
+      "nameCN": "葡萄酱",
+      "buildingId": "jam_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "plum_jam",
+      "nameCN": "李子酱",
+      "buildingId": "jam_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "passion_fruit_jam",
+      "nameCN": "百香果酱",
+      "buildingId": "jam_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "silver_bar",
+      "nameCN": "银锭",
+      "buildingId": "smelter",
+      "kind": "item"
+    },
+    {
+      "legacyId": "gold_bar",
+      "nameCN": "金锭",
+      "buildingId": "smelter",
+      "kind": "item"
+    },
+    {
+      "legacyId": "platinum_bar",
+      "nameCN": "铂金锭",
+      "buildingId": "smelter",
+      "kind": "item"
+    },
+    {
+      "legacyId": "iron_bar",
+      "nameCN": "铁锭",
+      "buildingId": "smelter",
+      "kind": "item"
+    },
+    {
+      "legacyId": "refined_coal",
+      "nameCN": "精炼煤",
+      "buildingId": "smelter",
+      "kind": "item"
+    },
+    {
+      "legacyId": "silver_ring",
+      "nameCN": "银戒指",
+      "buildingId": "jewelry_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "gold_bracelet",
+      "nameCN": "金手镯",
+      "buildingId": "jewelry_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "diamond_ring",
+      "nameCN": "钻石戒指",
+      "buildingId": "jewelry_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "bracelet",
+      "nameCN": "手镯",
+      "buildingId": "jewelry_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "necklace",
+      "nameCN": "项链",
+      "buildingId": "jewelry_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "iron_bracelet",
+      "nameCN": "铁手镯",
+      "buildingId": "jewelry_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "flower_pendant",
+      "nameCN": "花吊坠",
+      "buildingId": "jewelry_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "espresso",
+      "nameCN": "浓缩咖啡",
+      "buildingId": "coffee_kiosk",
+      "kind": "item"
+    },
+    {
+      "legacyId": "latte",
+      "nameCN": "拿铁",
+      "buildingId": "coffee_kiosk",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cappuccino",
+      "nameCN": "卡布奇诺",
+      "buildingId": "coffee_kiosk",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mocha",
+      "nameCN": "摩卡",
+      "buildingId": "coffee_kiosk",
+      "kind": "item"
+    },
+    {
+      "legacyId": "raspberry_mocha",
+      "nameCN": "树莓摩卡",
+      "buildingId": "coffee_kiosk",
+      "kind": "item"
+    },
+    {
+      "legacyId": "hot_chocolate",
+      "nameCN": "热巧克力",
+      "buildingId": "coffee_kiosk",
+      "kind": "item"
+    },
+    {
+      "legacyId": "caramel_latte",
+      "nameCN": "焦糖拿铁",
+      "buildingId": "coffee_kiosk",
+      "kind": "item"
+    },
+    {
+      "legacyId": "iced_banana_latte",
+      "nameCN": "冰香蕉拿铁",
+      "buildingId": "coffee_kiosk",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tomato_soup",
+      "nameCN": "西红柿汤",
+      "buildingId": "soup_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pumpkin_soup",
+      "nameCN": "南瓜汤",
+      "buildingId": "soup_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mushroom_soup",
+      "nameCN": "蘑菇汤",
+      "buildingId": "soup_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lobster_soup",
+      "nameCN": "龙虾汤",
+      "buildingId": "soup_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lamb_soup",
+      "nameCN": "羊肉汤",
+      "buildingId": "soup_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "asparagus_soup",
+      "nameCN": "芦笋汤",
+      "buildingId": "soup_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fish_soup",
+      "nameCN": "鱼汤",
+      "buildingId": "soup_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cabbage_soup",
+      "nameCN": "卷心菜汤",
+      "buildingId": "soup_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "onion_soup",
+      "nameCN": "洋葱汤",
+      "buildingId": "soup_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "noodle_soup",
+      "nameCN": "面条汤",
+      "buildingId": "soup_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "potato_soup",
+      "nameCN": "土豆汤",
+      "buildingId": "soup_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "bell_pepper_soup",
+      "nameCN": "甜椒汤",
+      "buildingId": "soup_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "broccoli_soup",
+      "nameCN": "西蓝花汤",
+      "buildingId": "soup_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "candle",
+      "nameCN": "蜡烛",
+      "buildingId": "candle_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "flower_candle",
+      "nameCN": "花烛",
+      "buildingId": "candle_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "strawberry_candle",
+      "nameCN": "草莓蜡烛",
+      "buildingId": "candle_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "raspberry_candle",
+      "nameCN": "树莓蜡烛",
+      "buildingId": "candle_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lemon_candle",
+      "nameCN": "柠檬蜡烛",
+      "buildingId": "candle_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "floral_candle",
+      "nameCN": "花香蜡烛",
+      "buildingId": "candle_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lollipop",
+      "nameCN": "棒棒糖",
+      "buildingId": "candy_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "toffee",
+      "nameCN": "太妃糖",
+      "buildingId": "candy_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chocolate",
+      "nameCN": "巧克力",
+      "buildingId": "candy_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "caramel_apple",
+      "nameCN": "焦糖苹果",
+      "buildingId": "candy_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "jelly_beans",
+      "nameCN": "果冻豆",
+      "buildingId": "candy_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "honey_peanuts",
+      "nameCN": "蜂蜜花生",
+      "buildingId": "candy_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cotton_candy",
+      "nameCN": "棉花糖",
+      "buildingId": "candy_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "sesame_brittle",
+      "nameCN": "芝麻脆糖",
+      "buildingId": "candy_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "olive_oil",
+      "nameCN": "橄榄油",
+      "buildingId": "sauce_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "soy_sauce",
+      "nameCN": "酱油",
+      "buildingId": "sauce_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mayonnaise",
+      "nameCN": "蛋黄酱",
+      "buildingId": "sauce_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tomato_sauce",
+      "nameCN": "西红柿酱",
+      "buildingId": "sauce_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "bean_dip",
+      "nameCN": "豆泥酱",
+      "buildingId": "sauce_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lemon_curd",
+      "nameCN": "柠檬酱",
+      "buildingId": "sauce_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "olive_dip",
+      "nameCN": "橄榄酱",
+      "buildingId": "sauce_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "salsa",
+      "nameCN": "莎莎酱",
+      "buildingId": "sauce_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "hummus",
+      "nameCN": "鹰嘴豆泥",
+      "buildingId": "sauce_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tart_dressing",
+      "nameCN": "塔塔酱",
+      "buildingId": "sauce_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "rustic_bouquet",
+      "nameCN": "田园花束",
+      "buildingId": "flower_shop",
+      "kind": "item"
+    },
+    {
+      "legacyId": "bright_bouquet",
+      "nameCN": "明亮花束",
+      "buildingId": "flower_shop",
+      "kind": "item"
+    },
+    {
+      "legacyId": "gracious_bouquet",
+      "nameCN": "优雅花束",
+      "buildingId": "flower_shop",
+      "kind": "item"
+    },
+    {
+      "legacyId": "candy_bouquet",
+      "nameCN": "糖果花束",
+      "buildingId": "flower_shop",
+      "kind": "item"
+    },
+    {
+      "legacyId": "birthday_bouquet",
+      "nameCN": "生日花束",
+      "buildingId": "flower_shop",
+      "kind": "item"
+    },
+    {
+      "legacyId": "soft_bouquet",
+      "nameCN": "柔和花束",
+      "buildingId": "flower_shop",
+      "kind": "item"
+    },
+    {
+      "legacyId": "veggie_bouquet",
+      "nameCN": "蔬菜花束",
+      "buildingId": "flower_shop",
+      "kind": "item"
+    },
+    {
+      "legacyId": "sushi_roll",
+      "nameCN": "寿司卷",
+      "buildingId": "sushi_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lobster_sushi",
+      "nameCN": "龙虾寿司",
+      "buildingId": "sushi_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "egg_sushi",
+      "nameCN": "玉子寿司",
+      "buildingId": "sushi_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "big_sushi_roll",
+      "nameCN": "大寿司卷",
+      "buildingId": "sushi_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "rice_ball",
+      "nameCN": "饭团",
+      "buildingId": "sushi_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "green_salad",
+      "nameCN": "蔬菜沙拉",
+      "buildingId": "salad_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fruit_salad",
+      "nameCN": "水果沙拉",
+      "buildingId": "salad_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "potato_salad",
+      "nameCN": "土豆沙拉",
+      "buildingId": "salad_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tomato_salad",
+      "nameCN": "西红柿沙拉",
+      "buildingId": "salad_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "carrot_salad",
+      "nameCN": "胡萝卜沙拉",
+      "buildingId": "salad_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cucumber_salad",
+      "nameCN": "黄瓜沙拉",
+      "buildingId": "salad_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cheese_salad",
+      "nameCN": "奶酪沙拉",
+      "buildingId": "salad_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "beetroot_salad",
+      "nameCN": "甜菜沙拉",
+      "buildingId": "salad_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "egg_salad",
+      "nameCN": "鸡蛋沙拉",
+      "buildingId": "salad_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mushroom_salad",
+      "nameCN": "蘑菇沙拉",
+      "buildingId": "salad_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "broccoli_salad",
+      "nameCN": "西蓝花沙拉",
+      "buildingId": "salad_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "bell_pepper_salad",
+      "nameCN": "甜椒沙拉",
+      "buildingId": "salad_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "spinach_salad",
+      "nameCN": "菠菜沙拉",
+      "buildingId": "salad_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blt_sandwich",
+      "nameCN": "BLT三明治",
+      "buildingId": "sandwich_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "veggie_sandwich",
+      "nameCN": "素食三明治",
+      "buildingId": "sandwich_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "egg_sandwich",
+      "nameCN": "鸡蛋三明治",
+      "buildingId": "sandwich_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cheese_sandwich",
+      "nameCN": "奶酪三明治",
+      "buildingId": "sandwich_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fish_sandwich",
+      "nameCN": "鱼肉三明治",
+      "buildingId": "sandwich_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chicken_sandwich",
+      "nameCN": "鸡肉三明治",
+      "buildingId": "sandwich_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "ham_sandwich",
+      "nameCN": "火腿三明治",
+      "buildingId": "sandwich_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "roast_beef_sandwich",
+      "nameCN": "烤牛肉三明治",
+      "buildingId": "sandwich_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cucumber_sandwich",
+      "nameCN": "黄瓜三明治",
+      "buildingId": "sandwich_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "waffle",
+      "nameCN": "华夫饼",
+      "buildingId": "waffle_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "strawberry_waffle",
+      "nameCN": "草莓华夫饼",
+      "buildingId": "waffle_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chocolate_waffle",
+      "nameCN": "巧克力华夫饼",
+      "buildingId": "waffle_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blueberry_waffle",
+      "nameCN": "蓝莓华夫饼",
+      "buildingId": "waffle_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "breakfast_waffle",
+      "nameCN": "早餐华夫饼",
+      "buildingId": "waffle_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "french_fries",
+      "nameCN": "薯条",
+      "buildingId": "deep_fryer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fish_and_chips",
+      "nameCN": "炸鱼薯条",
+      "buildingId": "bbq_grill",
+      "kind": "item"
+    },
+    {
+      "legacyId": "hand_pies",
+      "nameCN": "手抓酥皮派",
+      "buildingId": "deep_fryer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "onion_rings",
+      "nameCN": "洋葱圈",
+      "buildingId": "deep_fryer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tempura",
+      "nameCN": "天妇罗",
+      "buildingId": "deep_fryer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "spring_rolls",
+      "nameCN": "春卷",
+      "buildingId": "deep_fryer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chili_poppers",
+      "nameCN": "辣椒炸球",
+      "buildingId": "deep_fryer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tea",
+      "nameCN": "茶",
+      "buildingId": "tea_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "milk_tea",
+      "nameCN": "奶茶",
+      "buildingId": "tea_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "green_tea",
+      "nameCN": "绿茶",
+      "buildingId": "tea_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "honey_tea",
+      "nameCN": "蜂蜜茶",
+      "buildingId": "tea_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "apple_tea",
+      "nameCN": "苹果茶",
+      "buildingId": "tea_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lemon_tea",
+      "nameCN": "柠檬茶",
+      "buildingId": "tea_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "berry_tea",
+      "nameCN": "浆果茶",
+      "buildingId": "tea_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mint_tea",
+      "nameCN": "薄荷茶",
+      "buildingId": "tea_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "peach_tea",
+      "nameCN": "蜜桃茶",
+      "buildingId": "tea_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chamomile_tea",
+      "nameCN": "洋甘菊茶",
+      "buildingId": "tea_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "ginger_tea",
+      "nameCN": "姜茶",
+      "buildingId": "tea_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fish_taco",
+      "nameCN": "鱼肉卷饼",
+      "buildingId": "taco_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chicken_taco",
+      "nameCN": "鸡肉卷饼",
+      "buildingId": "taco_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "veggie_taco",
+      "nameCN": "蔬菜卷饼",
+      "buildingId": "taco_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "spicy_taco",
+      "nameCN": "辣味卷饼",
+      "buildingId": "taco_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "special_taco",
+      "nameCN": "特制卷饼",
+      "buildingId": "taco_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "hotdog",
+      "nameCN": "热狗",
+      "buildingId": "hotdog_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chili_hotdog",
+      "nameCN": "辣味热狗",
+      "buildingId": "hotdog_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tofu_dog",
+      "nameCN": "豆腐热狗",
+      "buildingId": "hotdog_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "corn_dog",
+      "nameCN": "玉米热狗",
+      "buildingId": "hotdog_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "onion_dog",
+      "nameCN": "洋葱热狗",
+      "buildingId": "hotdog_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "berry_smoothie",
+      "nameCN": "浆果冰沙",
+      "buildingId": "smoothie_mixer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "green_smoothie",
+      "nameCN": "绿色冰沙",
+      "buildingId": "smoothie_mixer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "strawberry_smoothie",
+      "nameCN": "草莓冰沙",
+      "buildingId": "smoothie_mixer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "peach_smoothie",
+      "nameCN": "蜜桃冰沙",
+      "buildingId": "smoothie_mixer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "banana_smoothie",
+      "nameCN": "香蕉冰沙",
+      "buildingId": "smoothie_mixer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mango_smoothie",
+      "nameCN": "芒果冰沙",
+      "buildingId": "smoothie_mixer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pineapple_smoothie",
+      "nameCN": "菠萝冰沙",
+      "buildingId": "smoothie_mixer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blueberry_smoothie",
+      "nameCN": "蓝莓冰沙",
+      "buildingId": "smoothie_mixer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "carrot_smoothie",
+      "nameCN": "胡萝卜冰沙",
+      "buildingId": "smoothie_mixer",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lavender_oil",
+      "nameCN": "薰衣草精油",
+      "buildingId": "essential_oils",
+      "kind": "item"
+    },
+    {
+      "legacyId": "wheat_oil",
+      "nameCN": "小麦精油",
+      "buildingId": "essential_oils",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lemon_oil",
+      "nameCN": "柠檬精油",
+      "buildingId": "essential_oils",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mint_oil",
+      "nameCN": "薄荷精油",
+      "buildingId": "essential_oils",
+      "kind": "item"
+    },
+    {
+      "legacyId": "dried_fruit",
+      "nameCN": "干果",
+      "buildingId": "preservation",
+      "kind": "item"
+    },
+    {
+      "legacyId": "asparagus",
+      "nameCN": "芦笋",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "beetroot",
+      "nameCN": "甜菜根",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "bell_pepper",
+      "nameCN": "甜椒",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "black_bean",
+      "nameCN": "黑豆",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "broccoli",
+      "nameCN": "西蓝花",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cabbage",
+      "nameCN": "卷心菜",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chamomile",
+      "nameCN": "洋甘菊",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chickpea",
+      "nameCN": "鹰嘴豆",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "grapes",
+      "nameCN": "葡萄",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lily",
+      "nameCN": "百合",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mint",
+      "nameCN": "薄荷",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "oats",
+      "nameCN": "燕麦",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "passion_fruit",
+      "nameCN": "百香果",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "peony",
+      "nameCN": "牡丹",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "sesame",
+      "nameCN": "芝麻",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "watermelon",
+      "nameCN": "西瓜",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "clay",
+      "nameCN": "黏土",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cacao",
+      "nameCN": "可可果",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "coconut",
+      "nameCN": "椰子",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "guava",
+      "nameCN": "番石榴",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mango",
+      "nameCN": "芒果",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "orange",
+      "nameCN": "橙子",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "plum",
+      "nameCN": "李子",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pomegranate",
+      "nameCN": "石榴",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blueberries",
+      "nameCN": "蓝莓",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "axe",
+      "nameCN": "斧头",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "saw",
+      "nameCN": "锯子",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pickaxe",
+      "nameCN": "镐",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "dynamite",
+      "nameCN": "炸药",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tnt",
+      "nameCN": "TNT",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "shovel",
+      "nameCN": "铲子",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "coal",
+      "nameCN": "煤",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "iron_ore",
+      "nameCN": "铁矿石",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "silver_ore",
+      "nameCN": "银矿石",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "gold_ore",
+      "nameCN": "金矿石",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "platinum_ore",
+      "nameCN": "铂矿石",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "diamond",
+      "nameCN": "钻石",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "plank",
+      "nameCN": "木板",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "duct_tape",
+      "nameCN": "胶带",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "bolt",
+      "nameCN": "螺栓",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "screw",
+      "nameCN": "螺丝",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "wood_panel",
+      "nameCN": "木面板",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "nail",
+      "nameCN": "钉子",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "hammer",
+      "nameCN": "锤子",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "land_deed",
+      "nameCN": "地契",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mallet",
+      "nameCN": "木槌",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "marker_stake",
+      "nameCN": "地标桩",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "hand_drill",
+      "nameCN": "手钻",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "map_piece",
+      "nameCN": "地图碎片",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "expansion_permit",
+      "nameCN": "扩展许可",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "duck_feather",
+      "nameCN": "鸭毛",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fish_fillet",
+      "nameCN": "鱼肉片",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lobster_tail",
+      "nameCN": "龙虾尾",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lamb_chop",
+      "nameCN": "羊排",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "honeycomb",
+      "nameCN": "蜂巢",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "honey",
+      "nameCN": "蜂蜜",
+      "buildingId": "honey_extractor",
+      "kind": "item"
+    },
+    {
+      "legacyId": "beeswax",
+      "nameCN": "蜂蜡",
+      "buildingId": "honey_extractor",
+      "kind": "item"
+    },
+    {
+      "legacyId": "green_voucher",
+      "nameCN": "绿色礼券",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blue_voucher",
+      "nameCN": "蓝色礼券",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "purple_voucher",
+      "nameCN": "紫色礼券",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "gold_voucher",
+      "nameCN": "金色礼券",
+      "buildingId": "",
+      "kind": "item"
+    },
+    {
+      "legacyId": "donut",
+      "nameCN": "甜甜圈",
+      "buildingId": "donut_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "sprinkled_donut",
+      "nameCN": "彩糖甜甜圈",
+      "buildingId": "donut_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chocolate_donut",
+      "nameCN": "巧克力甜甜圈",
+      "buildingId": "donut_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "apple_donut",
+      "nameCN": "苹果甜甜圈",
+      "buildingId": "donut_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "glazed_donut",
+      "nameCN": "糖霜甜甜圈",
+      "buildingId": "donut_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "berry_donut",
+      "nameCN": "浆果甜甜圈",
+      "buildingId": "donut_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pasta",
+      "nameCN": "意面",
+      "buildingId": "pasta_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "rice_noodles",
+      "nameCN": "米粉",
+      "buildingId": "pasta_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lasagna",
+      "nameCN": "千层面",
+      "buildingId": "pasta_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "spaghetti",
+      "nameCN": "意式肉酱面",
+      "buildingId": "pasta_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "rice_noodle_dish",
+      "nameCN": "汤米粉",
+      "buildingId": "pasta_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "veggie_lasagna",
+      "nameCN": "蔬菜千层面",
+      "buildingId": "pasta_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cheese_pasta",
+      "nameCN": "奶酪意面",
+      "buildingId": "pasta_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mushroom_pasta",
+      "nameCN": "蘑菇意面",
+      "buildingId": "pasta_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "seafood_pasta",
+      "nameCN": "海鲜意面",
+      "buildingId": "pasta_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fudge",
+      "nameCN": "软糖",
+      "buildingId": "fudge_shop",
+      "kind": "item"
+    },
+    {
+      "legacyId": "caramel",
+      "nameCN": "焦糖",
+      "buildingId": "fudge_shop",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mint_fudge",
+      "nameCN": "薄荷软糖",
+      "buildingId": "fudge_shop",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chili_fudge",
+      "nameCN": "辣椒软糖",
+      "buildingId": "fudge_shop",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lemon_fudge",
+      "nameCN": "柠檬软糖",
+      "buildingId": "fudge_shop",
+      "kind": "item"
+    },
+    {
+      "legacyId": "peanut_fudge",
+      "nameCN": "花生软糖",
+      "buildingId": "fudge_shop",
+      "kind": "item"
+    },
+    {
+      "legacyId": "porridge",
+      "nameCN": "粥",
+      "buildingId": "porridge_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "oatmeal",
+      "nameCN": "燕麦粥",
+      "buildingId": "porridge_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "apple_porridge",
+      "nameCN": "苹果粥",
+      "buildingId": "porridge_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "sweet_porridge",
+      "nameCN": "甜粥",
+      "buildingId": "porridge_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fresh_porridge",
+      "nameCN": "鲜果粥",
+      "buildingId": "porridge_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "milkshake",
+      "nameCN": "奶昔",
+      "buildingId": "milkshake_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "berry_milkshake",
+      "nameCN": "浆果奶昔",
+      "buildingId": "milkshake_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "mocha_milkshake",
+      "nameCN": "摩卡奶昔",
+      "buildingId": "milkshake_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fruity_milkshake",
+      "nameCN": "水果奶昔",
+      "buildingId": "milkshake_bar",
+      "kind": "item"
+    },
+    {
+      "legacyId": "stir_fry",
+      "nameCN": "炒蔬菜",
+      "buildingId": "wok_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fried_rice",
+      "nameCN": "炒饭",
+      "buildingId": "wok_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lamb_stir_fry",
+      "nameCN": "羊肉炒",
+      "buildingId": "wok_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "spicy_fish",
+      "nameCN": "辣味鱼",
+      "buildingId": "wok_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "peanut_noodles",
+      "nameCN": "花生面",
+      "buildingId": "wok_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tofu_stir_fry",
+      "nameCN": "豆腐炒",
+      "buildingId": "wok_kitchen",
+      "kind": "item"
+    },
+    {
+      "legacyId": "beef_stew",
+      "nameCN": "炖牛肉",
+      "buildingId": "stew_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "vegetable_stew",
+      "nameCN": "蔬菜炖",
+      "buildingId": "stew_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chickpea_stew",
+      "nameCN": "鹰嘴豆炖",
+      "buildingId": "stew_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chili_stew",
+      "nameCN": "辣椒炖",
+      "buildingId": "stew_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "winter_stew",
+      "nameCN": "冬日炖菜",
+      "buildingId": "stew_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "omelet",
+      "nameCN": "煎蛋饼",
+      "buildingId": "omelet_station",
+      "kind": "item"
+    },
+    {
+      "legacyId": "bacon_omelet",
+      "nameCN": "培根煎蛋饼",
+      "buildingId": "omelet_station",
+      "kind": "item"
+    },
+    {
+      "legacyId": "spring_omelet",
+      "nameCN": "春日煎蛋",
+      "buildingId": "omelet_station",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cheese_omelet",
+      "nameCN": "奶酪煎蛋",
+      "buildingId": "omelet_station",
+      "kind": "item"
+    },
+    {
+      "legacyId": "rice_omelet",
+      "nameCN": "米饭煎蛋",
+      "buildingId": "omelet_station",
+      "kind": "item"
+    },
+    {
+      "legacyId": "potato_omelet",
+      "nameCN": "土豆煎蛋",
+      "buildingId": "omelet_station",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cheese_fondue",
+      "nameCN": "西式火锅店",
+      "buildingId": "fondue_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "chocolate_fondue",
+      "nameCN": "巧克力火锅",
+      "buildingId": "fondue_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "bacon_fondue",
+      "nameCN": "培根火锅",
+      "buildingId": "fondue_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tropical_fondue",
+      "nameCN": "热带火锅",
+      "buildingId": "fondue_pot",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fruit_yogurt",
+      "nameCN": "水果酸奶",
+      "buildingId": "yogurt_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "strawberry_yogurt",
+      "nameCN": "草莓酸奶",
+      "buildingId": "yogurt_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tropical_yogurt",
+      "nameCN": "热带酸奶",
+      "buildingId": "yogurt_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "breakfast_bowl",
+      "nameCN": "早餐碗",
+      "buildingId": "yogurt_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "plain_yogurt",
+      "nameCN": "原味酸奶",
+      "buildingId": "yogurt_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cupcake",
+      "nameCN": "纸杯蛋糕",
+      "buildingId": "cupcake_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "carrot_cupcake",
+      "nameCN": "胡萝卜纸杯蛋糕",
+      "buildingId": "cupcake_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "guava_cupcake",
+      "nameCN": "番石榴纸杯蛋糕",
+      "buildingId": "cupcake_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tropical_cupcake",
+      "nameCN": "热带纸杯蛋糕",
+      "buildingId": "cupcake_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cookie_cupcake",
+      "nameCN": "曲奇纸杯蛋糕",
+      "buildingId": "cupcake_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "kebab",
+      "nameCN": "土耳其烤肉",
+      "buildingId": "kebab_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "spicy_kebab",
+      "nameCN": "辣味烤肉",
+      "buildingId": "kebab_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "doner_supreme",
+      "nameCN": "至尊烤肉",
+      "buildingId": "kebab_stand",
+      "kind": "item"
+    },
+    {
+      "legacyId": "bath_salt",
+      "nameCN": "浴盐",
+      "buildingId": "bath_kiosk",
+      "kind": "item"
+    },
+    {
+      "legacyId": "honey_soap",
+      "nameCN": "蜂蜜皂",
+      "buildingId": "bath_kiosk",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lemon_lotion",
+      "nameCN": "柠檬润肤露",
+      "buildingId": "bath_kiosk",
+      "kind": "item"
+    },
+    {
+      "legacyId": "face_mask",
+      "nameCN": "蜂蜜面膜",
+      "buildingId": "bath_kiosk",
+      "kind": "item"
+    },
+    {
+      "legacyId": "rich_soap",
+      "nameCN": "奢华皂",
+      "buildingId": "bath_kiosk",
+      "kind": "item"
+    },
+    {
+      "legacyId": "lotion",
+      "nameCN": "润肤露",
+      "buildingId": "bath_kiosk",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cloche_hat",
+      "nameCN": "钟形帽",
+      "buildingId": "hat_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "top_hat",
+      "nameCN": "礼帽",
+      "buildingId": "hat_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "sun_hat",
+      "nameCN": "遮阳帽",
+      "buildingId": "hat_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "flower_crown",
+      "nameCN": "鲜花头冠",
+      "buildingId": "hat_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "clay_pot",
+      "nameCN": "陶罐",
+      "buildingId": "pottery_studio",
+      "kind": "item"
+    },
+    {
+      "legacyId": "vase",
+      "nameCN": "花瓶",
+      "buildingId": "pottery_studio",
+      "kind": "item"
+    },
+    {
+      "legacyId": "tea_pot",
+      "nameCN": "茶壶",
+      "buildingId": "pottery_studio",
+      "kind": "item"
+    },
+    {
+      "legacyId": "potted_plant",
+      "nameCN": "盆栽",
+      "buildingId": "pottery_studio",
+      "kind": "item"
+    },
+    {
+      "legacyId": "clay_mug",
+      "nameCN": "陶杯",
+      "buildingId": "pottery_studio",
+      "kind": "item"
+    },
+    {
+      "legacyId": "perfume",
+      "nameCN": "香水",
+      "buildingId": "perfumerie",
+      "kind": "item"
+    },
+    {
+      "legacyId": "cologne",
+      "nameCN": "古龙水",
+      "buildingId": "perfumerie",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fresh_diffuser",
+      "nameCN": "清新香薰",
+      "buildingId": "perfumerie",
+      "kind": "item"
+    },
+    {
+      "legacyId": "zesty_perfume",
+      "nameCN": "活力香水",
+      "buildingId": "perfumerie",
+      "kind": "item"
+    },
+    {
+      "legacyId": "calming_diffuser",
+      "nameCN": "安神香薰",
+      "buildingId": "perfumerie",
+      "kind": "item"
+    },
+    {
+      "legacyId": "red_lure",
+      "nameCN": "红色鱼饵",
+      "buildingId": "lure_workbench",
+      "kind": "item"
+    },
+    {
+      "legacyId": "green_lure",
+      "nameCN": "绿色鱼饵",
+      "buildingId": "lure_workbench",
+      "kind": "item"
+    },
+    {
+      "legacyId": "blue_lure",
+      "nameCN": "蓝色鱼饵",
+      "buildingId": "lure_workbench",
+      "kind": "item"
+    },
+    {
+      "legacyId": "purple_lure",
+      "nameCN": "紫色鱼饵",
+      "buildingId": "lure_workbench",
+      "kind": "item"
+    },
+    {
+      "legacyId": "gold_lure",
+      "nameCN": "金色鱼饵",
+      "buildingId": "lure_workbench",
+      "kind": "item"
+    },
+    {
+      "legacyId": "fishing_net",
+      "nameCN": "渔网",
+      "buildingId": "net_maker",
+      "kind": "item"
+    },
+    {
+      "legacyId": "pickles",
+      "nameCN": "腌黄瓜",
+      "buildingId": "preservation",
+      "kind": "item"
+    },
+    {
+      "legacyId": "canned_fish",
+      "nameCN": "鱼罐头",
+      "buildingId": "preservation",
+      "kind": "item"
+    },
+    {
+      "legacyId": "kimchi",
+      "nameCN": "泡菜",
+      "buildingId": "preservation",
+      "kind": "item"
+    },
+    {
+      "legacyId": "guava_compote",
+      "nameCN": "番石榴果酱",
+      "buildingId": "preservation",
+      "kind": "item"
+    }
+  ],
+  "buildings": [
+    {
+      "legacyId": "field",
+      "nameCN": "耕地",
+      "kind": "building"
+    },
+    {
+      "legacyId": "orchard",
+      "nameCN": "树木",
+      "kind": "building"
+    },
+    {
+      "legacyId": "feed_mill",
+      "nameCN": "饲料厂",
+      "kind": "building"
+    },
+    {
+      "legacyId": "bakery",
+      "nameCN": "面包房",
+      "kind": "building"
+    },
+    {
+      "legacyId": "sugar_mill",
+      "nameCN": "制糖厂",
+      "kind": "building"
+    },
+    {
+      "legacyId": "dairy",
+      "nameCN": "乳品厂",
+      "kind": "building"
+    },
+    {
+      "legacyId": "popcorn_pot",
+      "nameCN": "爆米花烤锅",
+      "kind": "building"
+    },
+    {
+      "legacyId": "bbq_grill",
+      "nameCN": "烧烤架",
+      "kind": "building"
+    },
+    {
+      "legacyId": "pie_oven",
+      "nameCN": "馅饼烤炉",
+      "kind": "building"
+    },
+    {
+      "legacyId": "cake_oven",
+      "nameCN": "蛋糕烤炉",
+      "kind": "building"
+    },
+    {
+      "legacyId": "loom",
+      "nameCN": "织布机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "sewing_machine",
+      "nameCN": "缝纫机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "juice_press",
+      "nameCN": "果汁机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "ice_cream_maker",
+      "nameCN": "冰淇淋机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "jam_maker",
+      "nameCN": "果酱机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "smelter",
+      "nameCN": "炼金炉",
+      "kind": "building"
+    },
+    {
+      "legacyId": "jewelry_maker",
+      "nameCN": "珠宝店",
+      "kind": "building"
+    },
+    {
+      "legacyId": "coffee_kiosk",
+      "nameCN": "咖啡亭",
+      "kind": "building"
+    },
+    {
+      "legacyId": "soup_kitchen",
+      "nameCN": "鲜汤小馆",
+      "kind": "building"
+    },
+    {
+      "legacyId": "candle_maker",
+      "nameCN": "蜡烛制造机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "candy_maker",
+      "nameCN": "糖果机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "sauce_maker",
+      "nameCN": "酱汁机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "flower_shop",
+      "nameCN": "花坊",
+      "kind": "building"
+    },
+    {
+      "legacyId": "sushi_bar",
+      "nameCN": "寿司吧",
+      "kind": "building"
+    },
+    {
+      "legacyId": "smoothie_mixer",
+      "nameCN": "沙冰机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "waffle_maker",
+      "nameCN": "华夫饼摊",
+      "kind": "building"
+    },
+    {
+      "legacyId": "salad_bar",
+      "nameCN": "沙拉吧",
+      "kind": "building"
+    },
+    {
+      "legacyId": "sandwich_bar",
+      "nameCN": "三明治店",
+      "kind": "building"
+    },
+    {
+      "legacyId": "tea_stand",
+      "nameCN": "茶馆",
+      "kind": "building"
+    },
+    {
+      "legacyId": "taco_kitchen",
+      "nameCN": "墨西哥厨房",
+      "kind": "building"
+    },
+    {
+      "legacyId": "hotdog_stand",
+      "nameCN": "热狗摊",
+      "kind": "building"
+    },
+    {
+      "legacyId": "deep_fryer",
+      "nameCN": "油炸摊",
+      "kind": "building"
+    },
+    {
+      "legacyId": "essential_oils",
+      "nameCN": "精油研究室",
+      "kind": "building"
+    },
+    {
+      "legacyId": "preservation",
+      "nameCN": "腌制食品铺",
+      "kind": "building"
+    },
+    {
+      "legacyId": "donut_maker",
+      "nameCN": "甜甜圈机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "pasta_maker",
+      "nameCN": "面条机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "pasta_kitchen",
+      "nameCN": "意面厨房",
+      "kind": "building"
+    },
+    {
+      "legacyId": "fudge_shop",
+      "nameCN": "法奇软糖店",
+      "kind": "building"
+    },
+    {
+      "legacyId": "porridge_bar",
+      "nameCN": "麦片粥小摊",
+      "kind": "building"
+    },
+    {
+      "legacyId": "milkshake_bar",
+      "nameCN": "奶昔店",
+      "kind": "building"
+    },
+    {
+      "legacyId": "wok_kitchen",
+      "nameCN": "中式厨房",
+      "kind": "building"
+    },
+    {
+      "legacyId": "stew_pot",
+      "nameCN": "炖煮小灶",
+      "kind": "building"
+    },
+    {
+      "legacyId": "omelet_station",
+      "nameCN": "欧姆蛋小摊",
+      "kind": "building"
+    },
+    {
+      "legacyId": "fondue_pot",
+      "nameCN": "西式火锅店",
+      "kind": "building"
+    },
+    {
+      "legacyId": "yogurt_maker",
+      "nameCN": "酸奶机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "cupcake_maker",
+      "nameCN": "纸杯蛋糕机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "kebab_stand",
+      "nameCN": "土耳其烤肉摊",
+      "kind": "building"
+    },
+    {
+      "legacyId": "bath_kiosk",
+      "nameCN": "洗护用品铺",
+      "kind": "building"
+    },
+    {
+      "legacyId": "hat_maker",
+      "nameCN": "制帽机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "pottery_studio",
+      "nameCN": "制陶室",
+      "kind": "building"
+    },
+    {
+      "legacyId": "perfumerie",
+      "nameCN": "调香坊",
+      "kind": "building"
+    },
+    {
+      "legacyId": "lure_workbench",
+      "nameCN": "鱼饵机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "net_maker",
+      "nameCN": "织网机",
+      "kind": "building"
+    },
+    {
+      "legacyId": "honey_extractor",
+      "nameCN": "摇蜜机",
+      "kind": "building"
+    }
+  ]
+}
