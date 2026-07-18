@@ -74,6 +74,28 @@ assert.equal(itemImages.shouldReplace({ updatedAt: "2026-07-15T00:00:00.000Z" },
 assert.equal(itemImages.shouldReplace({ updatedAt: "" }, normalizedImage), false);
 assert.equal(typeof itemImages.migrateIds, "function");
 
+assert.deepEqual(core.allocateEvenInventory(["wheat", "corn", "soyabean"], 8), {
+  quantities: { wheat: 3, corn: 3, soyabean: 2 },
+  total: 8,
+  itemCount: 3,
+  min: 2,
+  max: 3,
+});
+assert.deepEqual(core.allocateEvenInventory(["wheat", "wheat", "", "corn"], 8), {
+  quantities: { wheat: 4, corn: 4 },
+  total: 8,
+  itemCount: 2,
+  min: 4,
+  max: 4,
+});
+assert.deepEqual(core.allocateEvenInventory([], 8000), {
+  quantities: {},
+  total: 0,
+  itemCount: 0,
+  min: 0,
+  max: 0,
+});
+
 const items = [
   { id: "wheat", ing: [] },
   { id: "bread", ing: [{ i: "wheat", q: 3 }] },

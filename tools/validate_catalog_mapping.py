@@ -73,11 +73,13 @@ def main() -> None:
     unique_ids(local["items"], "legacyId", "local items")
     unique_ids(local["buildings"], "legacyId", "local buildings")
 
+    mapping_data_marker = 'src="./catalog-mapping-data.js"'
+    mapping_script_marker = 'src="./catalog-mapping.js'
     require('href="./catalog-mapping.css"' in html, "mapping stylesheet is not linked")
-    require('src="./catalog-mapping-data.js"' in html, "browser-readable catalog data is not linked")
-    require('src="./catalog-mapping.js"' in html, "mapping script is not linked")
+    require(mapping_data_marker in html, "browser-readable catalog data is not linked")
+    require(mapping_script_marker in html, "mapping script is not linked")
     require(
-        html.index('src="./catalog-mapping-data.js"') < html.index('src="./catalog-mapping.js"'),
+        html.index(mapping_data_marker) < html.index(mapping_script_marker),
         "browser-readable data must load before the workbench script",
     )
     require("catalog-reference.json" in script, "reference catalog is not loaded")
