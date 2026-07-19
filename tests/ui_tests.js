@@ -1,6 +1,7 @@
 // 卡通农场 UI 自动化测试
 // 运行方式: node tests/ui_tests.js
 const { chromium } = require("playwright");
+const fs = require("fs");
 const path = require("path");
 const { pathToFileURL } = require("url");
 const { createServer } = require("../server");
@@ -8,6 +9,10 @@ const { createServer } = require("../server");
 const FILE_URL = pathToFileURL(path.join(__dirname, "..", "index.html")).href;
 const SNAPSHOT_PATH = path.join(__dirname, "ui_snapshot.png");
 const TINY_PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64");
+const EMBEDDED_IMAGE_DATA_URLS = {
+  gold_voucher: `data:image/webp;base64,${fs.readFileSync(path.join(__dirname, "..", "icons", "gold_voucher.png")).toString("base64")}`,
+  peanuts: `data:image/webp;base64,${fs.readFileSync(path.join(__dirname, "..", "icons", "peanuts.png")).toString("base64")}`,
+};
 const results = { passed: 0, failed: 0, tests: [] };
 
 function check(name, ok, detail = "") {
@@ -740,20 +745,29 @@ async function run() {
     check("用户图片保存在独立图片库并立即显示", uploadedImageState.custom && uploadedImageState.source.startsWith('data:image/') && uploadedImageState.detailUsesUpload, JSON.stringify(uploadedImageState));
     check("上传图片不改写物品编辑和库存", uploadedImageState.editsUntouched && uploadedImageState.inventoryUntouched, JSON.stringify(uploadedImageState));
     check("新备份使用 v4 并包含用户图片", uploadedImageState.version === 4 && uploadedImageState.backupHasImage, JSON.stringify(uploadedImageState));
-    const embeddedImageMigration = await page.evaluate(async (tinyPng) => {
+    const embeddedImageMigration = await page.evaluate(async ({ embeddedImages, differentImage }) => {
       const beforeEdits = localStorage.getItem('hd_edits');
       const beforeInventory = localStorage.getItem('hd_inv');
-      const record = (id) => ({ id, dataUrl: tinyPng, mimeType: 'image/png', width: 1, height: 1, updatedAt: '2026-07-18T00:00:00.000Z' });
-      await HayDayItemImages.put(record('gold_voucher'));
-      await HayDayItemImages.put(record('peanuts'));
+      const record = (id, dataUrl) => ({ id, dataUrl, mimeType: dataUrl.startsWith('data:image/webp') ? 'image/webp' : 'image/png', width: 256, height: 256, updatedAt: '2026-07-18T00:00:00.000Z' });
+      await HayDayItemImages.put(record('gold_voucher', embeddedImages.gold_voucher));
+      await HayDayItemImages.put(record('peanuts', embeddedImages.peanuts));
       localStorage.removeItem(EMBEDDED_ITEM_IMAGE_MIGRATION_STORAGE);
       const removed = await migrateEmbeddedItemImages();
       const repeated = await migrateEmbeddedItemImages();
       await refreshItemImageCache();
       const backup = await buildBackupData();
+      await HayDayItemImages.put(record('gold_voucher', differentImage));
+      localStorage.removeItem(EMBEDDED_ITEM_IMAGE_MIGRATION_STORAGE);
+      const unmatchedRemoved = await migrateEmbeddedItemImages();
+      await refreshItemImageCache();
+      const unmatchedKept = hasCustomItemImage('gold_voucher');
+      await HayDayItemImages.remove('gold_voucher');
+      await refreshItemImageCache();
       return {
         removed,
         repeated,
+        unmatchedRemoved,
+        unmatchedKept,
         goldCustom: hasCustomItemImage('gold_voucher'),
         peanutsCustom: hasCustomItemImage('peanuts'),
         goldBuiltIn: itemImageSrc('gold_voucher') === ICONS.gold_voucher,
@@ -763,9 +777,26 @@ async function run() {
         editsUntouched: localStorage.getItem('hd_edits') === beforeEdits,
         inventoryUntouched: localStorage.getItem('hd_inv') === beforeInventory,
       };
-    }, `data:image/png;base64,${TINY_PNG.toString('base64')}`);
+    }, { embeddedImages: EMBEDDED_IMAGE_DATA_URLS, differentImage: `data:image/png;base64,${TINY_PNG.toString('base64')}` });
     check("测试上传图片迁入内置资源后仅清理对应两条用户图片", embeddedImageMigration.removed === 2 && embeddedImageMigration.repeated === 0 && !embeddedImageMigration.goldCustom && !embeddedImageMigration.peanutsCustom && embeddedImageMigration.goldBuiltIn && embeddedImageMigration.peanutsBuiltIn && embeddedImageMigration.breadKept && embeddedImageMigration.imageCount === 1, JSON.stringify(embeddedImageMigration));
+    check("同一物品编号下内容不同的用户图片不会被迁移误删", embeddedImageMigration.unmatchedRemoved === 0 && embeddedImageMigration.unmatchedKept, JSON.stringify(embeddedImageMigration));
     check("清理测试图片不会修改物品编辑或库存", embeddedImageMigration.editsUntouched && embeddedImageMigration.inventoryUntouched, JSON.stringify(embeddedImageMigration));
+    const failedEmbeddedImageMigration = await page.evaluate(async () => {
+      const beforeEdits = localStorage.getItem('hd_edits');
+      const beforeInventory = localStorage.getItem('hd_inv');
+      const originalGetAll = HayDayItemImages.getAll;
+      localStorage.removeItem(EMBEDDED_ITEM_IMAGE_MIGRATION_STORAGE);
+      HayDayItemImages.getAll = () => Promise.reject(new Error('模拟图片库读取失败'));
+      const result = await migrateEmbeddedItemImagesSafely();
+      HayDayItemImages.getAll = originalGetAll;
+      return {
+        result,
+        marker: localStorage.getItem(EMBEDDED_ITEM_IMAGE_MIGRATION_STORAGE),
+        editsUntouched: localStorage.getItem('hd_edits') === beforeEdits,
+        inventoryUntouched: localStorage.getItem('hd_inv') === beforeInventory,
+      };
+    });
+    check("图片库迁移失败时继续启动并保留下次重试机会", failedEmbeddedImageMigration.result === 0 && failedEmbeddedImageMigration.marker === null && failedEmbeddedImageMigration.editsUntouched && failedEmbeddedImageMigration.inventoryUntouched, JSON.stringify(failedEmbeddedImageMigration));
     const staleImageState = await page.evaluate(async (tinyPng) => {
       const before = itemImageSrc('bread');
       const stale = await buildBackupData();

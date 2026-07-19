@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>卡通农场 · 货仓助手 v2.25.0</title>
+<title>卡通农场 · 货仓助手 v2.25.1</title>
 <style>
 /* ====== 变量与重置 ====== */
 :root{--bg:#F8FAFC;--card:#FFFFFF;--text:#0F172A;--text-secondary:#475569;--muted:#64748B;--accent:#059669;--accent-hover:#047857;--warn:#D97706;--warn-light:#FFFBEB;--danger:#DC2626;--danger-light:#FEF2F2;--border:#E2E8F0;--shadow-sm:0 1px 2px rgba(0,0,0,.04);--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--radius:8px;--radius-sm:6px;--transition:150ms ease}
@@ -1128,7 +1128,11 @@ var _relationPanelStates=Object.create(null),_relationPanelExpandedHeights=Objec
 var SERVER_PENDING_STORAGE='_hd_server_pending',SERVER_REVISION_STORAGE='_hd_server_revision';
 var PUBLIC_SHOWCASE_CAPACITY=8000,_publicShowcaseInventoryPending=false;
 var EDIT_HISTORY_STORAGE='hayday_local_edit_history_v1',EDIT_HISTORY_LIMIT=20,_editHistoryExpanded=false,_editHistorySequence=0;
-var EMBEDDED_ITEM_IMAGE_MIGRATION_STORAGE='hayday_embedded_item_images_v1',EMBEDDED_ITEM_IMAGE_IDS=['gold_voucher','peanuts'];
+var EMBEDDED_ITEM_IMAGE_MIGRATION_STORAGE='hayday_embedded_item_images_v1';
+var EMBEDDED_ITEM_IMAGE_HASHES={
+  gold_voucher:'0bb41e18a27196edec075f24bbc2b06efcaccb25b46275e35db919410d793444',
+  peanuts:'419e929d20a42a095cc0e26a543cc9da8f3a6d42e4f2df7f31a6c011e6f06a57'
+};
 var _serverPending={},_serverRevision='',_serverConflict=false,_serverSaveTimer=null,_serverRetryTimer=null,_serverSaving=false,_serverRetryDelay=1000;
 var _itemImageRecords={},_itemImageStorageAvailable=true,_dataReviewFilter='issues',_dataReviewSelectedId='',_dataReviewQuery='',_dataReviewReturnFocus=null,_dataReviewReturnScroll=0;
 function itemImageSrc(id){return (_itemImageRecords[id]&&_itemImageRecords[id].dataUrl)||ICONS[id]||'';}
@@ -3422,7 +3426,7 @@ function scheduleFileBackupReminder(){
 async function bootstrap(){
   await hydrateStoredData();
   await migrateCatalogImageIds();
-  await migrateEmbeddedItemImages();
+  await migrateEmbeddedItemImagesSafely();
   var migratedCatalogKeys=migrateCatalogStoredData();
   await refreshItemImageCache();
   restoreServerPending();
@@ -3566,14 +3570,37 @@ async function migrateCatalogImageIds(){
 async function migrateEmbeddedItemImages(){
   if(localStorage.getItem(EMBEDDED_ITEM_IMAGE_MIGRATION_STORAGE)==='1')return 0;
   if(!window.HayDayItemImages||!HayDayItemImages.supported())return 0;
-  var records=await HayDayItemImages.getAll(),embedded={};
-  EMBEDDED_ITEM_IMAGE_IDS.forEach(function(id){embedded[id]=true;});
-  var removed=records.filter(function(record){return embedded[record.id];}).length;
-  for(var index=0;index<EMBEDDED_ITEM_IMAGE_IDS.length;index++){
-    await HayDayItemImages.remove(EMBEDDED_ITEM_IMAGE_IDS[index]);
+  var records=await HayDayItemImages.getAll(),recordsById={};
+  records.forEach(function(record){recordsById[record.id]=record;});
+  var removed=0,ids=Object.keys(EMBEDDED_ITEM_IMAGE_HASHES);
+  for(var index=0;index<ids.length;index++){
+    var id=ids[index],record=recordsById[id];
+    if(!record||await sha256ImageDataUrl(record.dataUrl)!==EMBEDDED_ITEM_IMAGE_HASHES[id])continue;
+    await HayDayItemImages.remove(id);
+    removed++;
   }
   localStorage.setItem(EMBEDDED_ITEM_IMAGE_MIGRATION_STORAGE,'1');
   return removed;
+}
+async function sha256ImageDataUrl(dataUrl){
+  if(typeof dataUrl!=='string'||dataUrl.indexOf(',')<0||!window.crypto||!window.crypto.subtle)return '';
+  try{
+    var binary=atob(dataUrl.slice(dataUrl.indexOf(',')+1)),bytes=new Uint8Array(binary.length);
+    for(var index=0;index<binary.length;index++)bytes[index]=binary.charCodeAt(index);
+    var digest=await window.crypto.subtle.digest('SHA-256',bytes);
+    return Array.from(new Uint8Array(digest)).map(function(byte){return byte.toString(16).padStart(2,'0');}).join('');
+  }catch(error){
+    console.warn('无法校验待迁移图片:',error.message);
+    return '';
+  }
+}
+async function migrateEmbeddedItemImagesSafely(){
+  try{
+    return await migrateEmbeddedItemImages();
+  }catch(error){
+    console.warn('内置图片迁移已跳过，将在下次启动重试:',error.message);
+    return 0;
+  }
 }
 function migrateCatalogStoredData(){
   if(!window.HayDayCatalogMigration)throw new Error('缺少目录编号迁移组件');
