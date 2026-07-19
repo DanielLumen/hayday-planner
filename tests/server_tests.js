@@ -17,10 +17,13 @@ const {
 const root = path.resolve(__dirname, "..");
 assert.equal(resolveStaticPath("/"), path.join(root, "index.html"));
 assert.equal(resolveStaticPath("/icons/wheat.png"), path.join(root, "icons", "wheat.png"));
+assert.equal(resolveStaticPath("/icons/gold_voucher.webp"), path.join(root, "icons", "gold_voucher.webp"));
 assert.equal(resolveStaticPath("/planner-core.js"), path.join(root, "planner-core.js"));
 assert.equal(resolveStaticPath("/catalog-migration.js"), path.join(root, "catalog-migration.js"));
 assert.equal(resolveStaticPath("/icon-status.js"), path.join(root, "icon-status.js"));
 assert.equal(resolveStaticPath("/item-image-store.js"), path.join(root, "item-image-store.js"));
+assert.equal(resolveStaticPath("/vendor/pinyin-pro.js"), path.join(root, "vendor", "pinyin-pro.js"));
+assert.equal(fs.existsSync(resolveStaticPath("/vendor/pinyin-pro.js")), true);
 assert.equal(resolveStaticPath("/catalog-mapping.html"), null);
 assert.equal(resolveStaticPath("/catalog-mapping.css"), null);
 assert.equal(resolveStaticPath("/catalog-mapping.js"), null);
@@ -28,7 +31,7 @@ assert.equal(resolveStaticPath("/catalog-mapping-data.js"), null);
 assert.equal(resolveStaticPath("/catalog-id-image-mapping.json"), null);
 assert.equal(resolveStaticPath("/catalog-reference.json"), null);
 assert.equal(resolveStaticPath("/catalog-local-base.json"), null);
-assert.equal(resolveStaticPath("/node_modules/pinyin-pro/dist/index.js"), path.join(root, "node_modules", "pinyin-pro", "dist", "index.js"));
+assert.equal(resolveStaticPath("/node_modules/pinyin-pro/dist/index.js"), null);
 assert.equal(resolveStaticPath("/../package.json"), null);
 assert.equal(resolveStaticPath("/%2e%2e/package.json"), null);
 assert.equal(resolveStaticPath("/.git/config"), null);
@@ -68,6 +71,9 @@ async function testRevisionProtectedSave() {
   });
   try {
     const url = `http://127.0.0.1:${server.address().port}/api/save`;
+    const webpResponse = await fetch(`http://127.0.0.1:${server.address().port}/icons/gold_voucher.webp`);
+    assert.equal(webpResponse.status, 200);
+    assert.equal(webpResponse.headers.get("content-type"), "image/webp");
     const firstRead = await fetch(url);
     const firstRevision = firstRead.headers.get("x-hayday-revision");
     assert.equal(firstRead.status, 200);

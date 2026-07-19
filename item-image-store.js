@@ -13,7 +13,7 @@
   var TARGET_SIZE=256;
 
   function supported(){return typeof indexedDB!=='undefined';}
-  function validId(id){return typeof id==='string'&&id.length>0&&id.length<=160;}
+  function validId(id){return typeof id==='string'&&/^[a-z][a-z0-9_]{0,159}$/.test(id)&&id!=='constructor'&&id!=='prototype';}
   function validDataUrl(value){return typeof value==='string'&&value.length<=MAX_BACKUP_DATA_URL_CHARS&&/^data:image\/(?:png|jpeg|webp);base64,/i.test(value);}
   function normalizeRecord(id,value){
     var source=value&&typeof value==='object'&&!Array.isArray(value)?value:{dataUrl:value};
@@ -112,6 +112,20 @@
       });
     });
   }
+  function replaceAll(input){
+    var records=normalizeBackup(input);
+    return openDb().then(function(db){
+      return new Promise(function(resolve,reject){
+        var transaction=db.transaction(STORE_NAME,'readwrite');
+        var store=transaction.objectStore(STORE_NAME);
+        store.clear();
+        records.forEach(function(record){store.put(record);});
+        transaction.oncomplete=function(){db.close();resolve(records.length);};
+        transaction.onerror=function(){db.close();reject(transaction.error||new Error('恢复图片库快照失败'));};
+        transaction.onabort=function(){db.close();reject(transaction.error||new Error('恢复图片库快照已取消'));};
+      });
+    });
+  }
   function migrateIds(idMap){
     if(!idMap||typeof idMap!=='object'||Array.isArray(idMap)) return Promise.reject(new Error('图片编号映射格式错误'));
     var keys=Object.keys(idMap).filter(function(id){return validId(id)&&validId(idMap[id])&&id!==idMap[id];});
@@ -206,6 +220,7 @@
     put:put,
     remove:remove,
     mergeBackup:mergeBackup,
+    replaceAll:replaceAll,
     migrateIds:migrateIds,
     exportMap:exportMap,
     prepareFile:prepareFile

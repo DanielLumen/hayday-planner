@@ -68,12 +68,15 @@ assert.deepEqual(normalizedImage, {
 });
 assert.equal(itemImages.normalizeRecord("bread", { dataUrl: "https://example.com/image.png" }), null);
 assert.equal(itemImages.normalizeRecord("", { dataUrl: tinyPng }), null);
+assert.equal(itemImages.normalizeRecord("bad'id", { dataUrl: tinyPng }), null);
+assert.equal(itemImages.normalizeRecord("__proto__", { dataUrl: tinyPng }), null);
 assert.deepEqual(itemImages.normalizeBackup({ bread: normalizedImage, unsafe: { dataUrl: "javascript:alert(1)" } }), [normalizedImage]);
 assert.equal(itemImages.shouldReplace(null, normalizedImage), true);
 assert.equal(itemImages.shouldReplace({ updatedAt: "2026-07-17T00:00:00.000Z" }, normalizedImage), false);
 assert.equal(itemImages.shouldReplace({ updatedAt: "2026-07-15T00:00:00.000Z" }, normalizedImage), true);
 assert.equal(itemImages.shouldReplace({ updatedAt: "" }, normalizedImage), false);
 assert.equal(typeof itemImages.migrateIds, "function");
+assert.equal(typeof itemImages.replaceAll, "function");
 
 assert.deepEqual(core.allocateEvenInventory(["wheat", "corn", "soyabean"], 8), {
   quantities: { wheat: 3, corn: 3, soyabean: 2 },

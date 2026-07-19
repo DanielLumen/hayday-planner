@@ -14,7 +14,7 @@ const publicFiles = new Set([
   "catalog-migration.js",
   "icon-status.js",
   "item-image-store.js",
-  "node_modules/pinyin-pro/dist/index.js",
+  "vendor/pinyin-pro.js",
 ]);
 
 const contentTypes = {
@@ -24,6 +24,7 @@ const contentTypes = {
   css: "text/css; charset=utf-8",
   json: "application/json; charset=utf-8",
   png: "image/png",
+  webp: "image/webp",
   svg: "image/svg+xml; charset=utf-8",
 };
 
@@ -96,7 +97,7 @@ function resolveStaticPath(urlPath) {
   }
 
   const relative = pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");
-  const isIcon = /^icons\/[a-z0-9_]+\.png$/.test(relative);
+  const isIcon = /^icons\/[a-z0-9_]+\.(?:png|webp)$/.test(relative);
   if (!publicFiles.has(relative) && !isIcon) return null;
   return path.join(base, relative);
 }
@@ -213,7 +214,7 @@ function handleStatic(req, res, urlPath) {
     const ext = path.extname(file).slice(1);
     const headers = {
       "Content-Type": contentTypes[ext] || "text/plain; charset=utf-8",
-      "Cache-Control": ext === "png" ? "public, max-age=86400" : "no-cache",
+      "Cache-Control": /^(?:png|webp)$/.test(ext) ? "public, max-age=86400" : "no-cache",
     };
     send(res, 200, req.method === "HEAD" ? "" : data, headers);
   });
