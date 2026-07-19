@@ -10,8 +10,8 @@ const FILE_URL = pathToFileURL(path.join(__dirname, "..", "index.html")).href;
 const SNAPSHOT_PATH = path.join(__dirname, "ui_snapshot.png");
 const TINY_PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64");
 const EMBEDDED_IMAGE_DATA_URLS = {
-  gold_voucher: `data:image/webp;base64,${fs.readFileSync(path.join(__dirname, "..", "icons", "gold_voucher.png")).toString("base64")}`,
-  peanuts: `data:image/webp;base64,${fs.readFileSync(path.join(__dirname, "..", "icons", "peanuts.png")).toString("base64")}`,
+  gold_voucher: `data:image/webp;base64,${fs.readFileSync(path.join(__dirname, "..", "icons", "gold_voucher.webp")).toString("base64")}`,
+  peanuts: `data:image/webp;base64,${fs.readFileSync(path.join(__dirname, "..", "icons", "peanuts.webp")).toString("base64")}`,
 };
 const results = { passed: 0, failed: 0, tests: [] };
 
@@ -71,6 +71,17 @@ async function testSyncRetry(browser) {
       status: document.querySelector('#saveStatus')?.textContent || '',
     }));
     check("旧浏览器待同步数据不会覆盖较新的服务器版本", conflictState.conflict && conflictState.localInventory.includes('"n":0') && conflictState.pending.hd_inv === conflictState.localInventory && attempts === attemptsBeforeConflict && conflictState.status.includes('同步冲突'), JSON.stringify({ conflictState, attempts, attemptsBeforeConflict }));
+    const migrationSyncState = await syncPage.evaluate(() => {
+      _serverPending = {};
+      persistServerPending();
+      localStorage.removeItem('hd_filter_order_version');
+      migrateFilterOrderV2();
+      return {
+        marker: localStorage.getItem('hd_filter_order_version'),
+        pending: Object.keys(_serverPending).sort(),
+      };
+    });
+    check("筛选顺序迁移进入服务器同步队列", migrationSyncState.marker === '2' && migrationSyncState.pending.includes('hd_filter_order') && migrationSyncState.pending.includes('hd_order') && migrationSyncState.pending.includes('hd_filter_order_version'), JSON.stringify(migrationSyncState));
   } finally {
     await syncPage.close();
     await new Promise((resolve) => server.close(resolve));
@@ -182,6 +193,15 @@ async function run() {
 
     const title = await page.title();
     check("页面标题", title.includes("卡通农场"));
+    const staticRuntimeState = await page.evaluate(() => ({
+      pinyinLoaded: typeof pinyinPro !== 'undefined' && _pyFL('小麦') === 'xm',
+      handPiesIcon: ICONS.hand_pies,
+      lambMultiplier: PROD_MULTIPLIERS.lamb_chop,
+      staleMuttonMultiplier: Object.prototype.hasOwnProperty.call(PROD_MULTIPLIERS,'mutton'),
+    }));
+    check("静态发布资源包含可用的拼音运行时", staticRuntimeState.pinyinLoaded, JSON.stringify(staticRuntimeState));
+    check("手抓酥皮派使用自己的专用图片", staticRuntimeState.handPiesIcon === 'icons/hand_pies.png', JSON.stringify(staticRuntimeState));
+    check("羊排来源倍率使用实际物品编号", staticRuntimeState.lambMultiplier === 10 && !staticRuntimeState.staleMuttonMultiplier, JSON.stringify(staticRuntimeState));
     const overviewToggleInitial = await page.evaluate(() => ({
       text: document.querySelector('#infoToggle')?.textContent?.trim(),
       expanded: document.querySelector('#infoToggle')?.getAttribute('aria-expanded'),
@@ -817,6 +837,62 @@ async function run() {
       return { removed, merged, restored: hasCustomItemImage('bread') };
     });
     check("新版备份以合并方式恢复图片", imageMergeState.removed && imageMergeState.merged === 1 && imageMergeState.restored, JSON.stringify(imageMergeState));
+    const failedBundleImport = await page.evaluate(async (tinyPng) => {
+      const beforeImages = await HayDayItemImages.exportMap();
+      const beforeEdits = localStorage.getItem('hd_edits');
+      const beforeInventory = localStorage.getItem('hd_inv');
+      const backup = await buildBackupData();
+      backup.items = {};
+      backup.itemImages.bread = {
+        dataUrl: tinyPng,
+        mimeType: 'image/png',
+        width: 1,
+        height: 1,
+        updatedAt: '2099-01-01T00:00:00.000Z',
+      };
+      const originalRecordEditHistory = recordEditHistory;
+      let message = '';
+      recordEditHistory = () => false;
+      try {
+        await importBackupBundle(backup);
+      } catch (error) {
+        message = error.message;
+      } finally {
+        recordEditHistory = originalRecordEditHistory;
+      }
+      const afterImages = await HayDayItemImages.exportMap();
+      return {
+        failed: message.includes('恢复点'),
+        imageRestored: afterImages.bread?.dataUrl === beforeImages.bread?.dataUrl && afterImages.bread?.updatedAt === beforeImages.bread?.updatedAt,
+        editsRestored: localStorage.getItem('hd_edits') === beforeEdits,
+        inventoryRestored: localStorage.getItem('hd_inv') === beforeInventory,
+      };
+    }, `data:image/png;base64,${TINY_PNG.toString('base64')}`);
+    check("数据导入失败时同时回滚图片库和本地数据", failedBundleImport.failed && failedBundleImport.imageRestored && failedBundleImport.editsRestored && failedBundleImport.inventoryRestored, JSON.stringify(failedBundleImport));
+    const failedDataCommit = await page.evaluate(async () => {
+      const before = {
+        edits:localStorage.getItem('hd_edits'),
+        inventory:localStorage.getItem('hd_inv'),
+        filterOrder:localStorage.getItem('hd_filter_order'),
+        buildings:D.buildings.map((building) => building.id).join(','),
+        history:localStorage.getItem(EDIT_HISTORY_STORAGE),
+      };
+      const backup = await buildBackupData();
+      backup.filterOrder = [{st:'',bld:'net_maker'},{st:'',bld:'bakery'}];
+      const originalSaveInventory = sv;
+      let message = '';
+      sv = () => {throw new Error('模拟库存保存失败');};
+      try{importBackupData(backup);}catch(error){message=error.message;}finally{sv=originalSaveInventory;}
+      return {
+        failed:message.includes('模拟库存保存失败'),
+        edits:localStorage.getItem('hd_edits')===before.edits,
+        inventory:localStorage.getItem('hd_inv')===before.inventory,
+        filterOrder:localStorage.getItem('hd_filter_order')===before.filterOrder,
+        buildings:D.buildings.map((building) => building.id).join(',')===before.buildings,
+        history:localStorage.getItem(EDIT_HISTORY_STORAGE)===before.history,
+      };
+    });
+    check("本地写入中途失败时恢复库存、编辑、排序和恢复记录", failedDataCommit.failed && failedDataCommit.edits && failedDataCommit.inventory && failedDataCommit.filterOrder && failedDataCommit.buildings && failedDataCommit.history, JSON.stringify(failedDataCommit));
     await page.click('#dataReviewPanel .data-review-heading .btn');
     check("退出校对后恢复原库存界面", await page.evaluate(() => document.querySelector('#dataReviewPanel').hidden && !document.querySelector('#inventoryMainLayout').hidden));
     await page.click('.tab[data-tab="priority"]');
@@ -872,6 +948,9 @@ async function run() {
     check("历史迁移仅修正名称和设备", migrationState.peanut.bld === "ice_cream_maker" && migrationState.fish.bld === "bbq_grill" && migrationState.fish.nameCN === "炸鱼薯条", JSON.stringify(migrationState));
 
     const importState = await page.evaluate(() => {
+      if(!S.wheat)S.wheat={n:0,tg:(im.wheat&&im.wheat.tg)||5};
+      S.wheat.n=37;
+      sv();
       const historyBefore = loadEditHistory().length;
       const restored = importBackupData({
         gtSilo: 12,
@@ -895,9 +974,11 @@ async function run() {
         deletions: savedEdits.del,
         historyBefore,
         historyAfter: loadEditHistory().length,
+        preservedWheat: gs('wheat'),
       };
     });
     check("自定义物品备份完整恢复", importState.restored === 1 && importState.stock === 7 && importState.target === 9, JSON.stringify(importState));
+    check("不完整备份不会清空未包含物品的库存", importState.preservedWheat === 37, JSON.stringify(importState));
     check("导入时规范重复原料和依赖删除", importState.ingredients.length === 1 && importState.ingredients[0].q === 3 && !importState.deletions.includes("lavender"), JSON.stringify(importState));
     check("导入旧备份时统一历史物品图标", importState.emoji === '📦', JSON.stringify(importState));
     const exportedEmojiState = await page.evaluate(async () => {
@@ -911,6 +992,42 @@ async function run() {
     check("重新导出的编辑数据全部使用箱子图标", exportedEmojiState.records > 0 && exportedEmojiState.allBoxes, JSON.stringify(exportedEmojiState));
     check("导入物品编辑前自动创建恢复点", importState.historyAfter === importState.historyBefore + 1, JSON.stringify(importState));
     check("导入旧版备份不会清空已有用户图片", await page.evaluate(() => hasCustomItemImage('bread')));
+    const unsafeImportState = await page.evaluate(() => {
+      const editsBefore = localStorage.getItem('hd_edits');
+      let message = '';
+      try{
+        validateImportedBackup({
+          items: {},
+          edits: {
+            mod: {},
+            add: [{id:"custom_bad');alert(1)//",nameCN:'恶意物品',bld:'bakery',ing:[{i:'wheat',q:1}],t:1,tg:1,st:'barn'}],
+            del: [],
+          },
+        });
+      }catch(error){message=error.message;}
+      return {rejected:message.includes('编号无效'),untouched:localStorage.getItem('hd_edits')===editsBefore};
+    });
+    check("导入会拒绝可注入页面的自定义物品编号", unsafeImportState.rejected && unsafeImportState.untouched, JSON.stringify(unsafeImportState));
+    const legacyBackupValidation = await page.evaluate(() => {
+      const checked = validateImportedBackup({
+        items: {_v:1,_bc:450,wheat:{n:3,tg:5}},
+        edits: {
+          mod: {rose_oil:{nameCN:'历史重复精油',bld:'essential_oils_lab',ing:[{i:'ginger',q:5}],t:600,tg:3}},
+          add: [],
+          del: [],
+        },
+      });
+      return {wheat:checked.items.wheat.n,metadata:checked.items._v,preservedRose:Object.prototype.hasOwnProperty.call(checked.edits.mod,'rose_oil')};
+    });
+    check("历史备份元数据和已失效精油记录可无损往返", legacyBackupValidation.wheat === 3 && legacyBackupValidation.metadata === 1 && legacyBackupValidation.preservedRose, JSON.stringify(legacyBackupValidation));
+    const customItemEditState = await page.evaluate(() => {
+      const edits = loadEdits();
+      edits.mod.custom_review_item = {nameCN:'测试自定义物品（已修改）'};
+      saveEdits(edits);
+      applyEdits();
+      return {name:im.custom_review_item?.nameCN,stock:gs('custom_review_item')};
+    });
+    check("导入的自定义物品后续编辑能够生效且保留库存", customItemEditState.name === '测试自定义物品（已修改）' && customItemEditState.stock === 7, JSON.stringify(customItemEditState));
     const deleteRecoveryBefore = await page.evaluate(() => ({
       historyCount: loadEditHistory().length,
       stock: gs('custom_review_item'),

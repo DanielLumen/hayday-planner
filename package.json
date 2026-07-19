@@ -1,6 +1,6 @@
 {
   "name": "hayday-warehouse",
-  "version": "2.25.1",
+  "version": "2.25.2",
   "description": "卡通农场 · 货仓助手",
   "scripts": {
     "start": "node server.js",
@@ -13,7 +13,7 @@
     "test": "node tests/core_tests.js && node tests/server_tests.js && python3 validate.py && node tests/ui_tests.js"
   },
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "pinyin-pro": "^3.28.1",
     "playwright": "^1.61.1"
   }

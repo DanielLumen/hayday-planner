@@ -10,7 +10,6 @@ ROOT = Path(__file__).resolve().parent
 HTML = ROOT / "index.html"
 DATA = ROOT / "data.json"
 WIKI = ROOT / "wiki_products.json"
-ICONS = ROOT / "icons"
 CATALOG_MIGRATION = ROOT / "catalog-migration.js"
 
 ITEM_RE = re.compile(
@@ -22,6 +21,7 @@ BUILDING_RE = re.compile(
     r'\{id:"([^"]+)",nameCN:"([^"]+)"'
     r'(?:,emoji:"[^"]*")?(?:,slots:(\d+))?\}'
 )
+ICON_RE = re.compile(r'"([a-z][a-z0-9_]*)":"(icons/[a-z0-9_]+\.(?:png|webp))"')
 
 
 def array_source(source, marker):
@@ -253,6 +253,18 @@ def fmt_time(seconds):
     return f"{minutes}m{secs}s" if secs else f"{minutes}m"
 
 
+def icon_format_error(relative_path):
+    path = ROOT / relative_path
+    if not path.exists():
+        return None
+    header = path.read_bytes()[:12]
+    if relative_path.endswith(".png") and not header.startswith(b"\x89PNG\r\n\x1a\n"):
+        return f"{relative_path} has a .png extension but is not PNG data"
+    if relative_path.endswith(".webp") and not (header.startswith(b"RIFF") and header[8:12] == b"WEBP"):
+        return f"{relative_path} has a .webp extension but is not WebP data"
+    return None
+
+
 def main():
     parser = argparse.ArgumentParser(description="Validate Hay Day planner data")
     parser.add_argument("--verbose", action="store_true", help="list warnings and wiki differences")
@@ -274,7 +286,9 @@ def main():
         return 1
 
     errors = integrity_errors(items, buildings)
-    missing_icons = [item["id"] for item in items if not (ICONS / f'{item["id"]}.png').exists()]
+    icon_paths = dict(ICON_RE.findall(html))
+    missing_icons = [item["id"] for item in items if item["id"] not in icon_paths or not (ROOT / icon_paths[item["id"]]).exists()]
+    errors.extend(error for error in (icon_format_error(path) for path in sorted(set(icon_paths.values()))) if error)
     zero_times = [item["id"] for item in items if int(item.get("t", 0)) == 0]
     reference = wiki_times()
     mismatches = [
