@@ -475,6 +475,7 @@ async function run() {
 
     const previousEdits = await page.evaluate(() => localStorage.getItem('hd_edits'));
     await page.click('#relationSelection [data-edit-id="honey_toast"]');
+    check("物品编辑框不再显示历史遗留的备用图标输入项", await page.locator('#emEmoji').count() === 0);
     await page.evaluate(() => {
       const index = _ingRows.findIndex((row) => row.i === 'milk');
       _ingRows[index].q = 7;
@@ -488,8 +489,10 @@ async function run() {
       label: Array.from(document.querySelectorAll('.network-edge-wrap.show-label .network-edge-label')).map((node) => node.textContent || '').find((text) => text.includes('7')),
       selected: document.querySelector('[data-network-node="honey_toast"]')?.classList.contains('is-selected'),
       simulatedMilk: _relationDemandResult?.totalsById?.milk?.requested,
+      emoji: loadEdits().mod.honey_toast?.emoji,
     }));
     check("物品编辑保存后立即重算关系网、连线数量与需求模拟", liveEditState.quantity === 7 && Boolean(liveEditState.label) && liveEditState.selected && liveEditState.simulatedMilk === 42, JSON.stringify(liveEditState));
+    check("新保存的物品编辑统一使用箱子图标", liveEditState.emoji === '📦', JSON.stringify(liveEditState));
     await page.evaluate((saved) => {
       if (saved === null) localStorage.removeItem('hd_edits');
       else localStorage.setItem('hd_edits', saved);
@@ -532,11 +535,26 @@ async function run() {
     const firstGroupToggle = await page.$('.section-header .group-collapse-toggle');
     await firstGroupToggle.click();
     const groupCollapsed = await page.evaluate(() => {
-      const header=document.querySelector('.section-header'),button=header?.querySelector('.group-collapse-toggle');
-      return {hidden:header?.nextElementSibling?.classList.contains('hidden'),text:button?.textContent?.trim(),aria:button?.getAttribute('aria-expanded')};
+      const header=document.querySelector('.section-header'),body=header?.nextElementSibling,button=header?.querySelector('.group-collapse-toggle');
+      return {
+        hiddenClass:body?.classList.contains('hidden'),
+        visuallyHidden:body ? getComputedStyle(body).display === 'none' && body.getClientRects().length === 0 : false,
+        text:button?.textContent?.trim(),
+        aria:button?.getAttribute('aria-expanded')
+      };
     });
-    check("物品分组使用统一展开收起按钮", groupCollapsed.hidden && groupCollapsed.text === '展开' && groupCollapsed.aria === 'false', JSON.stringify(groupCollapsed));
+    check("物品分组收起后内容实际隐藏且按钮状态正确", groupCollapsed.hiddenClass && groupCollapsed.visuallyHidden && groupCollapsed.text === '展开' && groupCollapsed.aria === 'false', JSON.stringify(groupCollapsed));
     await firstGroupToggle.click();
+    const groupExpanded = await page.evaluate(() => {
+      const header=document.querySelector('.section-header'),body=header?.nextElementSibling,button=header?.querySelector('.group-collapse-toggle');
+      return {
+        hiddenClass:body?.classList.contains('hidden'),
+        visuallyVisible:body ? getComputedStyle(body).display !== 'none' && body.getClientRects().length > 0 : false,
+        text:button?.textContent?.trim(),
+        aria:button?.getAttribute('aria-expanded')
+      };
+    });
+    check("物品分组再次展开后内容恢复且按钮状态正确", !groupExpanded.hiddenClass && groupExpanded.visuallyVisible && groupExpanded.text === '收起' && groupExpanded.aria === 'true', JSON.stringify(groupExpanded));
 
     const firstInput = await page.$(".tile-input");
     check("存在库存输入框", firstInput !== null);
@@ -722,6 +740,32 @@ async function run() {
     check("用户图片保存在独立图片库并立即显示", uploadedImageState.custom && uploadedImageState.source.startsWith('data:image/') && uploadedImageState.detailUsesUpload, JSON.stringify(uploadedImageState));
     check("上传图片不改写物品编辑和库存", uploadedImageState.editsUntouched && uploadedImageState.inventoryUntouched, JSON.stringify(uploadedImageState));
     check("新备份使用 v4 并包含用户图片", uploadedImageState.version === 4 && uploadedImageState.backupHasImage, JSON.stringify(uploadedImageState));
+    const embeddedImageMigration = await page.evaluate(async (tinyPng) => {
+      const beforeEdits = localStorage.getItem('hd_edits');
+      const beforeInventory = localStorage.getItem('hd_inv');
+      const record = (id) => ({ id, dataUrl: tinyPng, mimeType: 'image/png', width: 1, height: 1, updatedAt: '2026-07-18T00:00:00.000Z' });
+      await HayDayItemImages.put(record('gold_voucher'));
+      await HayDayItemImages.put(record('peanuts'));
+      localStorage.removeItem(EMBEDDED_ITEM_IMAGE_MIGRATION_STORAGE);
+      const removed = await migrateEmbeddedItemImages();
+      const repeated = await migrateEmbeddedItemImages();
+      await refreshItemImageCache();
+      const backup = await buildBackupData();
+      return {
+        removed,
+        repeated,
+        goldCustom: hasCustomItemImage('gold_voucher'),
+        peanutsCustom: hasCustomItemImage('peanuts'),
+        goldBuiltIn: itemImageSrc('gold_voucher') === ICONS.gold_voucher,
+        peanutsBuiltIn: itemImageSrc('peanuts') === ICONS.peanuts,
+        breadKept: Boolean(backup.itemImages.bread),
+        imageCount: Object.keys(backup.itemImages).length,
+        editsUntouched: localStorage.getItem('hd_edits') === beforeEdits,
+        inventoryUntouched: localStorage.getItem('hd_inv') === beforeInventory,
+      };
+    }, `data:image/png;base64,${TINY_PNG.toString('base64')}`);
+    check("测试上传图片迁入内置资源后仅清理对应两条用户图片", embeddedImageMigration.removed === 2 && embeddedImageMigration.repeated === 0 && !embeddedImageMigration.goldCustom && !embeddedImageMigration.peanutsCustom && embeddedImageMigration.goldBuiltIn && embeddedImageMigration.peanutsBuiltIn && embeddedImageMigration.breadKept && embeddedImageMigration.imageCount === 1, JSON.stringify(embeddedImageMigration));
+    check("清理测试图片不会修改物品编辑或库存", embeddedImageMigration.editsUntouched && embeddedImageMigration.inventoryUntouched, JSON.stringify(embeddedImageMigration));
     const staleImageState = await page.evaluate(async (tinyPng) => {
       const before = itemImageSrc('bread');
       const stale = await buildBackupData();
@@ -816,6 +860,7 @@ async function run() {
         stock: gs("custom_review_item"),
         target: gt("custom_review_item"),
         ingredients: savedEdits.add[0].ing,
+        emoji: savedEdits.add[0].emoji,
         deletions: savedEdits.del,
         historyBefore,
         historyAfter: loadEditHistory().length,
@@ -823,6 +868,16 @@ async function run() {
     });
     check("自定义物品备份完整恢复", importState.restored === 1 && importState.stock === 7 && importState.target === 9, JSON.stringify(importState));
     check("导入时规范重复原料和依赖删除", importState.ingredients.length === 1 && importState.ingredients[0].q === 3 && !importState.deletions.includes("lavender"), JSON.stringify(importState));
+    check("导入旧备份时统一历史物品图标", importState.emoji === '📦', JSON.stringify(importState));
+    const exportedEmojiState = await page.evaluate(async () => {
+      const backup = await buildBackupData();
+      const records = Object.values(backup.edits.mod || {}).concat(backup.edits.add || []);
+      return {
+        records: records.length,
+        allBoxes: records.every((item) => item?.emoji === '📦'),
+      };
+    });
+    check("重新导出的编辑数据全部使用箱子图标", exportedEmojiState.records > 0 && exportedEmojiState.allBoxes, JSON.stringify(exportedEmojiState));
     check("导入物品编辑前自动创建恢复点", importState.historyAfter === importState.historyBefore + 1, JSON.stringify(importState));
     check("导入旧版备份不会清空已有用户图片", await page.evaluate(() => hasCustomItemImage('bread')));
     const deleteRecoveryBefore = await page.evaluate(() => ({

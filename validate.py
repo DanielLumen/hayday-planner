@@ -264,6 +264,9 @@ def main():
         buildings = parse_buildings(html)
         if not base_items or not buildings:
             raise ValueError("Parsed data is unexpectedly empty")
+        base_item_emojis = re.findall(r'emoji:"([^"]*)"', array_source(html, "\nitems:"))
+        if len(base_item_emojis) != len(base_items) or any(emoji != "📦" for emoji in base_item_emojis):
+            raise ValueError("Every built-in item must use the unified 📦 fallback icon")
         edits = load_edits()
         items, retained, duplicate_ingredients = apply_edits(base_items, edits)
     except (OSError, ValueError, TypeError, json.JSONDecodeError) as error:
