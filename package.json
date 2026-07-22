@@ -1,7 +1,7 @@
 {
   "name": "hayday-warehouse",
   "version": "2.25.2",
-  "description": "卡通农场 · 货仓助手",
+  "description": "卡通农场 · 库存助手",
   "scripts": {
     "start": "node server.js",
     "test:core": "node tests/core_tests.js",

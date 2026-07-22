@@ -137,6 +137,27 @@ async function testPublicShowcaseDefaults(browser) {
         showcaseState.persisted,
       JSON.stringify(showcaseState),
     );
+    const staticSaveState = await showcasePage.evaluate(() => {
+      localStorage.setItem(SERVER_PENDING_STORAGE, JSON.stringify({ hd_stale_mirror: "old" }));
+      restoreServerPending();
+      persistText("hd_static_save_review", "saved");
+      return {
+        syncEnabled: _serverSyncEnabled,
+        saved: localStorage.getItem("hd_static_save_review"),
+        pending: Object.keys(_serverPending),
+        persistedQueue: localStorage.getItem(SERVER_PENDING_STORAGE),
+        status: document.querySelector("#saveStatus")?.textContent || "",
+      };
+    });
+    check(
+      "静态网页只保存到本机且不会形成后台重试队列",
+      staticSaveState.syncEnabled === false &&
+        staticSaveState.saved === "saved" &&
+        staticSaveState.pending.length === 0 &&
+        staticSaveState.persistedQueue === null &&
+        staticSaveState.status.includes("已保存到本机"),
+      JSON.stringify(staticSaveState),
+    );
 
     await showcasePage.evaluate(() => {
       localStorage.setItem("hd_inv", JSON.stringify({
@@ -405,6 +426,26 @@ async function run() {
         editActionDisplay: getComputedStyle(document.querySelector('#relationSelection [data-edit-id="honey_toast"]')).display,
     }));
     check("再次操作或 Escape 可退出关系网全屏并恢复编辑入口", !restoredFullscreenState.active && restoredFullscreenState.pressed === 'false' && restoredFullscreenState.label === '全屏' && restoredFullscreenState.editActionDisplay !== 'none', JSON.stringify(restoredFullscreenState));
+    await page.click('#relationSelection [data-edit-id="honey_toast"]');
+    await page.waitForTimeout(30);
+    const editDialogState = await page.evaluate(() => ({
+      role: document.querySelector('#editModal .modal-box')?.getAttribute('role'),
+      modal: document.querySelector('#editModal .modal-box')?.getAttribute('aria-modal'),
+      labelledBy: document.querySelector('#editModal .modal-box')?.getAttribute('aria-labelledby'),
+      overlayHidden: document.querySelector('#editModal')?.getAttribute('aria-hidden'),
+      focused: document.activeElement?.id,
+      backgroundInert: document.querySelector('#relationsView')?.inert,
+    }));
+    check("编辑物品以无障碍对话框打开并锁定背景焦点", editDialogState.role === 'dialog' && editDialogState.modal === 'true' && editDialogState.labelledBy === 'editModalTitle' && editDialogState.overlayHidden === 'false' && editDialogState.focused === 'emName' && editDialogState.backgroundInert, JSON.stringify(editDialogState));
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(30);
+    const editDialogClosed = await page.evaluate(() => ({
+      hidden: document.querySelector('#editModal')?.classList.contains('hidden'),
+      overlayHidden: document.querySelector('#editModal')?.getAttribute('aria-hidden'),
+      backgroundInert: document.querySelector('#relationsView')?.inert,
+      focusReturned: document.activeElement?.getAttribute('data-edit-id'),
+    }));
+    check("Escape 关闭编辑对话框并把焦点还给原按钮", editDialogClosed.hidden && editDialogClosed.overlayHidden === 'true' && !editDialogClosed.backgroundInert && editDialogClosed.focusReturned === 'honey_toast', JSON.stringify(editDialogClosed));
 
     const fishingSources = await page.evaluate(() => ({
       red: D.items.find((item) => item.id === 'red_lure')?.ing,
@@ -419,7 +460,13 @@ async function run() {
     }), JSON.stringify(fishingSources));
 
     await page.fill('#relationsSearch', '蜂蜜吐司');
-    await page.press('#relationsSearch', 'Enter');
+    const relationSearchResults = await page.evaluate(() => ({
+      visible: !document.querySelector('#relationsSearchResults')?.hidden,
+      count: document.querySelectorAll('#relationsSearchResults [role="option"]').length,
+      text: document.querySelector('#relationsSearchResults')?.textContent || '',
+    }));
+    check("关系网搜索显示可点击的明确候选项", relationSearchResults.visible && relationSearchResults.count >= 1 && relationSearchResults.text.includes('蜂蜜吐司'), JSON.stringify(relationSearchResults));
+    await page.click('#relationsSearchResults [data-relation-search-id="honey_toast"]');
     const cheeseNetwork = await page.evaluate(() => {
       const root = document.querySelector('[data-network-node="honey_toast"]');
       const milk = document.querySelector('[data-network-node="milk"]');
@@ -1104,7 +1151,8 @@ async function run() {
         focusScale: before,
         mode: document.querySelector('#relationZoomMode')?.textContent,
         detail: selection?.textContent || '',
-        detailAboveGraph: selection?.getBoundingClientRect().bottom <= viewport?.getBoundingClientRect().top + 1,
+        graphBeforeDetail: viewport?.getBoundingClientRect().bottom <= selection?.getBoundingClientRect().top + 1,
+        graphStartsInFirstScreen: viewport?.getBoundingClientRect().top < innerHeight,
         detailInFirstScreen: selection?.getBoundingClientRect().bottom <= innerHeight,
         demandPlannerFits: document.querySelector('#relationDemandPlanner')?.getBoundingClientRect().width <= document.documentElement.clientWidth,
         demandResultVisible: !document.querySelector('#relationDemandResult')?.hidden,
@@ -1112,7 +1160,7 @@ async function run() {
       };
     });
     check("移动端全图不撑宽页面，并支持缩放与拖动", !mobileRelations.documentOverflow && mobileRelations.viewportFits && mobileRelations.touchPanEnabled && mobileRelations.zoomChanged && mobileRelations.nodeCount > 400, JSON.stringify(mobileRelations));
-    check("移动端搜索进入可读聚焦且首屏可见配方", mobileRelations.focusScale >= .86 && mobileRelations.mode === '聚焦' && mobileRelations.detailAboveGraph && mobileRelations.detailInFirstScreen && mobileRelations.detail.includes('配方：'), JSON.stringify(mobileRelations));
+    check("移动端搜索进入可读聚焦且优先展示关系图", mobileRelations.focusScale >= .86 && mobileRelations.mode === '聚焦' && mobileRelations.graphBeforeDetail && mobileRelations.graphStartsInFirstScreen && mobileRelations.detail.includes('配方：'), JSON.stringify(mobileRelations));
     check("移动端需求模拟不撑宽页面且操作按钮可点击", mobileRelations.demandPlannerFits && mobileRelations.demandResultVisible && mobileRelations.demandControlsHeight >= 40, JSON.stringify(mobileRelations));
 
     check("页面无 JS 异常", pageErrors.length === 0, pageErrors.join(" | "));
