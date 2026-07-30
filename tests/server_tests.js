@@ -6,6 +6,7 @@ const os = require("node:os");
 const path = require("node:path");
 const {
   createServer,
+  ensureDataFile,
   isSameOrigin,
   loadData,
   parseStoredData,
@@ -23,6 +24,7 @@ assert.equal(resolveStaticPath("/catalog-migration.js"), path.join(root, "catalo
 assert.equal(resolveStaticPath("/icon-status.js"), path.join(root, "icon-status.js"));
 assert.equal(resolveStaticPath("/item-image-store.js"), path.join(root, "item-image-store.js"));
 assert.equal(resolveStaticPath("/vendor/pinyin-pro.js"), path.join(root, "vendor", "pinyin-pro.js"));
+assert.equal(resolveStaticPath("/public-data.json"), path.join(root, "public-data.json"));
 assert.equal(fs.existsSync(resolveStaticPath("/vendor/pinyin-pro.js")), true);
 assert.equal(resolveStaticPath("/catalog-mapping.html"), null);
 assert.equal(resolveStaticPath("/catalog-mapping.css"), null);
@@ -38,7 +40,12 @@ assert.equal(resolveStaticPath("/.git/config"), null);
 assert.equal(resolveStaticPath("/backup/hayday_backup_2026-07-11.json"), null);
 assert.equal(resolveStaticPath("/package.json"), null);
 assert.equal(resolveStaticPath("/data.json"), null);
-assert.equal(typeof loadData(), "object");
+const publicData = loadData(path.join(root, "public-data.json"));
+assert.equal(Object.hasOwn(publicData, "hd_inv"), false);
+assert.deepEqual(
+  Object.keys(publicData).sort(),
+  ["hd_checked", "hd_edits", "hd_filter_order", "hd_item_orders", "hd_order"],
+);
 assert.deepEqual(parseStoredData(Buffer.from("\ufeff{\"hd_inv\":\"{}\"}")), { hd_inv: "{}" });
 assert.throws(() => parseStoredData("[]"), /JSON object/);
 assert.throws(() => parseStoredData("not json"), SyntaxError);
@@ -48,6 +55,13 @@ assert.equal(validateIncoming({ config: "{}" }), false);
 assert.equal(validateIncoming({ hd_inv: {} }), false);
 assert.equal(validateIncoming([]), false);
 assert.equal(revisionForData({ hd_inv: "{}" }), revisionForData({ hd_inv: "{}" }));
+
+const seedDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "hayday-server-seed-test-"));
+const seededDataFile = path.join(seedDirectory, "data.json");
+assert.equal(ensureDataFile(seededDataFile), true);
+assert.deepEqual(loadData(seededDataFile), publicData);
+assert.equal(ensureDataFile(seededDataFile), false);
+fs.rmSync(seedDirectory, { recursive: true, force: true });
 
 assert.equal(isSameOrigin({ headers: { host: "127.0.0.1:8766" } }), true);
 assert.equal(
@@ -74,6 +88,11 @@ async function testRevisionProtectedSave() {
     const webpResponse = await fetch(`http://127.0.0.1:${server.address().port}/icons/gold_voucher.webp`);
     assert.equal(webpResponse.status, 200);
     assert.equal(webpResponse.headers.get("content-type"), "image/webp");
+    const publicDataResponse = await fetch(`http://127.0.0.1:${server.address().port}/public-data.json`);
+    assert.equal(publicDataResponse.status, 200);
+    assert.equal(Object.hasOwn(await publicDataResponse.json(), "hd_inv"), false);
+    const privateDataResponse = await fetch(`http://127.0.0.1:${server.address().port}/data.json`);
+    assert.equal(privateDataResponse.status, 403);
     const firstRead = await fetch(url);
     const firstRevision = firstRead.headers.get("x-hayday-revision");
     assert.equal(firstRead.status, 200);

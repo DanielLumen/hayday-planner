@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>卡通农场 · 库存助手 v2.26.0</title>
+<title>卡通农场 · 库存助手 v2.27.0</title>
 <style>
 /* ====== 变量与重置 ====== */
 :root{--bg:#F4F7F4;--card:#FFFFFF;--surface-subtle:#F8FAF8;--surface-hover:#EEF5F0;--canvas:#F2F6F3;--image-wash:#EDF5EF;--text:#20242C;--text-secondary:#445249;--muted:#66736B;--accent:#16845B;--accent-hover:#116A49;--accent-light:#E8F4ED;--accent-border:#A9D8C2;--warn:#9A5700;--warn-light:#FFF6E8;--danger:#C43D3D;--danger-light:#FFF0F0;--info:#376FD0;--info-light:#EDF3FF;--border:#DDE4DF;--border-strong:#C8D2CB;--focus-ring:rgba(55,111,208,.55);--shadow-sm:0 1px 2px rgba(24,45,33,.05);--shadow-card:0 2px 8px rgba(24,45,33,.07);--shadow:0 8px 24px rgba(24,45,33,.11);--radius:8px;--radius-sm:6px;--transition:140ms ease}
@@ -401,10 +401,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visibl
 .relations-legend span{display:inline-flex;align-items:center;gap:5px}.relations-dot{width:9px;height:9px;border-radius:3px;display:inline-block;border:1px solid var(--border)}
 .relations-dot.final{background:var(--info-light);border-color:var(--info)}.relations-dot.intermediate{background:var(--warn-light);border-color:var(--warn)}.relations-dot.base{background:var(--accent-light);border-color:var(--accent)}.relations-dot.source{background:var(--bg);border-style:dashed;border-color:var(--muted)}
 .relations-note{font-size:11px;color:var(--muted)}
+.legal-note{padding:14px 16px 20px;color:var(--muted);font-size:11px;line-height:1.6;text-align:center}.legal-note a{color:var(--accent);text-underline-offset:2px}
 .relations-note-inline{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:18px}
 .relations-content{border:1px solid var(--border);border-radius:10px;background:var(--card);overflow:hidden;box-shadow:var(--shadow-sm)}
-.relation-graph-viewport{position:relative;width:100%;height:var(--relation-viewport-height,calc(100vh - 190px));height:var(--relation-viewport-height,calc(100dvh - 190px));min-height:560px;overflow:hidden;background:radial-gradient(circle at 18% 0%,rgba(255,255,255,.94),rgba(255,255,255,0) 36%),var(--canvas);cursor:grab;touch-action:none;user-select:none}
-.relation-graph-viewport.dragging,.relation-graph-viewport.dragging .network-node{cursor:grabbing}.relation-graph-svg{display:block;width:100%;height:100%}
+.relation-graph-viewport{position:relative;width:100%;height:var(--relation-viewport-height,calc(100vh - 190px));height:var(--relation-viewport-height,calc(100dvh - 190px));min-height:560px;overflow:hidden;contain:layout paint;background:radial-gradient(circle at 18% 0%,rgba(255,255,255,.94),rgba(255,255,255,0) 36%),var(--canvas);cursor:grab;touch-action:none;user-select:none}
+.relation-graph-viewport.dragging,.relation-graph-viewport.dragging .network-node{cursor:grabbing}.relation-graph-viewport.dragging .network-node,.relation-graph-viewport.dragging .network-edge-path{transition:none}.relation-graph-viewport.dragging .network-node.is-muted,.relation-graph-viewport.dragging .network-edge-wrap.is-muted{display:none}.relation-graph-viewport.dragging .network-band{visibility:hidden}.relation-graph-svg{display:block;width:100%;height:100%}
 .network-band-line{fill:none;stroke:var(--border);stroke-width:1;stroke-dasharray:5 7;vector-effect:non-scaling-stroke}.network-band-label{fill:var(--muted);font-size:12px;font-weight:700;letter-spacing:.02em}
 .network-edge-path{fill:none;stroke:var(--border-strong);stroke-width:1;opacity:.27;vector-effect:non-scaling-stroke;transition:opacity .12s,stroke .12s}.network-edge-wrap.is-muted .network-edge-path{opacity:.025}.network-edge-wrap.is-active .network-edge-path{stroke:var(--accent);stroke-width:2;opacity:.95}.network-edge-wrap.alternative.is-active .network-edge-path{stroke:var(--info);stroke-dasharray:5 3}
 .network-edge-label{display:none;fill:var(--text-secondary);font-size:10px;font-weight:700;paint-order:stroke;stroke:var(--card);stroke-width:6px;stroke-linejoin:round;pointer-events:none}.network-edge-wrap.show-label .network-edge-label{display:block}
@@ -457,9 +458,9 @@ body.relation-pseudo-fullscreen-active{overflow:hidden}
 <body>
 <div class="topbar">
 <div class="brand"><img class="brand-icon" src="icons/ui_barn.webp" alt=""><h1 ondblclick="toggleInfoBar()" style="cursor:pointer" title="双击收起或展开概览">卡通农场<span class="sub">库存助手</span></h1></div>
-<div class="topbar-actions"><span class="save-status" id="saveStatus">已保存</span><button class="collapse-toggle" onclick="toggleInfoBar()" id="infoToggle" title="收起概览" aria-label="收起概览" aria-expanded="true" aria-controls="infoBar">收起</button>
-<button class="btn btn-outline btn-xs" onclick="saveToFile()" aria-label="导出数据"><span aria-hidden="true">⇩</span><span class="btn-label">导出</span></button>
-<button class="btn btn-outline btn-xs" onclick="loadFromFile()" aria-label="导入数据"><span aria-hidden="true">⇧</span><span class="btn-label">导入</span></button>
+<div class="topbar-actions"><span class="save-status" id="saveStatus">已保存</span><button type="button" class="collapse-toggle" onclick="toggleInfoBar()" id="infoToggle" title="收起概览" aria-label="收起概览" aria-expanded="true" aria-controls="infoBar">收起</button>
+<button type="button" class="btn btn-outline btn-xs" onclick="saveToFile()" aria-label="导出数据"><span aria-hidden="true">⇩</span><span class="btn-label">导出</span></button>
+<button type="button" class="btn btn-outline btn-xs" onclick="loadFromFile()" aria-label="导入数据"><span aria-hidden="true">⇧</span><span class="btn-label">导入</span></button>
 </div>
 </div>
 <nav class="app-view-nav" role="tablist" aria-label="主视图">
@@ -472,16 +473,16 @@ body.relation-pseudo-fullscreen-active{overflow:hidden}
 <div class="buy-banner" id="buyBanner" ondblclick="toggleInfoBar()" title="双击收起/展开">
   <div class="buy-label">购买建议</div>
   <div class="buy-items" id="buyItems">计算中…</div>
-  <button class="collapse-toggle overview-toggle" onclick="event.stopPropagation();toggleOverviewSection('buyBanner',this)" title="展开建议" aria-label="展开建议" aria-expanded="false" aria-controls="buyItems">展开</button>
+  <button type="button" class="collapse-toggle overview-toggle" onclick="event.stopPropagation();toggleOverviewSection('buyBanner',this)" title="展开建议" aria-label="展开建议" aria-expanded="false" aria-controls="buyItems">展开</button>
 </div>
 <div id="hardestBar" class="hardest-bar" ondblclick="toggleInfoBar()" title="双击收起/展开">
   <div class="hd-label">最难生产</div>
   <div class="hd-items" id="hardestItems">计算中…</div>
-  <button class="collapse-toggle overview-toggle" onclick="event.stopPropagation();toggleOverviewSection('hardestBar',this)" title="展开排行" aria-label="展开排行" aria-expanded="false" aria-controls="hardestItems">展开</button>
+  <button type="button" class="collapse-toggle overview-toggle" onclick="event.stopPropagation();toggleOverviewSection('hardestBar',this)" title="展开排行" aria-label="展开排行" aria-expanded="false" aria-controls="hardestItems">展开</button>
 </div>
 </div>
 <div class="toolbar" id="inventoryToolbar">
-<div class="search-wrap"><input type="text" class="search-input" placeholder="搜索物品、设备或原料" oninput="onSearchInput()" id="searchInput"><span class="search-result" id="searchResult"></span><button type="button" class="search-clear" id="searchClear" onclick="clearSearch()" title="清除搜索" aria-label="清除搜索">×</button></div>
+<div class="search-wrap"><input type="text" class="search-input" placeholder="搜索物品、设备或原料" aria-label="搜索物品、设备或原料" oninput="onSearchInput()" id="searchInput"><span class="search-result" id="searchResult"></span><button type="button" class="search-clear" id="searchClear" onclick="clearSearch()" title="清除搜索" aria-label="清除搜索">×</button></div>
 </div>
 <div class="filter-row" id="filterRow"></div>
 <div class="main-layout" id="inventoryMainLayout">
@@ -493,18 +494,18 @@ body.relation-pseudo-fullscreen-active{overflow:hidden}
 <div class="slider-row duo-slider">
   <div class="slider-item">
     <label><span style="font-size:16px">🌾</span> 粮仓</label>
-    <input type="number" min="1" max="99" value="10" id="gtSiloNum" style="width:56px;padding:3px 5px;border:1px solid var(--border);border-radius:6px;font-size:12px;text-align:center;font-weight:600;background:var(--card)" onchange="document.getElementById('gtSilo').value=this.value;onGTSilo()">
-    <input type="range" min="1" max="99" value="10" id="gtSilo" class="gt-slider" style="width:100px;flex-shrink:0" oninput="document.getElementById('gtSiloNum').value=this.value;onGTSilo()" >
+    <input type="number" min="1" max="99" value="10" id="gtSiloNum" aria-label="粮仓目标库存数量" style="width:56px;padding:3px 5px;border:1px solid var(--border);border-radius:6px;font-size:12px;text-align:center;font-weight:600;background:var(--card)" onchange="document.getElementById('gtSilo').value=this.value;onGTSilo()">
+    <input type="range" min="1" max="99" value="10" id="gtSilo" class="gt-slider" aria-label="调整粮仓目标库存" style="width:100px;flex-shrink:0" oninput="document.getElementById('gtSiloNum').value=this.value;onGTSilo()" >
   </div>
   <div class="slider-item">
     <label><span style="font-size:16px">📦</span> 货仓</label>
-    <input type="number" min="1" max="99" value="5" id="gtBarnNum" style="width:56px;padding:3px 5px;border:1px solid var(--border);border-radius:6px;font-size:12px;text-align:center;font-weight:600;background:var(--card)" onchange="document.getElementById('gtBarn').value=this.value;onGTBarn()">
-    <input type="range" min="1" max="99" value="5" id="gtBarn" class="gt-slider" style="width:100px;flex-shrink:0" oninput="document.getElementById('gtBarnNum').value=this.value;onGTBarn()" >
+    <input type="number" min="1" max="99" value="5" id="gtBarnNum" aria-label="货仓目标库存数量" style="width:56px;padding:3px 5px;border:1px solid var(--border);border-radius:6px;font-size:12px;text-align:center;font-weight:600;background:var(--card)" onchange="document.getElementById('gtBarn').value=this.value;onGTBarn()">
+    <input type="range" min="1" max="99" value="5" id="gtBarn" class="gt-slider" aria-label="调整货仓目标库存" style="width:100px;flex-shrink:0" oninput="document.getElementById('gtBarnNum').value=this.value;onGTBarn()" >
   </div>
 </div>
 <div class="panel-header tabs-header"><div class="tab-bar" role="tablist" aria-label="库存助手视图"><span class="tab active" data-tab="priority" role="tab" aria-selected="true" aria-controls="priorityList" tabindex="0" onclick="switchSidebarTab('priority',this)">优先级</span><span class="tab" data-tab="plan" role="tab" aria-selected="false" aria-controls="planList" tabindex="0" onclick="switchSidebarTab('plan',this)">生产计划</span><span class="tab" data-tab="items" role="tab" aria-selected="false" aria-controls="itemsList" tabindex="0" onclick="switchSidebarTab('items',this)">物品清单</span></div></div>
 <div class="side-body" id="priorityList" role="tabpanel"><div class="empty-state"><div class="big">📊</div><p>输入库存后点"刷新"查看建议</p></div></div>
-<div class="side-body" id="planList" role="tabpanel" style="display:none"><div class="plan-mode-row"><span class="plan-mode-label">安排方式</span><div class="plan-mode-tabs"><button class="plan-mode-btn active" data-mode="online" onclick="setPlanMode('online')">在线</button><button class="plan-mode-btn" data-mode="offline" onclick="setPlanMode('offline')">离线</button></div><label class="offline-hours" id="offlineHoursWrap"><input id="offlineHours" type="number" min="1" max="24" value="8" onchange="setOfflineHours(this.value)">小时</label></div><div class="plan-mode-note" id="planModeNote"></div><div id="planResults"><div class="empty-state"><div class="big">🔧</div><p>输入库存后查看生产任务</p></div></div></div>
+<div class="side-body" id="planList" role="tabpanel" style="display:none"><div class="plan-mode-row"><span class="plan-mode-label">安排方式</span><div class="plan-mode-tabs" role="group" aria-label="生产安排方式"><button type="button" class="plan-mode-btn active" data-mode="online" aria-pressed="true" onclick="setPlanMode('online')">在线</button><button type="button" class="plan-mode-btn" data-mode="offline" aria-pressed="false" onclick="setPlanMode('offline')">离线</button></div><label class="offline-hours" id="offlineHoursWrap"><input id="offlineHours" type="number" min="1" max="24" value="8" aria-label="离线时间窗口" onchange="setOfflineHours(this.value)">小时</label></div><div class="plan-mode-note" id="planModeNote"></div><div id="planResults"><div class="empty-state"><div class="big">🔧</div><p>输入库存后查看生产任务</p></div></div></div>
 <div class="side-body" id="itemsList" role="tabpanel" style="display:none"><div style="padding:10px;color:var(--muted);font-size:12px">点击标签加载物品清单</div></div>
 </div>
 </div>
@@ -559,7 +560,7 @@ body.relation-pseudo-fullscreen-active{overflow:hidden}
         <button type="button" class="btn btn-outline" id="relationCompactButton" onclick="toggleRelationCompactLayout(this)" aria-label="切换为低高度排列" aria-pressed="false">低高度排列</button>
         <button type="button" class="btn btn-outline relation-fullscreen-button" id="relationFullscreenButton" onclick="toggleRelationFullscreen()" aria-label="全屏显示关系网" aria-controls="relationsView" aria-pressed="false">全屏</button>
         <button type="button" class="btn btn-outline relation-demand-trigger" id="relationDemandTrigger" data-relation-toggle="demand" onclick="toggleRelationPanel('demand')" aria-pressed="false" aria-controls="relationDemandPlanner">需求模拟</button>
-        <span class="relation-zoom-status" aria-live="polite"><span class="relation-zoom-mode" id="relationZoomMode">全景</span><span class="relation-zoom-value" id="relationZoomValue">100%</span></span>
+        <span class="relation-zoom-status" aria-live="polite"><span class="relation-zoom-mode" id="relationZoomMode">缩放</span><span class="relation-zoom-value" id="relationZoomValue">100%</span></span>
       </div>
     </div>
   </div>
@@ -591,6 +592,7 @@ body.relation-pseudo-fullscreen-active{overflow:hidden}
 <div id="relationsStandalone"></div>
 </section>
 </main>
+<footer class="legal-note">本工具为非官方粉丝内容，未经 Supercell 认可或背书。更多信息请参阅 <a href="https://supercell.com/en/fan-content-policy/" rel="external">Supercell 玩家内容条款</a>。</footer>
 <div class="toast" id="toast"></div>
 <script>
 'use strict';
@@ -1134,7 +1136,7 @@ var RELATION_VIRTUAL_ITEMS=[
 ];
 var _relationsNetwork=null,_relationsLayout=null,_relationsItemsById={},_relationsDirty=true,_relationsQuery='',_relationsSelectedId='';
 var _relationDemandTargetId='',_relationDemandResult=null;
-var _relationGraphView={x:0,y:0,scale:1,autoFit:true,mode:'overview'},_relationGraphDrag=null,_relationGraphPointerGesture=null,_relationGraphSuppressClick=false,_relationResizeTimer=null,_relationFullscreenReturnFocus=null,_relationFullscreenWanted=false,_relationFullscreenEntering=false,_relationFullscreenCancelTimer=null;
+var _relationGraphView={x:0,y:0,scale:1,autoFit:true,mode:'overview'},_relationGraphDrag=null,_relationGraphPointerGesture=null,_relationGraphSuppressClick=false,_relationGraphTransformFrame=null,_relationResizeTimer=null,_relationFullscreenReturnFocus=null,_relationFullscreenWanted=false,_relationFullscreenEntering=false,_relationFullscreenCancelTimer=null;
 var _relationPanelStates=Object.create(null),_relationPanelExpandedHeights=Object.create(null),_relationCompactLayout=false;
 _relationPanelStates.demand=true;
 var SERVER_PENDING_STORAGE='_hd_server_pending',SERVER_REVISION_STORAGE='_hd_server_revision';
@@ -1373,7 +1375,7 @@ function saveVisibleItemOrder(grid){
   var cursor=0;
   current=current.map(function(id){return visibleSet[id]?visible[cursor++]:id;});
   var orders=loadItemOrders(); orders[group]=current;
-  persistJson('hd_item_orders',orders);
+  persistJson('hd_item_orders',orders);_relationsDirty=true;
 }
 function toggleItemGroupSection(header){
   if(!header)return;
@@ -1444,7 +1446,7 @@ function renderAll(){
       var isEdited=((edits.mod&&edits.mod[it.id])||(edits.add&&edits.add.some(function(a){return a.id===it.id;}))) && !checked[it.id];
       var shortage=needs[it.id]||0;
       h+='<div class="item-tile '+sts+(isEdited?' edited':'')+'" data-id="'+it.id+'" draggable="true" onclick="if(!_itemDragMoved)toggleDetail(\''+it.id+'\')">';
-      h+='<div class="tile-top"><div class="tile-icon">'+(itemImageSrc(it.id)?itemImageMarkup(it.id,'',true):esc(it.emoji||'□'))+'</div><div class="tile-name">'+esc(it.nameCN||it.id)+'</div><div class="tile-stock"><input type="number" class="tile-input" value="'+gs(it.id)+'" min="0" aria-label="'+esc(it.nameCN||it.id)+'库存" onfocus="this.select()" onblur="ss(\''+it.id+'\',this.value)" onclick="event.stopPropagation();this.select()"><span class="tile-target">/ '+gt(it.id)+'</span></div><button class="tile-edit" onclick="event.stopPropagation();openEditModal(\''+it.id+'\')" title="编辑" aria-label="编辑'+esc(it.nameCN||it.id)+'">✎</button>'+(isEdited?'<button class="tile-edit tile-revert" onclick="event.stopPropagation();markItemChecked(\''+it.id+'\')" title="标记为已核对" aria-label="标记为已核对">✓</button>':'')+'</div>';
+      h+='<div class="tile-top"><div class="tile-icon">'+(itemImageSrc(it.id)?itemImageMarkup(it.id,'',true):esc(it.emoji||'□'))+'</div><div class="tile-name">'+esc(it.nameCN||it.id)+'</div><div class="tile-stock"><input type="number" class="tile-input" value="'+gs(it.id)+'" min="0" aria-label="'+esc(it.nameCN||it.id)+'库存" onfocus="this.select()" onblur="ss(\''+it.id+'\',this.value)" onclick="event.stopPropagation();this.select()"><span class="tile-target">/ '+gt(it.id)+'</span></div><button type="button" class="tile-edit" onclick="event.stopPropagation();openEditModal(\''+it.id+'\')" title="编辑" aria-label="编辑'+esc(it.nameCN||it.id)+'">✎</button>'+(isEdited?'<button type="button" class="tile-edit tile-revert" onclick="event.stopPropagation();markItemChecked(\''+it.id+'\')" title="标记为已核对" aria-label="标记为已核对">✓</button>':'')+'</div>';
       h+='<div class="tile-meta"><span class="tile-meta-main">'+esc((it.bld&&bm[it.bld]?bm[it.bld].nameCN+' · ':'')+fmt(it.t))+'</span>'+(shortage>0?'<span class="tile-gap">需产'+shortage+'个</span>':'')+'</div>';
       h+='<div class="tile-detail" id="det_'+it.id+'">';
       h+='<span class="lbl">生产时间：</span>'+fmt(it.t)+'<br>';
@@ -1453,7 +1455,7 @@ function renderAll(){
       }
       var down=(dm[it.id]||[]).map(function(d){ var di=im[d.id]; return esc(di?di.nameCN:d.id)+' ×'+d.q; });
       if(down.length>0) h+='<span class="lbl">用于生产：</span>'+down.join('、')+'<br>';
-      h+='<span class="lbl">目标：</span><input type="number" value="'+gt(it.id)+'" min="1" max="99" onchange="st(\''+it.id+'\',this.value);toggleDetail(\''+it.id+'\')" onclick="event.stopPropagation();this.select()"> 个';
+      h+='<span class="lbl">目标：</span><input type="number" value="'+gt(it.id)+'" min="1" max="99" aria-label="'+esc(it.nameCN||it.id)+'目标库存" onchange="st(\''+it.id+'\',this.value);toggleDetail(\''+it.id+'\')" onclick="event.stopPropagation();this.select()"> 个';
       h+='</div>';
       h+='</div>';
     });
@@ -1487,8 +1489,8 @@ function updateStats(){
   var bPct=bc?Math.round(bUsed/bc*100):0,sPct=sc?Math.round(sUsed/sc*100):0;
   function pctColor(p){return p>=90?'var(--danger)':(p>=75?'var(--warn)':'var(--accent)');}
   document.getElementById('statsRow').innerHTML=
-    '<div class="stat-card"><div class="v" style="color:'+pctColor(bPct)+'">'+bUsed+'/<input class="cap-input" value="'+bc+'" onchange="sc(\'b\',this.value)" onclick="event.stopPropagation();this.select()" onfocus="this.select()" title="点击修改货仓容量"></div><div class="cap-label">货仓 · '+bPct+'%</div></div>'+
-    '<div class="stat-card"><div class="v" style="color:'+pctColor(sPct)+'">'+sUsed+'/<input class="cap-input" value="'+sc+'" onchange="sc(\'s\',this.value)" onclick="event.stopPropagation();this.select()" onfocus="this.select()" title="点击修改粮仓容量"></div><div class="cap-label">粮仓 · '+sPct+'%</div></div>'+
+    '<div class="stat-card"><div class="v" style="color:'+pctColor(bPct)+'">'+bUsed+'/<input class="cap-input" value="'+bc+'" inputmode="numeric" aria-label="货仓容量" onchange="sc(\'b\',this.value)" onclick="event.stopPropagation();this.select()" onfocus="this.select()" title="点击修改货仓容量"></div><div class="cap-label">货仓 · '+bPct+'%</div></div>'+
+    '<div class="stat-card"><div class="v" style="color:'+pctColor(sPct)+'">'+sUsed+'/<input class="cap-input" value="'+sc+'" inputmode="numeric" aria-label="粮仓容量" onchange="sc(\'s\',this.value)" onclick="event.stopPropagation();this.select()" onfocus="this.select()" title="点击修改粮仓容量"></div><div class="cap-label">粮仓 · '+sPct+'%</div></div>'+
     '<div class="stat-card"><div class="v" style="color:'+(bOK>=bN?'var(--accent)':(bOK<bN*0.5?'var(--danger)':'var(--warn)'))+'">'+bOK+'/'+bN+'</div><div class="cap-label">货仓达标</div></div>'+
     '<div class="stat-card"><div class="v" style="color:'+(sOK>=sN?'var(--accent)':(sOK<sN*0.5?'var(--danger)':'var(--warn)'))+'">'+sOK+'/'+sN+'</div><div class="cap-label">粮仓达标</div></div>'+
     '<div class="stat-card"><div class="v">'+D.items.length+'</div><div class="l">物品总数</div></div>';
@@ -1560,6 +1562,7 @@ function saveFilterOrder() {
   sectionOrder.push('barn_tools','barn_ores','barn_expand','barn_animal','barn_other');
   persistJson('hd_filter_order',order);
   persistJson('hd_order',sectionOrder);
+  _relationsDirty=true;
 }
 function loadFilterOrder() {
   try { return JSON.parse(localStorage.getItem('hd_filter_order') || 'null'); } catch(e) { return null; }
@@ -1676,9 +1679,27 @@ function buildRelationOverlay(itemMap){
   add('honeycomb','__nectar',{q:100,label:'每份采集 100 滴'});
   return relations;
 }
+function relationLayoutOrdering(){
+  var groupById={},groupOrderById={},itemOrderById={},itemsByGroup={};
+  var groups=getOrder().slice();
+  D.buildings.forEach(function(building){if(groups.indexOf(building.id)<0)groups.push(building.id);});
+  Object.keys(_relationsItemsById).forEach(function(id){
+    var item=_relationsItemsById[id];
+    var group=item&&item.relationVirtual?'relation_virtual':itemGroupKey(item);
+    groupById[id]=group;
+    if(!itemsByGroup[group])itemsByGroup[group]=[];
+    itemsByGroup[group].push(id);
+    if(groups.indexOf(group)<0)groups.push(group);
+  });
+  groups.forEach(function(group,index){groupOrderById[group]=index;});
+  Object.keys(itemsByGroup).forEach(function(group){
+    getItemOrder(group,itemsByGroup[group]).forEach(function(id,index){itemOrderById[id]=index;});
+  });
+  return {groupById:groupById,groupOrderById:groupOrderById,itemOrderById:itemOrderById};
+}
 function updateRelationsLayout(){
   if(!_relationsNetwork)return null;
-  var options={rootIds:_relationsNetwork.realFinalIds,targetAspect:_relationCompactLayout?3.2:1.85};
+  var options=Object.assign({rootIds:_relationsNetwork.realFinalIds,targetAspect:_relationCompactLayout?3.2:1.85},relationLayoutOrdering());
   if(_relationCompactLayout)options.rowsPerColumn=28;
   _relationsLayout=HayDayPlannerCore.layoutProductionNetwork(_relationsNetwork,options);
   return _relationsLayout;
@@ -1809,11 +1830,28 @@ function relationGraphResizeViewport(){
   svg.setAttribute('viewBox','0 0 '+width+' '+height);
   return {width:width,height:height};
 }
-function relationGraphApplyTransform(){
+function relationGraphRenderTransform(){
   var world=document.getElementById('relationsGraphWorld');if(!world)return;
   world.setAttribute('transform','translate('+_relationGraphView.x+' '+_relationGraphView.y+') scale('+_relationGraphView.scale+')');
+}
+function relationGraphScheduleTransform(){
+  if(_relationGraphTransformFrame!==null)return;
+  _relationGraphTransformFrame=requestAnimationFrame(function(){
+    _relationGraphTransformFrame=null;
+    relationGraphRenderTransform();
+  });
+}
+function relationGraphFlushTransform(){
+  if(_relationGraphTransformFrame!==null){
+    cancelAnimationFrame(_relationGraphTransformFrame);
+    _relationGraphTransformFrame=null;
+  }
+  relationGraphRenderTransform();
+}
+function relationGraphApplyTransform(){
+  relationGraphFlushTransform();
   var value=document.getElementById('relationZoomValue');if(value)value.textContent=Math.round(_relationGraphView.scale*100)+'%';
-  var mode=document.getElementById('relationZoomMode');if(mode)mode.textContent=_relationGraphView.mode==='focus'?'聚焦':'全景';
+  var mode=document.getElementById('relationZoomMode');if(mode)mode.textContent='缩放';
   var viewport=document.getElementById('relationGraphViewport');
   if(viewport){
     viewport.classList.toggle('is-low-zoom',_relationGraphView.mode==='overview'&&_relationGraphView.scale<.68);
@@ -1878,7 +1916,7 @@ function scheduleRelationGraphViewportRefresh(delay){
     var relations=document.getElementById('relationsView');
     if(!relations||relations.hidden||!_relationsLayout)return;
     if(_relationGraphView.autoFit) relationGraphFit(true);
-    else if(_relationsSelectedId&&_relationsLayout.positionedById[_relationsSelectedId]) relationGraphFocusLinks(_relationDemandResult?{nodes:new Set(_relationDemandResult.nodeIds),edges:new Set(_relationDemandResult.edgeKeys)}:collectRelationGraphLinks(_relationsSelectedId),_relationsSelectedId);
+    else if(_relationsSelectedId&&_relationsLayout.positionedById[_relationsSelectedId]) relationGraphFocusLinks(_relationDemandResult?{nodes:new Set(_relationDemandResult.nodeIds),edges:new Set(_relationDemandResult.edgeKeys)}:collectRelationGraphLinks(_relationsSelectedId));
     else{relationGraphResizeViewport();relationGraphApplyTransform();}
   },Number.isFinite(delay)?delay:80);
 }
@@ -1996,21 +2034,21 @@ function relationGraphFocusNode(id){
   _relationGraphView.mode='focus';
   relationGraphApplyTransform();
 }
-function relationGraphFocusLinks(links,anchorId){
+function relationGraphFocusLinks(links){
   if(!_relationsLayout||!links||!links.nodes.size)return;
   var size=relationGraphResizeViewport();if(!size)return;
   var positions=Array.from(links.nodes).map(function(id){return _relationsLayout.positionedById[id];}).filter(Boolean);if(!positions.length)return;
-  var mobile=size.width<640,anchor=anchorId&&_relationsLayout.positionedById[anchorId];
-  var scale=1;
+  var minX=Math.min.apply(null,positions.map(function(node){return node.x;}));
+  var minY=Math.min.apply(null,positions.map(function(node){return node.y;}));
+  var maxX=Math.max.apply(null,positions.map(function(node){return node.x+node.width;}));
+  var maxY=Math.max.apply(null,positions.map(function(node){return node.y+node.height;}));
+  var mobile=size.width<640,padding=mobile?20:40;
+  var width=Math.max(1,maxX-minX),height=Math.max(1,maxY-minY);
+  var safeWidth=Math.max(1,size.width-padding*2),safeHeight=Math.max(1,size.height-padding*2);
+  var scale=Math.min(1,safeWidth/width,safeHeight/height);
   _relationGraphView.scale=scale;
-  if(anchor){
-    var anchorRatio=mobile ? .28 : (anchor.depth===0 ? .16 : .42);
-    _relationGraphView.x=size.width*anchorRatio-(anchor.x+anchor.width/2)*scale;
-    _relationGraphView.y=size.height*.5-(anchor.y+anchor.height/2)*scale;
-  }else{
-    _relationGraphView.x=size.width/2-(minX+maxX)/2*scale;
-    _relationGraphView.y=size.height/2-(minY+maxY)/2*scale;
-  }
+  _relationGraphView.x=padding+(safeWidth-width*scale)/2-minX*scale;
+  _relationGraphView.y=padding+(safeHeight-height*scale)/2-minY*scale;
   _relationGraphView.autoFit=false;
   _relationGraphView.mode='focus';
   relationGraphApplyTransform();
@@ -2157,7 +2195,7 @@ function selectRelationNode(id,focus,options){
   var demandResult=preserveDemand?runRelationDemandSimulation():null;
   if(focus){
     var focusLinks=demandResult?{nodes:new Set(demandResult.nodeIds),edges:new Set(demandResult.edgeKeys)}:links;
-    relationGraphFocusLinks(focusLinks,id);
+    relationGraphFocusLinks(focusLinks);
   }
 }
 function bindRelationGraphInteractions(){
@@ -2185,7 +2223,7 @@ function bindRelationGraphInteractions(){
     event.preventDefault();
     _relationGraphView.x=_relationGraphDrag.originX+event.clientX-_relationGraphDrag.startX;
     _relationGraphView.y=_relationGraphDrag.originY+event.clientY-_relationGraphDrag.startY;
-    relationGraphApplyTransform();
+    relationGraphScheduleTransform();
   });
   function endDrag(event){
     if(_relationGraphPointerGesture&&_relationGraphPointerGesture.pointerId===event.pointerId){
@@ -2196,7 +2234,7 @@ function bindRelationGraphInteractions(){
       _relationGraphPointerGesture=null;
     }
     if(_relationGraphDrag&&_relationGraphDrag.pointerId===event.pointerId){
-      _relationGraphDrag=null;viewport.classList.remove('dragging');
+      relationGraphFlushTransform();_relationGraphDrag=null;viewport.classList.remove('dragging');
     }
   }
   svg.addEventListener('pointerup',endDrag);svg.addEventListener('pointercancel',endDrag);svg.addEventListener('lostpointercapture',endDrag);
@@ -2452,7 +2490,7 @@ function updateTargetMax(){
 function saveOrder(){
   var headers=Array.from(document.querySelectorAll('.section-header'));
   var order=headers.map(function(h){return h.dataset.grp;}).filter(function(g){return g;});
-  persistJson('hd_order',order);
+  persistJson('hd_order',order);_relationsDirty=true;
   // Sync filter chips to match section order
   var row=document.getElementById('filterRow');
   if(!row||!order.length) return;
@@ -2600,7 +2638,7 @@ function setPlanMode(mode){
 function setOfflineHours(value){persistText('hd_offline_hours',String(Math.min(24,Math.max(1,nonNegativeInt(value,8)))));updatePlanModeControls();calcProductionPlan();}
 function updatePlanModeControls(){
   var mode=getPlanMode(),hours=getOfflineHours();
-  document.querySelectorAll('.plan-mode-btn').forEach(function(button){button.classList.toggle('active',button.dataset.mode===mode);});
+  document.querySelectorAll('.plan-mode-btn').forEach(function(button){var active=button.dataset.mode===mode;button.classList.toggle('active',active);button.setAttribute('aria-pressed',active?'true':'false');});
   var wrap=document.getElementById('offlineHoursWrap');if(wrap)wrap.classList.toggle('show',mode==='offline');
   var input=document.getElementById('offlineHours');if(input)input.value=hours;
   var note=document.getElementById('planModeNote');if(note)note.textContent=mode==='online'?'优先显示可立即开工、缺口大且生产较短的任务，适合频繁收取。':'按约 '+hours+' 小时离线窗口优先安排长时产品，减少设备过早空转。';
@@ -2723,13 +2761,13 @@ function calcProductionPlan(){
       if(ingInfo) h+='<div class="plan-item-detail">'+ingInfo+'</div>';
       h+='</div>';
       h+='<div class="plan-item-action">';
-      h+='<button class="btn btn-sm btn-primary" '+(ni.readyQty>0?'onclick="completeProduction(\''+ni.id+'\','+ni.readyQty+')"':'disabled title="原料不足"')+'>'+(ni.readyQty>0?'完成 '+ni.readyQty:'缺原料')+'</button>';
+      h+='<button type="button" class="btn btn-sm btn-primary" '+(ni.readyQty>0?'onclick="completeProduction(\''+ni.id+'\','+ni.readyQty+')"':'disabled title="原料不足"')+'>'+(ni.readyQty>0?'完成 '+ni.readyQty:'缺原料')+'</button>';
       h+='</div></div>';
     });
     h+='</div>';
   });
   list.innerHTML=h; calcBuyRecommendations();
-  }catch(e){ list.innerHTML='<div style=padding:10px;color:red>生产计划错误:'+e.message+'<br>'+e.stack+'</div>'; }
+  }catch(e){console.error(e);list.innerHTML='<div style="padding:10px;color:var(--danger)">生产计划错误：'+esc(e&&e.message?e.message:'未知错误')+'</div>'; }
 }
 /* ====== Item List ====== */
 function renderItemsList(){
@@ -3316,7 +3354,7 @@ function refreshIngUI(){
     groups[groups.length-1].items.push(item);
   });
   _ingRows.forEach(function(r,idx){
-    h+='<div class="modal-ing"><input class="ing-filter" placeholder="搜索" autocomplete="off" aria-controls="ingSuggestions_'+idx+'" oncompositionstart="this._imeComposing=true" oncompositionend="this._imeComposing=false;filterIngSelect(this,'+idx+')" oninput="filterIngSelect(this,'+idx+')" onblur="hideIngSuggestions('+idx+')" onclick="event.stopPropagation()"><div class="ing-suggestions" id="ingSuggestions_'+idx+'" role="listbox"></div><select id="ingSel_'+idx+'" onchange="_ingRows['+idx+'].i=this.value;updateEditSaveState()">';
+    h+='<div class="modal-ing"><input class="ing-filter" placeholder="搜索" autocomplete="off" aria-label="搜索第 '+(idx+1)+' 项原料" aria-controls="ingSuggestions_'+idx+'" oncompositionstart="this._imeComposing=true" oncompositionend="this._imeComposing=false;filterIngSelect(this,'+idx+')" oninput="filterIngSelect(this,'+idx+')" onblur="hideIngSuggestions('+idx+')" onclick="event.stopPropagation()"><div class="ing-suggestions" id="ingSuggestions_'+idx+'" role="listbox"></div><select id="ingSel_'+idx+'" aria-label="第 '+(idx+1)+' 项原料" onchange="_ingRows['+idx+'].i=this.value;updateEditSaveState()">';
     h+='<option value="">选择原料</option>';
     groups.forEach(function(g){
       h+='<optgroup label="'+g.letter+'">';
@@ -3327,7 +3365,7 @@ function refreshIngUI(){
     });
     h+='</select>';
     h+='<span>×</span><input type="number" min="1" aria-label="原料数量" value="'+r.q+'" oninput="_ingRows['+idx+'].q=parseInt(this.value)||1;updateEditSaveState()">';
-    h+='<button class="btn-rm" onclick="removeIngRow('+idx+')" title="移除原料" aria-label="移除原料">×</button></div>';
+    h+='<button type="button" class="btn-rm" onclick="removeIngRow('+idx+')" title="移除原料" aria-label="移除原料">×</button></div>';
   });
   document.getElementById('emIngs').innerHTML=h;
 }
@@ -3493,10 +3531,10 @@ async function hydrateStoredData(){
   localStorage.removeItem(SERVER_PENDING_STORAGE);
   if(!hadLocalAppData){
     try{
-      if(applyStoredSnapshot((await fetchStoredSnapshot('data.json')).data,false))_publicShowcaseInventoryPending=true;
+      if(applyStoredSnapshot((await fetchStoredSnapshot('public-data.json')).data,false))_publicShowcaseInventoryPending=true;
     }catch(e){}
   }else if(localStorage.getItem('hd_edits')===null){
-    try{applyStoredSnapshot((await fetchStoredSnapshot('data.json')).data,true);}catch(e){}
+    try{applyStoredSnapshot((await fetchStoredSnapshot('public-data.json')).data,true);}catch(e){}
   }
 }
 function scheduleFileBackupReminder(){

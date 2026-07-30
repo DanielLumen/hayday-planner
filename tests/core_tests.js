@@ -393,4 +393,30 @@ assert.equal(
 assert.equal(graphLayout.bands[0].columns, 1);
 assert.equal(graphLayout.width > 0 && graphLayout.height > 0, true);
 
+const groupedLayoutNetwork = core.analyzeProductionNetwork([
+  { id: "red_lure", nameCN: "红色鱼饵", ing: [{ i: "red_voucher", q: 1 }] },
+  { id: "fishing_net", nameCN: "渔网", ing: [{ i: "thread", q: 1 }] },
+  { id: "green_lure", nameCN: "绿色鱼饵", ing: [{ i: "green_voucher", q: 1 }] },
+  { id: "red_voucher", nameCN: "红色礼券", ing: [] },
+  { id: "green_voucher", nameCN: "绿色礼券", ing: [] },
+  { id: "thread", nameCN: "线", ing: [] },
+]);
+const groupedLayout = core.layoutProductionNetwork(groupedLayoutNetwork, {
+  rowsPerColumn: 10,
+  groupById: {
+    red_lure: "lure_workbench",
+    green_lure: "lure_workbench",
+    fishing_net: "net_maker",
+    red_voucher: "voucher",
+    green_voucher: "voucher",
+    thread: "material",
+  },
+  groupOrderById: { lure_workbench: 0, net_maker: 1, voucher: 0, material: 1 },
+  itemOrderById: { green_lure: 0, red_lure: 1, fishing_net: 0 },
+});
+assert.deepEqual(
+  groupedLayout.nodes.filter((node) => node.depth === 0).map((node) => node.id),
+  ["green_lure", "red_lure", "fishing_net"],
+);
+
 console.log("core tests passed");

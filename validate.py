@@ -8,7 +8,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 HTML = ROOT / "index.html"
-DATA = ROOT / "data.json"
+LOCAL_DATA = ROOT / "data.json"
+PUBLIC_DATA = ROOT / "public-data.json"
 WIKI = ROOT / "wiki_products.json"
 CATALOG_MIGRATION = ROOT / "catalog-migration.js"
 
@@ -133,9 +134,10 @@ def migrate_edits(edits, item_ids, building_ids):
 
 
 def load_edits():
-    if not DATA.exists():
+    data_path = LOCAL_DATA if LOCAL_DATA.exists() else PUBLIC_DATA
+    if not data_path.exists():
         return {}
-    saved = json.loads(DATA.read_text(encoding="utf-8-sig"))
+    saved = json.loads(data_path.read_text(encoding="utf-8-sig"))
     raw = saved.get("hd_edits", "{}")
     edits = json.loads(raw) if isinstance(raw, str) else raw
     if str(saved.get("hd_catalog_id_version", "")) != "2":
