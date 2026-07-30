@@ -219,10 +219,29 @@ async function run() {
       handPiesIcon: ICONS.hand_pies,
       lambMultiplier: PROD_MULTIPLIERS.lamb_chop,
       staleMuttonMultiplier: Object.prototype.hasOwnProperty.call(PROD_MULTIPLIERS,'mutton'),
+      duckFeatherBuilding: D.items.find((item) => item.id === 'duck_feather')?.bld,
+      lobsterTailBuilding: D.items.find((item) => item.id === 'lobster_tail')?.bld,
     }));
     check("静态发布资源包含可用的拼音运行时", staticRuntimeState.pinyinLoaded, JSON.stringify(staticRuntimeState));
     check("手抓酥皮派使用自己的专用图片", staticRuntimeState.handPiesIcon === 'icons/hand_pies.png', JSON.stringify(staticRuntimeState));
     check("羊排来源倍率使用实际物品编号", staticRuntimeState.lambMultiplier === 10 && !staticRuntimeState.staleMuttonMultiplier, JSON.stringify(staticRuntimeState));
+    check("鸭毛和龙虾尾关联各自的专用设备", staticRuntimeState.duckFeatherBuilding === 'duck_salon' && staticRuntimeState.lobsterTailBuilding === 'lobster_pool', JSON.stringify(staticRuntimeState));
+    const specialBuildingEditState = await page.evaluate(() => {
+      openEditModal('lobster_tail');
+      const lobster = {
+        value: document.querySelector('#emBld')?.value,
+        options: Array.from(document.querySelectorAll('#emBld option')).map((option) => option.value),
+      };
+      closeEditModal();
+      openEditModal('duck_feather');
+      const duck = {
+        value: document.querySelector('#emBld')?.value,
+        options: Array.from(document.querySelectorAll('#emBld option')).map((option) => option.value),
+      };
+      closeEditModal();
+      return { lobster, duck };
+    });
+    check("编辑物品时可选择龙虾池和小鸭沙龙", specialBuildingEditState.lobster.value === 'lobster_pool' && specialBuildingEditState.duck.value === 'duck_salon' && specialBuildingEditState.lobster.options.includes('duck_salon') && specialBuildingEditState.duck.options.includes('lobster_pool'), JSON.stringify(specialBuildingEditState));
     const overviewToggleInitial = await page.evaluate(() => ({
       text: document.querySelector('#infoToggle')?.textContent?.trim(),
       expanded: document.querySelector('#infoToggle')?.getAttribute('aria-expanded'),
@@ -289,9 +308,18 @@ async function run() {
       scale: _relationGraphView.scale,
       layoutNodeCount: _relationsLayout?.nodes.length || 0,
       layoutEdgeCount: _relationsLayout?.edges.length || 0,
+      toolbarInsideControls: document.querySelector('#relationToolsControls')?.contains(document.querySelector('#relationCanvasToolbar')),
+      toolbarPosition: getComputedStyle(document.querySelector('#relationCanvasToolbar')).position,
+      graphBackground: getComputedStyle(document.querySelector('#relationGraphViewport')).backgroundImage,
+      noteInsideControls: document.querySelector('#relationToolsControls')?.contains(document.querySelector('.relations-note-inline')),
+      instructionCount: document.querySelectorAll('.relations-note').length,
+      demandInitiallyCollapsed: document.querySelector('#relationDemandPlanner')?.classList.contains('is-collapsed'),
+      demandTriggerExpanded: document.querySelector('#relationDemandTrigger')?.getAttribute('aria-pressed'),
     }));
     check("关系网在当前网页全宽显示", relationOverview.sameUrl === inventoryUrl && relationOverview.inventoryHidden && relationOverview.relationsVisible && relationOverview.viewWidth >= relationOverview.viewportWidth - 2, JSON.stringify(relationOverview));
     check("所有入网物品与关系同时显示在一张图中", relationOverview.nodeCount > 400 && relationOverview.edgeCount > 800 && relationOverview.nodeCount === relationOverview.layoutNodeCount && relationOverview.edgeCount === relationOverview.layoutEdgeCount && relationOverview.finalCount > 200 && relationOverview.bandCount >= 4, JSON.stringify(relationOverview));
+    check("搜索、说明和视图按钮集中在画布顶部控制台", relationOverview.toolbarInsideControls && relationOverview.toolbarPosition === 'static' && relationOverview.noteInsideControls && relationOverview.instructionCount === 1 && relationOverview.graphBackground !== 'none', JSON.stringify(relationOverview));
+    check("需求模拟默认收起并由控制台统一展开", relationOverview.demandInitiallyCollapsed && relationOverview.demandTriggerExpanded === 'false', JSON.stringify(relationOverview));
     check("最终产物按是否被作为原料判定，无关系物品单列", relationOverview.standaloneCount > 0 && !relationOverview.breadIsFinal, JSON.stringify(relationOverview));
     await page.setViewportSize({ width: 2560, height: 1440 });
     await page.evaluate(() => window.dispatchEvent(new Event('resize')));
@@ -320,8 +348,9 @@ async function run() {
       missingToggles: Array.from(document.querySelectorAll('[data-relation-panel]')).filter((panel) => !panel.hidden && !panel.querySelector('.relation-panel-toggle')).map((panel) => panel.getAttribute('data-relation-panel')),
       readyPanels: Array.from(document.querySelectorAll('[data-relation-panel]')).filter((panel) => panel.querySelector('.relation-panel-toggle')).length,
       expandedToggles: document.querySelectorAll('[data-relation-panel] .relation-panel-toggle[aria-expanded="true"]').length,
+      demandTriggerExpanded: document.querySelector('#relationDemandTrigger')?.getAttribute('aria-pressed'),
     }));
-    check("关系网每个辅助功能模块都有独立收起按钮", ['tools','guide','demand','selection','standalone'].every((key) => relationPanelCoverage.keys.includes(key)) && relationPanelCoverage.missingToggles.length === 0 && relationPanelCoverage.expandedToggles === relationPanelCoverage.readyPanels, JSON.stringify(relationPanelCoverage));
+    check("关系网每个辅助功能模块都有独立收起按钮", ['tools','demand','selection','standalone'].every((key) => relationPanelCoverage.keys.includes(key)) && !relationPanelCoverage.keys.includes('guide') && relationPanelCoverage.missingToggles.length === 0 && relationPanelCoverage.demandTriggerExpanded === 'false', JSON.stringify(relationPanelCoverage));
 
     const standardLayout = await page.evaluate(() => ({
       height: _relationsLayout.height,
@@ -345,25 +374,24 @@ async function run() {
     await page.click('#relationCompactButton');
     await page.waitForTimeout(180);
 
+    await page.click('#relationDemandTrigger');
     const panelsBeforeCollapse = await page.evaluate(() => ({
       top: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().top || 0,
       height: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().height || 0,
     }));
-    await page.click('#relationToolsPanel > .relation-panel-toggle');
-    await page.click('#relationGuidePanel > .relation-panel-toggle');
     await page.click('#relationDemandPlanner .relation-panel-toggle');
+    await page.click('#relationToolsPanel .relations-heading-main > .relation-panel-toggle');
     await page.waitForTimeout(320);
     const panelsAfterCollapse = await page.evaluate(() => ({
       top: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().top || 0,
       height: document.querySelector('#relationGraphViewport')?.getBoundingClientRect().height || 0,
-      collapsed: ['tools','guide','demand'].every((key) => document.querySelector('[data-relation-panel="'+key+'"]')?.classList.contains('is-collapsed')),
-      allClosed: ['tools','guide','demand'].every((key) => document.querySelector('[data-relation-panel="'+key+'"] .relation-panel-toggle')?.getAttribute('aria-expanded') === 'false'),
+      collapsed: ['tools','demand'].every((key) => document.querySelector('[data-relation-panel="'+key+'"]')?.classList.contains('is-collapsed')),
+      allClosed: ['tools','demand'].every((key) => document.querySelector('[data-relation-panel="'+key+'"] .relation-panel-toggle')?.getAttribute('aria-expanded') === 'false'),
       nodes: document.querySelectorAll('.network-node').length,
     }));
     check("收起辅助模块会把释放的纵向空间补给关系图", panelsAfterCollapse.collapsed && panelsAfterCollapse.allClosed && panelsAfterCollapse.top < panelsBeforeCollapse.top && panelsAfterCollapse.height > panelsBeforeCollapse.height && panelsAfterCollapse.nodes > 400, JSON.stringify({ panelsBeforeCollapse, panelsAfterCollapse }));
-    await page.click('#relationToolsPanel > .relation-panel-toggle');
-    await page.click('#relationGuidePanel > .relation-panel-toggle');
-    await page.click('#relationDemandPlanner .relation-panel-toggle');
+    await page.click('#relationToolsPanel .relations-heading-main > .relation-panel-toggle');
+    await page.click('#relationDemandTrigger');
     await page.waitForTimeout(320);
 
     await page.evaluate(() => selectRelationNode('honey_toast', true));
@@ -385,7 +413,7 @@ async function run() {
       selected: document.querySelector('[data-network-node="honey_toast"]')?.classList.contains('is-selected'),
       toggle: document.querySelector('#relationSelection .relation-panel-toggle')?.getAttribute('aria-expanded'),
     }));
-    check("物品详情可独立收起且不清除当前关系", selectionPanelBefore.detailVisible && selectionPanelBefore.toggle === 'true' && selectionPanelCollapsed.collapsed && selectionPanelCollapsed.copyDisplay === 'none' && selectionPanelCollapsed.selected && selectionPanelCollapsed.toggle === 'false' && selectionPanelCollapsed.height > selectionPanelBefore.height, JSON.stringify({ selectionPanelBefore, selectionPanelCollapsed }));
+    check("物品详情可独立收起且不清除当前关系", selectionPanelBefore.detailVisible && selectionPanelBefore.toggle === 'true' && selectionPanelCollapsed.collapsed && selectionPanelCollapsed.copyDisplay === 'none' && selectionPanelCollapsed.selected && selectionPanelCollapsed.toggle === 'false' && selectionPanelCollapsed.height >= selectionPanelBefore.height, JSON.stringify({ selectionPanelBefore, selectionPanelCollapsed }));
     await page.click('#relationSelection .relation-panel-toggle');
     await page.waitForTimeout(220);
     const editActionBeforeFullscreen = await page.evaluate(() => {
@@ -481,11 +509,15 @@ async function run() {
         mode: document.querySelector('#relationZoomMode')?.textContent,
         detailAboveGraph: document.querySelector('#relationSelection')?.getBoundingClientRect().bottom <= document.querySelector('#relationGraphViewport')?.getBoundingClientRect().top + 1,
         scale: _relationGraphView.scale,
+        demandResultHidden: document.querySelector('#relationDemandResult')?.hidden,
+        demandResultCleared: _relationDemandResult === null,
+        demandTarget: document.querySelector('#relationDemandTarget')?.textContent || '',
       };
     });
     check("搜索只高亮并聚焦关系，不会把其他物品从全图移除", cheeseNetwork.allNodesRemain > 400 && cheeseNetwork.selected && cheeseNetwork.detail.includes('蜂蜜吐司'), JSON.stringify(cheeseNetwork));
     check("聚焦后显示完整动物饲料来源、数量与左右层级", ['milk','cow_feed','corn','soyabean'].every((id) => cheeseNetwork.activeIds.includes(id)) && cheeseNetwork.hasSemanticQty && cheeseNetwork.leftToRight, JSON.stringify(cheeseNetwork));
-    check("聚焦详情在图上方并直接显示配方", cheeseNetwork.mode === '聚焦' && cheeseNetwork.detailAboveGraph && cheeseNetwork.detail.includes('配方：') && cheeseNetwork.scale >= .9, JSON.stringify(cheeseNetwork));
+    check("点击产品不受库存影响并默认展示完整生产关系", cheeseNetwork.demandResultHidden && cheeseNetwork.demandResultCleared && cheeseNetwork.demandTarget.includes('已选择：蜂蜜吐司'), JSON.stringify(cheeseNetwork));
+    check("聚焦详情在图上方、直接显示配方并使用100%缩放", cheeseNetwork.mode === '聚焦' && cheeseNetwork.detailAboveGraph && cheeseNetwork.detail.includes('配方：') && Math.abs(cheeseNetwork.scale - 1) < .001, JSON.stringify(cheeseNetwork));
     const graphDragStart = await page.evaluate(() => {
       const rect = document.querySelector('#relationGraphViewport').getBoundingClientRect();
       return { x: rect.left + 12, y: rect.top + 12, viewX: _relationGraphView.x, viewY: _relationGraphView.y };
@@ -515,7 +547,7 @@ async function run() {
         viewX: _relationGraphView.x,
         viewY: _relationGraphView.y,
         contextMenuPrevented: contextEvent.defaultPrevented && dispatchResult === false,
-        hint: document.querySelector('.relation-graph-hint')?.textContent || '',
+        hint: document.querySelector('.relations-note-inline')?.textContent || '',
       };
     });
     check("鼠标右键可平移关系网并保持当前物品焦点", afterRightDrag.selectedId === 'honey_toast' && afterRightDrag.selectedNode === 'honey_toast' && afterRightDrag.viewX > afterLeftDrag.viewX + 70 && afterRightDrag.viewY > afterLeftDrag.viewY + 30, JSON.stringify({ afterLeftDrag, afterRightDrag }));
@@ -544,6 +576,7 @@ async function run() {
     }));
     check("方向键可沿关系移动且始终只有一个键盘入口", keyboardRelation.activeId && keyboardRelation.activeId !== 'honey_toast' && keyboardRelation.selectedId === keyboardRelation.activeId && keyboardRelation.tabbableNodes === 1, JSON.stringify(keyboardRelation));
     await page.press('#relationsSearch', 'Enter');
+    await page.click('#relationDemandRun');
 
     const previousEdits = await page.evaluate(() => localStorage.getItem('hd_edits'));
     await page.click('#relationSelection [data-edit-id="honey_toast"]');
@@ -604,6 +637,19 @@ async function run() {
     await page.click('.app-view-tab[data-app-view="inventory"]');
     check("至少30个分组", (await page.$$(".section-header")).length >= 30);
     check("至少200个物品tile", (await page.$$(".item-tile")).length >= 200);
+    const inventoryVisualSystem = await page.evaluate(() => {
+      const icon = document.querySelector('.tile-icon');
+      const tile = document.querySelector('.item-tile');
+      const rootStyle = getComputedStyle(document.documentElement);
+      return {
+        iconWidth: icon?.getBoundingClientRect().width || 0,
+        tileRadius: getComputedStyle(tile).borderRadius,
+        tileShadow: getComputedStyle(tile).boxShadow,
+        surfaceToken: rootStyle.getPropertyValue('--surface-subtle').trim(),
+        imageToken: rootStyle.getPropertyValue('--image-wash').trim(),
+      };
+    });
+    check("库存卡片放大物品图片并使用统一的轻量表面层级", inventoryVisualSystem.iconWidth >= 32 && inventoryVisualSystem.tileRadius === '8px' && inventoryVisualSystem.tileShadow !== 'none' && inventoryVisualSystem.surfaceToken && inventoryVisualSystem.imageToken, JSON.stringify(inventoryVisualSystem));
     const firstGroupToggle = await page.$('.section-header .group-collapse-toggle');
     await firstGroupToggle.click();
     const groupCollapsed = await page.evaluate(() => {
@@ -1133,8 +1179,29 @@ async function run() {
     await page.click('#dataReviewPanel .data-review-heading .btn');
 
     await page.click('.app-view-tab[data-app-view="relations"]');
+    const mobileRelationOverview = await page.evaluate(() => {
+      relationGraphFit(false);
+      const viewport = document.querySelector('#relationGraphViewport');
+      const toolbar = document.querySelector('#relationCanvasToolbar');
+      const viewportRect = viewport?.getBoundingClientRect();
+      const toolbarRect = toolbar?.getBoundingClientRect();
+      const controlsRect = document.querySelector('#relationToolsControls')?.getBoundingClientRect();
+      const nodeTops = Array.from(document.querySelectorAll('.network-node')).map((node) => node.getBoundingClientRect().top);
+      const buttonHeights = Array.from(document.querySelectorAll('#relationCanvasToolbar button')).map((button) => button.getBoundingClientRect().height);
+      return {
+        toolbarInsideControls: document.querySelector('#relationToolsControls')?.contains(toolbar),
+        controlsBeforeGraph: Boolean(viewportRect && controlsRect && viewportRect.top >= controlsRect.bottom - 1 && viewportRect.top <= controlsRect.bottom + 3),
+        toolbarFitsControls: Boolean(toolbarRect && controlsRect && toolbarRect.left >= controlsRect.left && toolbarRect.right <= controlsRect.right + 1),
+        firstNodeTop: viewportRect && nodeTops.length ? Math.min(...nodeTops) - viewportRect.top : 0,
+        minButtonHeight: buttonHeights.length ? Math.min(...buttonHeights) : 0,
+        mode: document.querySelector('#relationZoomMode')?.textContent,
+      };
+    });
+    check("移动端控制台紧接关系网且按钮易于触摸", mobileRelationOverview.toolbarInsideControls && mobileRelationOverview.controlsBeforeGraph && mobileRelationOverview.toolbarFitsControls && mobileRelationOverview.mode === '全景' && mobileRelationOverview.minButtonHeight >= 44 && mobileRelationOverview.firstNodeTop >= 0 && mobileRelationOverview.firstNodeTop <= 60, JSON.stringify(mobileRelationOverview));
     await page.fill('#relationsSearch', '蜂蜜吐司');
     await page.press('#relationsSearch', 'Enter');
+    await page.click('#relationDemandTrigger');
+    await page.click('#relationDemandRun');
     const mobileRelations = await page.evaluate(() => {
       const viewport = document.querySelector('#relationGraphViewport');
       const svg = document.querySelector('#relationsGraph');
@@ -1160,8 +1227,27 @@ async function run() {
       };
     });
     check("移动端全图不撑宽页面，并支持缩放与拖动", !mobileRelations.documentOverflow && mobileRelations.viewportFits && mobileRelations.touchPanEnabled && mobileRelations.zoomChanged && mobileRelations.nodeCount > 400, JSON.stringify(mobileRelations));
-    check("移动端搜索进入可读聚焦且优先展示关系图", mobileRelations.focusScale >= .86 && mobileRelations.mode === '聚焦' && mobileRelations.graphBeforeDetail && mobileRelations.graphStartsInFirstScreen && mobileRelations.detail.includes('配方：'), JSON.stringify(mobileRelations));
+    check("移动端搜索以100%进入可读聚焦且优先展示关系图", Math.abs(mobileRelations.focusScale - 1) < .001 && mobileRelations.mode === '聚焦' && mobileRelations.graphBeforeDetail && mobileRelations.graphStartsInFirstScreen && mobileRelations.detail.includes('配方：'), JSON.stringify(mobileRelations));
     check("移动端需求模拟不撑宽页面且操作按钮可点击", mobileRelations.demandPlannerFits && mobileRelations.demandResultVisible && mobileRelations.demandControlsHeight >= 40, JSON.stringify(mobileRelations));
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.evaluate(() => {
+      window.dispatchEvent(new Event('resize'));
+      relationGraphFit(false);
+    });
+    await page.waitForTimeout(320);
+    const narrowMobileRelations = await page.evaluate(() => {
+      const viewport = document.querySelector('#relationGraphViewport')?.getBoundingClientRect();
+      const toolbar = document.querySelector('#relationCanvasToolbar')?.getBoundingClientRect();
+      const controls = document.querySelector('#relationToolsControls')?.getBoundingClientRect();
+      return {
+        documentOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+        toolbarFits: Boolean(controls && toolbar && toolbar.left >= controls.left && toolbar.right <= controls.right + 1),
+        controlsFit: Boolean(viewport && controls && controls.width <= document.documentElement.clientWidth && viewport.width <= document.documentElement.clientWidth),
+        minButtonHeight: Math.min(...Array.from(document.querySelectorAll('#relationCanvasToolbar button')).map((button) => button.getBoundingClientRect().height)),
+      };
+    });
+    check("窄屏关系网控制台不撑宽页面且仍保持可触摸", !narrowMobileRelations.documentOverflow && narrowMobileRelations.toolbarFits && narrowMobileRelations.controlsFit && narrowMobileRelations.minButtonHeight >= 44, JSON.stringify(narrowMobileRelations));
+    await page.setViewportSize({ width: 390, height: 844 });
 
     check("页面无 JS 异常", pageErrors.length === 0, pageErrors.join(" | "));
     check("控制台无错误", consoleErrors.length === 0, consoleErrors.join(" | "));
