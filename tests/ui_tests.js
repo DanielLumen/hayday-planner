@@ -99,7 +99,7 @@ async function testPublicShowcaseDefaults(browser) {
     await showcasePage.route("**/api/save", (route) =>
       route.fulfill({ status: 404, contentType: "text/plain", body: "not found" }),
     );
-    await showcasePage.route("**/data.json", (route) =>
+    await showcasePage.route("**/public-data.json", (route) =>
       route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -221,11 +221,47 @@ async function run() {
       staleMuttonMultiplier: Object.prototype.hasOwnProperty.call(PROD_MULTIPLIERS,'mutton'),
       duckFeatherBuilding: D.items.find((item) => item.id === 'duck_feather')?.bld,
       lobsterTailBuilding: D.items.find((item) => item.id === 'lobster_tail')?.bld,
+      fanPolicyUrl: document.querySelector('.legal-note a')?.href,
+      fanDisclaimer: document.querySelector('.legal-note')?.textContent || '',
     }));
     check("静态发布资源包含可用的拼音运行时", staticRuntimeState.pinyinLoaded, JSON.stringify(staticRuntimeState));
     check("手抓酥皮派使用自己的专用图片", staticRuntimeState.handPiesIcon === 'icons/hand_pies.png', JSON.stringify(staticRuntimeState));
     check("羊排来源倍率使用实际物品编号", staticRuntimeState.lambMultiplier === 10 && !staticRuntimeState.staleMuttonMultiplier, JSON.stringify(staticRuntimeState));
     check("鸭毛和龙虾尾关联各自的专用设备", staticRuntimeState.duckFeatherBuilding === 'duck_salon' && staticRuntimeState.lobsterTailBuilding === 'lobster_pool', JSON.stringify(staticRuntimeState));
+    check("公开页面包含非官方声明和玩家内容条款链接", staticRuntimeState.fanDisclaimer.includes('非官方') && staticRuntimeState.fanDisclaimer.includes('未经 Supercell 认可或背书') && staticRuntimeState.fanPolicyUrl === 'https://supercell.com/en/fan-content-policy/', JSON.stringify(staticRuntimeState));
+    const controlSemantics = await page.evaluate(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const nameFor = (button) => (
+        button.getAttribute('aria-label') ||
+        button.getAttribute('title') ||
+        button.textContent ||
+        ''
+      ).trim();
+      return {
+        buttonCount: buttons.length,
+        invalidButtonTypes: buttons.filter((button) => button.type !== 'button').map((button) => nameFor(button)),
+        unnamedButtons: buttons.filter((button) => !nameFor(button)).length,
+        inventorySearchLabel: document.querySelector('#searchInput')?.getAttribute('aria-label'),
+        warehouseLabels: ['gtSiloNum','gtSilo','gtBarnNum','gtBarn'].map((id) => document.getElementById(id)?.getAttribute('aria-label')),
+        onlinePressed: document.querySelector('.plan-mode-btn[data-mode="online"]')?.getAttribute('aria-pressed'),
+        offlinePressed: document.querySelector('.plan-mode-btn[data-mode="offline"]')?.getAttribute('aria-pressed'),
+      };
+    });
+    check(
+      "所有按钮都有明确类型和可读名称",
+      controlSemantics.buttonCount > 200 &&
+        controlSemantics.invalidButtonTypes.length === 0 &&
+        controlSemantics.unnamedButtons === 0,
+      JSON.stringify(controlSemantics),
+    );
+    check(
+      "搜索、仓库目标和安排方式具有可访问状态",
+      controlSemantics.inventorySearchLabel === '搜索物品、设备或原料' &&
+        controlSemantics.warehouseLabels.every(Boolean) &&
+        controlSemantics.onlinePressed === 'true' &&
+        controlSemantics.offlinePressed === 'false',
+      JSON.stringify(controlSemantics),
+    );
     const specialBuildingEditState = await page.evaluate(() => {
       openEditModal('lobster_tail');
       const lobster = {
@@ -321,6 +357,23 @@ async function run() {
     check("搜索、说明和视图按钮集中在画布顶部控制台", relationOverview.toolbarInsideControls && relationOverview.toolbarPosition === 'static' && relationOverview.noteInsideControls && relationOverview.instructionCount === 1 && relationOverview.graphBackground !== 'none', JSON.stringify(relationOverview));
     check("需求模拟默认收起并由控制台统一展开", relationOverview.demandInitiallyCollapsed && relationOverview.demandTriggerExpanded === 'false', JSON.stringify(relationOverview));
     check("最终产物按是否被作为原料判定，无关系物品单列", relationOverview.standaloneCount > 0 && !relationOverview.breadIsFinal, JSON.stringify(relationOverview));
+    const fishingLayoutOrder = await page.evaluate(() => {
+      const lureIds = ['red_lure','green_lure','blue_lure','purple_lure','gold_lure'];
+      const depth = _relationsLayout.positionedById.red_lure?.depth;
+      const layerIds = _relationsLayout.nodes.filter((node) => node.depth === depth).map((node) => node.id);
+      const lureIndexes = lureIds.map((id) => layerIds.indexOf(id)).sort((a,b) => a-b);
+      const netIndex = layerIds.indexOf('fishing_net');
+      const ordering = relationLayoutOrdering();
+      return {
+        lureIndexes,
+        netIndex,
+        consecutive: lureIndexes.every((index, position) => position === 0 || index === lureIndexes[position - 1] + 1),
+        netOutsideLures: netIndex < lureIndexes[0] || netIndex > lureIndexes[lureIndexes.length - 1],
+        lureGroup: ordering.groupById.red_lure,
+        netGroup: ordering.groupById.fishing_net,
+      };
+    });
+    check("同设备鱼饵连续排列且渔网保持在独立设备区块", fishingLayoutOrder.consecutive && fishingLayoutOrder.netOutsideLures && fishingLayoutOrder.lureGroup === 'lure_workbench' && fishingLayoutOrder.netGroup === 'net_maker', JSON.stringify(fishingLayoutOrder));
     await page.setViewportSize({ width: 2560, height: 1440 });
     await page.evaluate(() => window.dispatchEvent(new Event('resize')));
     await page.waitForTimeout(320);
@@ -499,6 +552,8 @@ async function run() {
       const root = document.querySelector('[data-network-node="honey_toast"]');
       const milk = document.querySelector('[data-network-node="milk"]');
       const activeLabels = Array.from(document.querySelectorAll('.network-edge-wrap.show-label .network-edge-label')).map((label) => label.textContent || '');
+      const viewportRect = document.querySelector('#relationGraphViewport')?.getBoundingClientRect();
+      const activeRects = Array.from(document.querySelectorAll('.network-node.is-active')).map((node) => node.getBoundingClientRect());
       return {
         allNodesRemain: document.querySelectorAll('[data-network-node]').length,
         selected: root?.classList.contains('is-selected'),
@@ -506,18 +561,32 @@ async function run() {
         hasSemanticQty: activeLabels.some((label) => /\d/.test(label)),
         leftToRight: Boolean(root && milk && Number(milk.dataset.depth) > Number(root.dataset.depth)),
         detail: document.querySelector('#relationSelection')?.textContent || '',
-        mode: document.querySelector('#relationZoomMode')?.textContent,
+        viewMode: _relationGraphView.mode,
+        zoomLabel: document.querySelector('#relationZoomMode')?.textContent,
         detailAboveGraph: document.querySelector('#relationSelection')?.getBoundingClientRect().bottom <= document.querySelector('#relationGraphViewport')?.getBoundingClientRect().top + 1,
         scale: _relationGraphView.scale,
         demandResultHidden: document.querySelector('#relationDemandResult')?.hidden,
         demandResultCleared: _relationDemandResult === null,
         demandTarget: document.querySelector('#relationDemandTarget')?.textContent || '',
+        chainFitsViewport: Boolean(viewportRect && activeRects.length && Math.min(...activeRects.map((rect) => rect.left)) >= viewportRect.left - 1 && Math.max(...activeRects.map((rect) => rect.right)) <= viewportRect.right + 1 && Math.min(...activeRects.map((rect) => rect.top)) >= viewportRect.top - 1 && Math.max(...activeRects.map((rect) => rect.bottom)) <= viewportRect.bottom + 1),
       };
     });
     check("搜索只高亮并聚焦关系，不会把其他物品从全图移除", cheeseNetwork.allNodesRemain > 400 && cheeseNetwork.selected && cheeseNetwork.detail.includes('蜂蜜吐司'), JSON.stringify(cheeseNetwork));
     check("聚焦后显示完整动物饲料来源、数量与左右层级", ['milk','cow_feed','corn','soyabean'].every((id) => cheeseNetwork.activeIds.includes(id)) && cheeseNetwork.hasSemanticQty && cheeseNetwork.leftToRight, JSON.stringify(cheeseNetwork));
     check("点击产品不受库存影响并默认展示完整生产关系", cheeseNetwork.demandResultHidden && cheeseNetwork.demandResultCleared && cheeseNetwork.demandTarget.includes('已选择：蜂蜜吐司'), JSON.stringify(cheeseNetwork));
-    check("聚焦详情在图上方、直接显示配方并使用100%缩放", cheeseNetwork.mode === '聚焦' && cheeseNetwork.detailAboveGraph && cheeseNetwork.detail.includes('配方：') && Math.abs(cheeseNetwork.scale - 1) < .001, JSON.stringify(cheeseNetwork));
+    check("缩放详情在图上方并自动显示完整链路", cheeseNetwork.viewMode === 'focus' && cheeseNetwork.zoomLabel === '缩放' && cheeseNetwork.detailAboveGraph && cheeseNetwork.detail.includes('配方：') && cheeseNetwork.scale > 0 && cheeseNetwork.scale <= 1 && cheeseNetwork.chainFitsViewport, JSON.stringify(cheeseNetwork));
+    const largeRelationFocus = await page.evaluate(() => {
+      selectRelationNode('wheat', true);
+      const viewportRect = document.querySelector('#relationGraphViewport')?.getBoundingClientRect();
+      const activeRects = Array.from(document.querySelectorAll('.network-node.is-active')).map((node) => node.getBoundingClientRect());
+      return {
+        activeCount: activeRects.length,
+        scale: _relationGraphView.scale,
+        chainFitsViewport: Boolean(viewportRect && activeRects.length && Math.min(...activeRects.map((rect) => rect.left)) >= viewportRect.left - 1 && Math.max(...activeRects.map((rect) => rect.right)) <= viewportRect.right + 1 && Math.min(...activeRects.map((rect) => rect.top)) >= viewportRect.top - 1 && Math.max(...activeRects.map((rect) => rect.bottom)) <= viewportRect.bottom + 1),
+      };
+    });
+    check("元素众多的大型关系链也能完整进入画布", largeRelationFocus.activeCount > 100 && largeRelationFocus.scale > 0 && largeRelationFocus.scale < 1 && largeRelationFocus.chainFitsViewport, JSON.stringify(largeRelationFocus));
+    await page.evaluate(() => selectRelationNode('honey_toast', true));
     const graphDragStart = await page.evaluate(() => {
       const rect = document.querySelector('#relationGraphViewport').getBoundingClientRect();
       return { x: rect.left + 12, y: rect.top + 12, viewX: _relationGraphView.x, viewY: _relationGraphView.y };
@@ -535,6 +604,11 @@ async function run() {
     check("鼠标左键拖动不会平移或误清除已选物品", afterLeftDrag.selectedId === 'honey_toast' && afterLeftDrag.selectedNode === 'honey_toast' && Math.abs(afterLeftDrag.viewX - graphDragStart.viewX) < .01 && Math.abs(afterLeftDrag.viewY - graphDragStart.viewY) < .01, JSON.stringify({ graphDragStart, afterLeftDrag }));
     await page.mouse.move(graphDragStart.x, graphDragStart.y);
     await page.mouse.down({ button: 'right' });
+    const dragRendering = await page.evaluate(() => ({
+      dragging: document.querySelector('#relationGraphViewport')?.classList.contains('dragging'),
+      mutedNodeDisplay: getComputedStyle(document.querySelector('.network-node.is-muted')).display,
+      mutedEdgeDisplay: getComputedStyle(document.querySelector('.network-edge-wrap.is-muted')).display,
+    }));
     await page.mouse.move(graphDragStart.x + 90, graphDragStart.y + 45, { steps: 5 });
     await page.mouse.up({ button: 'right' });
     const afterRightDrag = await page.evaluate(() => {
@@ -548,9 +622,11 @@ async function run() {
         viewY: _relationGraphView.y,
         contextMenuPrevented: contextEvent.defaultPrevented && dispatchResult === false,
         hint: document.querySelector('.relations-note-inline')?.textContent || '',
+        frameCleared: _relationGraphTransformFrame === null,
       };
     });
     check("鼠标右键可平移关系网并保持当前物品焦点", afterRightDrag.selectedId === 'honey_toast' && afterRightDrag.selectedNode === 'honey_toast' && afterRightDrag.viewX > afterLeftDrag.viewX + 70 && afterRightDrag.viewY > afterLeftDrag.viewY + 30, JSON.stringify({ afterLeftDrag, afterRightDrag }));
+    check("拖动时隐藏非当前链路并在动画帧内合并位移更新", dragRendering.dragging && dragRendering.mutedNodeDisplay === 'none' && dragRendering.mutedEdgeDisplay === 'none' && afterRightDrag.frameCleared, JSON.stringify({ dragRendering, afterRightDrag }));
     check("关系网内屏蔽浏览器右键菜单并明确显示拖动说明", afterRightDrag.contextMenuPrevented && afterRightDrag.hint.includes('鼠标右键') && afterRightDrag.hint.includes('触屏单指'), JSON.stringify(afterRightDrag));
     const demandStorageBefore = await page.evaluate(() => JSON.stringify(Object.fromEntries(Object.keys(localStorage).sort().map((key) => [key, localStorage.getItem(key)]))));
     await page.fill('#relationDemandQty', '6');
@@ -608,12 +684,13 @@ async function run() {
     await page.click('#relationSelection button:first-child');
     const restoredOverview = await page.evaluate(() => ({
       selectionHidden: document.querySelector('#relationSelection')?.hidden,
-      mode: document.querySelector('#relationZoomMode')?.textContent,
+      viewMode: _relationGraphView.mode,
+      zoomLabel: document.querySelector('#relationZoomMode')?.textContent,
       allNodesRemain: document.querySelectorAll('[data-network-node]').length,
       lowZoom: document.querySelector('#relationGraphViewport')?.classList.contains('is-low-zoom'),
       selectedCount: document.querySelectorAll('.network-node.is-selected').length,
     }));
-    check("返回全景会清除聚焦但保留完整关系网", restoredOverview.selectionHidden && restoredOverview.mode === '全景' && restoredOverview.allNodesRemain > 400 && restoredOverview.lowZoom && restoredOverview.selectedCount === 0, JSON.stringify(restoredOverview));
+    check("返回全景会清除聚焦但保留完整关系网", restoredOverview.selectionHidden && restoredOverview.viewMode === 'overview' && restoredOverview.zoomLabel === '缩放' && restoredOverview.allNodesRemain > 400 && restoredOverview.lowZoom && restoredOverview.selectedCount === 0, JSON.stringify(restoredOverview));
     const alternativeInventory = await page.evaluate(() => {
       const saved = { fish_fillet: S.fish_fillet, red_lure: S.red_lure, fishing_net: S.fishing_net };
       S.fish_fillet = { n: 0, tg: 5 };S.red_lure = { n: 5, tg: 5 };S.fishing_net = { n: 0, tg: 5 };
@@ -747,7 +824,12 @@ async function run() {
     await page.fill('#offlineHours', '10');
     await page.locator('#offlineHours').blur();
     await page.waitForTimeout(200);
-    check("离线模式显示时间窗口", (await page.textContent('#planModeNote')).includes('10 小时'));
+    const offlineModeState = await page.evaluate(() => ({
+      note: document.querySelector('#planModeNote')?.textContent || '',
+      onlinePressed: document.querySelector('.plan-mode-btn[data-mode="online"]')?.getAttribute('aria-pressed'),
+      offlinePressed: document.querySelector('.plan-mode-btn[data-mode="offline"]')?.getAttribute('aria-pressed'),
+    }));
+    check("离线模式显示时间窗口", offlineModeState.note.includes('10 小时') && offlineModeState.onlinePressed === 'false' && offlineModeState.offlinePressed === 'true', JSON.stringify(offlineModeState));
     check("生产模式保存在本地", await page.evaluate(() => localStorage.getItem('hd_plan_mode') === 'offline' && localStorage.getItem('hd_offline_hours') === '10'));
     await page.click('.tab[data-tab="items"]');
     const itemListLayout = await page.evaluate(() => {
@@ -1194,10 +1276,11 @@ async function run() {
         toolbarFitsControls: Boolean(toolbarRect && controlsRect && toolbarRect.left >= controlsRect.left && toolbarRect.right <= controlsRect.right + 1),
         firstNodeTop: viewportRect && nodeTops.length ? Math.min(...nodeTops) - viewportRect.top : 0,
         minButtonHeight: buttonHeights.length ? Math.min(...buttonHeights) : 0,
-        mode: document.querySelector('#relationZoomMode')?.textContent,
+        viewMode: _relationGraphView.mode,
+        zoomLabel: document.querySelector('#relationZoomMode')?.textContent,
       };
     });
-    check("移动端控制台紧接关系网且按钮易于触摸", mobileRelationOverview.toolbarInsideControls && mobileRelationOverview.controlsBeforeGraph && mobileRelationOverview.toolbarFitsControls && mobileRelationOverview.mode === '全景' && mobileRelationOverview.minButtonHeight >= 44 && mobileRelationOverview.firstNodeTop >= 0 && mobileRelationOverview.firstNodeTop <= 60, JSON.stringify(mobileRelationOverview));
+    check("移动端控制台紧接关系网且按钮易于触摸", mobileRelationOverview.toolbarInsideControls && mobileRelationOverview.controlsBeforeGraph && mobileRelationOverview.toolbarFitsControls && mobileRelationOverview.viewMode === 'overview' && mobileRelationOverview.zoomLabel === '缩放' && mobileRelationOverview.minButtonHeight >= 44 && mobileRelationOverview.firstNodeTop >= 0 && mobileRelationOverview.firstNodeTop <= 60, JSON.stringify(mobileRelationOverview));
     await page.fill('#relationsSearch', '蜂蜜吐司');
     await page.press('#relationsSearch', 'Enter');
     await page.click('#relationDemandTrigger');
@@ -1207,6 +1290,9 @@ async function run() {
       const svg = document.querySelector('#relationsGraph');
       const selection = document.querySelector('#relationSelection');
       const before = _relationGraphView.scale;
+      const viewportRect = viewport?.getBoundingClientRect();
+      const activeRects = Array.from(document.querySelectorAll('.network-node.is-active')).map((node) => node.getBoundingClientRect());
+      const chainFitsViewport = Boolean(viewportRect && activeRects.length && Math.min(...activeRects.map((rect) => rect.left)) >= viewportRect.left - 1 && Math.max(...activeRects.map((rect) => rect.right)) <= viewportRect.right + 1 && Math.min(...activeRects.map((rect) => rect.top)) >= viewportRect.top - 1 && Math.max(...activeRects.map((rect) => rect.bottom)) <= viewportRect.bottom + 1);
       relationGraphZoom(1.25);
       return {
         documentOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
@@ -1216,7 +1302,8 @@ async function run() {
         nodeCount: document.querySelectorAll('[data-network-node]').length,
         svgWidth: svg?.getBoundingClientRect().width,
         focusScale: before,
-        mode: document.querySelector('#relationZoomMode')?.textContent,
+        viewMode: _relationGraphView.mode,
+        zoomLabel: document.querySelector('#relationZoomMode')?.textContent,
         detail: selection?.textContent || '',
         graphBeforeDetail: viewport?.getBoundingClientRect().bottom <= selection?.getBoundingClientRect().top + 1,
         graphStartsInFirstScreen: viewport?.getBoundingClientRect().top < innerHeight,
@@ -1224,10 +1311,11 @@ async function run() {
         demandPlannerFits: document.querySelector('#relationDemandPlanner')?.getBoundingClientRect().width <= document.documentElement.clientWidth,
         demandResultVisible: !document.querySelector('#relationDemandResult')?.hidden,
         demandControlsHeight: document.querySelector('#relationDemandRun')?.getBoundingClientRect().height || 0,
+        chainFitsViewport,
       };
     });
     check("移动端全图不撑宽页面，并支持缩放与拖动", !mobileRelations.documentOverflow && mobileRelations.viewportFits && mobileRelations.touchPanEnabled && mobileRelations.zoomChanged && mobileRelations.nodeCount > 400, JSON.stringify(mobileRelations));
-    check("移动端搜索以100%进入可读聚焦且优先展示关系图", Math.abs(mobileRelations.focusScale - 1) < .001 && mobileRelations.mode === '聚焦' && mobileRelations.graphBeforeDetail && mobileRelations.graphStartsInFirstScreen && mobileRelations.detail.includes('配方：'), JSON.stringify(mobileRelations));
+    check("移动端搜索自动缩放到完整链路并优先展示关系图", mobileRelations.focusScale > 0 && mobileRelations.focusScale <= 1 && mobileRelations.chainFitsViewport && mobileRelations.viewMode === 'focus' && mobileRelations.zoomLabel === '缩放' && mobileRelations.graphBeforeDetail && mobileRelations.graphStartsInFirstScreen && mobileRelations.detail.includes('配方：'), JSON.stringify(mobileRelations));
     check("移动端需求模拟不撑宽页面且操作按钮可点击", mobileRelations.demandPlannerFits && mobileRelations.demandResultVisible && mobileRelations.demandControlsHeight >= 40, JSON.stringify(mobileRelations));
     await page.setViewportSize({ width: 320, height: 700 });
     await page.evaluate(() => {

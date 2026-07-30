@@ -5,6 +5,7 @@ const crypto = require("crypto");
 
 const base = __dirname;
 const dataFile = path.join(base, "data.json");
+const publicDataFile = path.join(base, "public-data.json");
 const host = process.env.HOST || "127.0.0.1";
 const port = Number(process.env.PORT || 8766);
 const maxBodySize = 2 * 1024 * 1024;
@@ -14,6 +15,7 @@ const publicFiles = new Set([
   "catalog-migration.js",
   "icon-status.js",
   "item-image-store.js",
+  "public-data.json",
   "vendor/pinyin-pro.js",
 ]);
 
@@ -56,6 +58,13 @@ function saveData(obj, file = dataFile) {
   const tempFile = `${file}.tmp`;
   fs.writeFileSync(tempFile, `${JSON.stringify(obj, null, 2)}\n`, "utf-8");
   fs.renameSync(tempFile, file);
+}
+
+function ensureDataFile(file = dataFile, seedFile = publicDataFile) {
+  if (fs.existsSync(file)) return false;
+  const seed = fs.existsSync(seedFile) ? loadData(seedFile) : {};
+  saveData(seed, file);
+  return true;
 }
 
 function revisionForData(data) {
@@ -222,6 +231,7 @@ function handleStatic(req, res, urlPath) {
 
 function createServer(options = {}) {
   const storageFile = options.dataFile || dataFile;
+  ensureDataFile(storageFile, options.seedFile || publicDataFile);
   return http.createServer((req, res) => {
     const urlPath = req.url || "/";
 
@@ -257,6 +267,7 @@ if (require.main === module) {
 
 module.exports = {
   createServer,
+  ensureDataFile,
   isSameOrigin,
   loadData,
   parseStoredData,

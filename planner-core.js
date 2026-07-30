@@ -376,26 +376,69 @@
       return String((item && (item.nameCN || item.name)) || id);
     }
 
+    const groupById = settings.groupById && typeof settings.groupById === "object"
+      ? settings.groupById
+      : null;
+    const groupOrderById = settings.groupOrderById && typeof settings.groupOrderById === "object"
+      ? settings.groupOrderById
+      : Object.create(null);
+    const itemOrderById = settings.itemOrderById && typeof settings.itemOrderById === "object"
+      ? settings.itemOrderById
+      : Object.create(null);
     const orderById = Object.create(null);
     layers.forEach((layer, depth) => {
-      layer.sort((left, right) => {
-        if (depth > 0) {
-          const leftParents = (dependentsById[left] || [])
-            .map((edge) => orderById[edge.from])
-            .filter((rank) => Number.isFinite(rank));
-          const rightParents = (dependentsById[right] || [])
-            .map((edge) => orderById[edge.from])
-            .filter((rank) => Number.isFinite(rank));
-          const leftRank = leftParents.length
-            ? leftParents.reduce((sum, rank) => sum + rank, 0) / leftParents.length
-            : Number.MAX_SAFE_INTEGER;
-          const rightRank = rightParents.length
-            ? rightParents.reduce((sum, rank) => sum + rank, 0) / rightParents.length
-            : Number.MAX_SAFE_INTEGER;
-          if (leftRank !== rightRank) return leftRank - rightRank;
+      function parentRank(id) {
+        const parents = (dependentsById[id] || [])
+          .map((edge) => orderById[edge.from])
+          .filter((rank) => Number.isFinite(rank));
+        return parents.length
+          ? parents.reduce((sum, rank) => sum + rank, 0) / parents.length
+          : Number.MAX_SAFE_INTEGER;
+      }
+      if (groupById) {
+        const groups = new Map();
+        for (const id of layer) {
+          const key = String(groupById[id] || `__ungrouped:${id}`);
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(id);
         }
-        return nodeLabel(left).localeCompare(nodeLabel(right), "zh-CN") || left.localeCompare(right);
-      });
+        const blocks = Array.from(groups, ([key, ids]) => {
+          const parentRanks = ids.map(parentRank).filter((rank) => Number.isFinite(rank) && rank < Number.MAX_SAFE_INTEGER);
+          return {
+            key,
+            ids,
+            parentRank: parentRanks.length
+              ? parentRanks.reduce((sum, rank) => sum + rank, 0) / parentRanks.length
+              : Number.MAX_SAFE_INTEGER,
+            groupOrder: Number.isFinite(groupOrderById[key]) ? groupOrderById[key] : Number.MAX_SAFE_INTEGER,
+          };
+        });
+        blocks.sort((left, right) =>
+          (depth > 0 && left.parentRank !== right.parentRank ? left.parentRank - right.parentRank : 0)
+          || left.groupOrder - right.groupOrder
+          || left.key.localeCompare(right.key));
+        const ordered = [];
+        for (const block of blocks) {
+          block.ids.sort((left, right) => {
+            const leftOrder = Number.isFinite(itemOrderById[left]) ? itemOrderById[left] : Number.MAX_SAFE_INTEGER;
+            const rightOrder = Number.isFinite(itemOrderById[right]) ? itemOrderById[right] : Number.MAX_SAFE_INTEGER;
+            return leftOrder - rightOrder
+              || nodeLabel(left).localeCompare(nodeLabel(right), "zh-CN")
+              || left.localeCompare(right);
+          });
+          ordered.push(...block.ids);
+        }
+        layer.splice(0, layer.length, ...ordered);
+      } else {
+        layer.sort((left, right) => {
+          if (depth > 0) {
+            const leftRank = parentRank(left);
+            const rightRank = parentRank(right);
+            if (leftRank !== rightRank) return leftRank - rightRank;
+          }
+          return nodeLabel(left).localeCompare(nodeLabel(right), "zh-CN") || left.localeCompare(right);
+        });
+      }
       layer.forEach((id, index) => {
         orderById[id] = index;
       });
