@@ -2,6 +2,7 @@
 // 运行方式: node tests/ui_tests.js
 const { chromium } = require("playwright");
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const { pathToFileURL } = require("url");
 const { createServer } = require("../server");
@@ -27,7 +28,8 @@ function check(name, ok, detail = "") {
 }
 
 async function testSyncRetry(browser) {
-  const server = createServer();
+  const tempDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "hayday-ui-sync-test-"));
+  const server = createServer({ dataFile: path.join(tempDirectory, "data.json") });
   await new Promise((resolve, reject) => {
     server.once("error", reject);
     server.listen(0, "127.0.0.1", resolve);
@@ -85,11 +87,13 @@ async function testSyncRetry(browser) {
   } finally {
     await syncPage.close();
     await new Promise((resolve) => server.close(resolve));
+    fs.rmSync(tempDirectory, { recursive: true, force: true });
   }
 }
 
 async function testPublicShowcaseDefaults(browser) {
-  const server = createServer();
+  const tempDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "hayday-ui-showcase-test-"));
+  const server = createServer({ dataFile: path.join(tempDirectory, "data.json") });
   await new Promise((resolve, reject) => {
     server.once("error", reject);
     server.listen(0, "127.0.0.1", resolve);
@@ -182,6 +186,7 @@ async function testPublicShowcaseDefaults(browser) {
   } finally {
     await showcasePage.close();
     await new Promise((resolve) => server.close(resolve));
+    fs.rmSync(tempDirectory, { recursive: true, force: true });
   }
 }
 
@@ -322,9 +327,9 @@ async function run() {
       const tabs = Array.from(document.querySelectorAll('.tab[role="tab"]'));
       return tabs.length === 3 && tabs.filter((tab) => tab.getAttribute("aria-selected") === "true").length === 1;
     }));
-    check("主视图可在库存与关系网间切换", await page.evaluate(() => {
+    check("主视图可在库存、关系网与设备动线间切换", await page.evaluate(() => {
       const tabs = Array.from(document.querySelectorAll('.app-view-tab[role="tab"]'));
-      return tabs.length === 2 && tabs.filter((tab) => tab.getAttribute("aria-selected") === "true").length === 1;
+      return tabs.length === 3 && tabs.filter((tab) => tab.getAttribute("aria-selected") === "true").length === 1;
     }));
     const inventoryUrl = page.url();
     await page.click('.app-view-tab[data-app-view="relations"]');
@@ -711,6 +716,83 @@ async function run() {
       return state;
     });
     check("多种来源不会重复相加，并优先采用当前库存可覆盖的路线", alternativeInventory.choice?.to === 'red_lure' && alternativeInventory.choice?.quantity === 5 && alternativeInventory.redActive && !alternativeInventory.netActive && alternativeInventory.allNodesRemain > 400 && alternativeInventory.text.includes('种来源择一'), JSON.stringify(alternativeInventory));
+
+    const flowStorageBefore = await page.evaluate(() => JSON.stringify(Object.fromEntries(['hd_inv','hd_edits','hd_checked','hd_filter_order','hd_order','hd_item_orders'].map((key) => [key, localStorage.getItem(key)]))));
+    await page.click('.app-view-tab[data-app-view="machine-flow"]');
+    const machineFlowOverview = await page.evaluate(() => {
+      const layerOf = (id) => Number(document.querySelector(`.machine-flow-card[data-machine-flow-id="${id}"]`)?.closest('.machine-flow-lane')?.dataset.machineFlowLayer);
+      return {
+        selectedTab: document.querySelector('.app-view-tab[aria-selected="true"]')?.dataset.appView,
+        viewVisible: !document.querySelector('#machineFlowView')?.hidden,
+        inventoryHidden: document.querySelector('#inventoryView')?.hidden,
+        relationsHidden: document.querySelector('#relationsView')?.hidden,
+        cards: document.querySelectorAll('#machineFlowRoute .machine-flow-card').length,
+        lanes: document.querySelectorAll('#machineFlowRoute .machine-flow-lane').length,
+        summary: document.querySelector('#machineFlowSummary')?.textContent || '',
+        principle: document.querySelector('.machine-flow-principle')?.textContent || '',
+        feed: layerOf('feed_mill'),
+        animal: layerOf('animal_area'),
+        dairy: layerOf('dairy'),
+        lure: layerOf('lure_workbench'),
+        net: layerOf('net_maker'),
+        fish: layerOf('fishing_spot'),
+        lobster: layerOf('lobster_pool'),
+        duck: layerOf('duck_salon'),
+        cycleBadges: Array.from(document.querySelectorAll('.machine-flow-link-pill')).filter((node) => node.textContent.includes('双向依赖')).length,
+      };
+    });
+    check("设备动线在当前页面显示全部环节和蛇形分段", machineFlowOverview.selectedTab === 'machine-flow' && machineFlowOverview.viewVisible && machineFlowOverview.inventoryHidden && machineFlowOverview.relationsHidden && machineFlowOverview.cards >= 55 && machineFlowOverview.lanes >= 5 && machineFlowOverview.summary.includes('跨设备关系') && machineFlowOverview.principle.includes('不是设备等级'), JSON.stringify(machineFlowOverview));
+    check("饲料、动物产品与乳品设备按来源关系向后排列", machineFlowOverview.feed < machineFlowOverview.animal && machineFlowOverview.animal < machineFlowOverview.dairy && machineFlowOverview.cycleBadges >= 2, JSON.stringify(machineFlowOverview));
+    check("捕鱼与陷阱来源环节不会排在鱼饵或织网设备之前", machineFlowOverview.lure < machineFlowOverview.fish && machineFlowOverview.net < machineFlowOverview.fish && machineFlowOverview.net < machineFlowOverview.lobster && machineFlowOverview.net < machineFlowOverview.duck, JSON.stringify(machineFlowOverview));
+
+    await page.click('.machine-flow-card[data-machine-flow-id="sugar_mill"]');
+    const flowSelection = await page.evaluate(() => ({
+      detailVisible: !document.querySelector('#machineFlowDetail')?.hidden,
+      selected: document.querySelectorAll('.machine-flow-card.is-selected').length,
+      related: document.querySelectorAll('.machine-flow-card.is-related').length,
+      muted: document.querySelectorAll('.machine-flow-card.is-muted').length,
+      text: document.querySelector('#machineFlowDetail')?.textContent || '',
+    }));
+    check("点击设备可高亮直接上下游并查看产品", flowSelection.detailVisible && flowSelection.selected === 1 && flowSelection.related > 5 && flowSelection.muted > 5 && flowSelection.text.includes('红糖') && flowSelection.text.includes('面包房'), JSON.stringify(flowSelection));
+    await page.fill('#machineFlowSearch', '奶昔');
+    const flowSearch = await page.evaluate(() => ({
+      cards: document.querySelectorAll('#machineFlowRoute .machine-flow-card').length,
+      names: Array.from(document.querySelectorAll('#machineFlowRoute .machine-flow-name')).map((node) => node.textContent),
+      summary: document.querySelector('#machineFlowSummary')?.textContent || '',
+    }));
+    check("设备动线可同时搜索设备名和产品名", flowSearch.cards === 2 && flowSearch.names.includes('冰淇淋机') && flowSearch.names.includes('奶昔店') && flowSearch.summary.includes('2 个匹配'), JSON.stringify(flowSearch));
+    await page.fill('#machineFlowSearch', '');
+    await page.click('#machineFlowSourceToggle');
+    const hiddenSources = await page.evaluate(() => ({
+      pressed: document.querySelector('#machineFlowSourceToggle')?.getAttribute('aria-pressed'),
+      sourceCards: document.querySelectorAll('.machine-flow-card.is-source').length,
+      cards: document.querySelectorAll('#machineFlowRoute .machine-flow-card').length,
+    }));
+    check("来源环节可单独隐藏且不删除生产设备", hiddenSources.pressed === 'false' && hiddenSources.sourceCards === 0 && hiddenSources.cards >= 50, JSON.stringify(hiddenSources));
+    await page.click('#machineFlowSourceToggle');
+    const flowStorageAfterReadOnly = await page.evaluate(() => JSON.stringify(Object.fromEntries(['hd_inv','hd_edits','hd_checked','hd_filter_order','hd_order','hd_item_orders'].map((key) => [key, localStorage.getItem(key)]))));
+    check("查看、搜索和高亮设备动线不改写库存、配方或排序", flowStorageAfterReadOnly === flowStorageBefore, 'catalog or inventory storage changed');
+
+    const flowEditsBefore = await page.evaluate(() => localStorage.getItem('hd_edits'));
+    await page.click('.machine-flow-card[data-machine-flow-id="sugar_mill"]');
+    await page.locator('#machineFlowDetail .machine-flow-product').filter({ hasText: '红糖' }).click();
+    await page.selectOption('#emBld', 'dairy');
+    await page.click('#emSave');
+    await page.waitForTimeout(100);
+    const liveFlowEdit = await page.evaluate(() => ({
+      selectedTab: document.querySelector('.app-view-tab[aria-selected="true"]')?.dataset.appView,
+      sugarProducts: _machineFlowModel.nodeById.sugar_mill.productIds.length,
+      dairyProducts: _machineFlowModel.nodeById.dairy.productIds.length,
+      brownSugarProducer: _machineFlowModel.nodeById.dairy.productIds.includes('brown_sugar'),
+    }));
+    check("用户修改生产设备后动线立即重算", liveFlowEdit.selectedTab === 'machine-flow' && liveFlowEdit.sugarProducts === 2 && liveFlowEdit.dairyProducts === 5 && liveFlowEdit.brownSugarProducer, JSON.stringify(liveFlowEdit));
+    await page.evaluate((saved) => {
+      if (saved === null) localStorage.removeItem('hd_edits');
+      else localStorage.setItem('hd_edits', saved);
+      applyEdits();
+      renderMachineFlow();
+    }, flowEditsBefore);
+
     await page.click('.app-view-tab[data-app-view="inventory"]');
     check("至少30个分组", (await page.$$(".section-header")).length >= 30);
     check("至少200个物品tile", (await page.$$(".item-tile")).length >= 200);
@@ -1259,6 +1341,18 @@ async function run() {
     }));
     check("移动端数据校对改为单栏且没有横向溢出", !mobileReviewState.documentOverflow && mobileReviewState.layoutColumns === 1 && mobileReviewState.searchWidth <= mobileReviewState.panelWidth && mobileReviewState.detailVisible, JSON.stringify(mobileReviewState));
     await page.click('#dataReviewPanel .data-review-heading .btn');
+
+    await page.click('.app-view-tab[data-app-view="machine-flow"]');
+    const mobileMachineFlow = await page.evaluate(() => ({
+      documentOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+      selectedTab: document.querySelector('.app-view-tab[aria-selected="true"]')?.dataset.appView,
+      navWidths: Array.from(document.querySelectorAll('.app-view-tab')).map((tab) => tab.getBoundingClientRect().width),
+      cardColumns: getComputedStyle(document.querySelector('.machine-flow-grid')).gridTemplateColumns.split(' ').length,
+      firstCardWidth: document.querySelector('.machine-flow-card')?.getBoundingClientRect().width || 0,
+      searchHeight: document.querySelector('#machineFlowSearch')?.getBoundingClientRect().height || 0,
+      toggleHeight: document.querySelector('#machineFlowSourceToggle')?.getBoundingClientRect().height || 0,
+    }));
+    check("移动端设备动线保持单栏、无横向溢出且操作可触摸", !mobileMachineFlow.documentOverflow && mobileMachineFlow.selectedTab === 'machine-flow' && mobileMachineFlow.navWidths.every((width) => width >= 80) && mobileMachineFlow.cardColumns === 1 && mobileMachineFlow.firstCardWidth > 280 && mobileMachineFlow.searchHeight >= 40 && mobileMachineFlow.toggleHeight >= 40, JSON.stringify(mobileMachineFlow));
 
     await page.click('.app-view-tab[data-app-view="relations"]');
     const mobileRelationOverview = await page.evaluate(() => {

@@ -272,6 +272,328 @@
     };
   }
 
+  function analyzeBuildingFlow(items, buildings, options) {
+    const itemList = Array.isArray(items) ? items : [];
+    const buildingList = Array.isArray(buildings) ? buildings : [];
+    const settings = options && typeof options === "object" ? options : {};
+    const producerByItemId =
+      settings.producerByItemId && typeof settings.producerByItemId === "object"
+        ? settings.producerByItemId
+        : {};
+    const relationsById =
+      settings.relationsById && typeof settings.relationsById === "object"
+        ? settings.relationsById
+        : {};
+    const sourceIds = new Set(
+      (settings.sourceIds instanceof Set
+        ? Array.from(settings.sourceIds)
+        : Array.isArray(settings.sourceIds)
+          ? settings.sourceIds
+          : [])
+        .map((id) => String(id || "").trim())
+        .filter(Boolean),
+    );
+    const itemsById = Object.create(null);
+    itemList.forEach((item) => {
+      if (item && item.id) itemsById[String(item.id)] = item;
+    });
+
+    const nodeById = Object.create(null);
+    const nodeOrder = [];
+    buildingList.forEach((building, index) => {
+      if (!building || !building.id) return;
+      const id = String(building.id);
+      if (!Object.prototype.hasOwnProperty.call(nodeById, id)) nodeOrder.push(id);
+      nodeById[id] = {
+        ...building,
+        id,
+        source: sourceIds.has(id) || building.kind === "source",
+        originalOrder: index,
+        productIds: [],
+        incoming: [],
+        outgoing: [],
+      };
+    });
+
+    function producerFor(item) {
+      if (!item || !item.id) return "";
+      const mapped = producerByItemId[item.id];
+      return String(mapped || item.bld || "").trim();
+    }
+
+    itemList.forEach((item) => {
+      const producerId = producerFor(item);
+      if (producerId && nodeById[producerId]) nodeById[producerId].productIds.push(String(item.id));
+    });
+
+    const edgeByKey = new Map();
+    let dependencyCount = 0;
+    function appendDependency(product, relation, origin) {
+      const ingredientId = relationTarget(relation);
+      const ingredient = itemsById[ingredientId];
+      const from = producerFor(ingredient);
+      const to = producerFor(product);
+      if (!from || !to || from === to || !nodeById[from] || !nodeById[to]) return;
+      const key = `${from}\u0000${to}`;
+      let edge = edgeByKey.get(key);
+      if (!edge) {
+        edge = {
+          from,
+          to,
+          weight: 0,
+          recipeUses: 0,
+          sourceUses: 0,
+          itemIds: [],
+          productIds: [],
+          relations: [],
+        };
+        edgeByKey.set(key, edge);
+      }
+      edge.weight += 1;
+      if (origin === "source") edge.sourceUses += 1;
+      else edge.recipeUses += 1;
+      if (!edge.itemIds.includes(ingredientId)) edge.itemIds.push(ingredientId);
+      if (!edge.productIds.includes(String(product.id))) edge.productIds.push(String(product.id));
+      edge.relations.push({
+        ingredientId,
+        productId: String(product.id),
+        origin,
+        quantity: Math.max(1, Number.parseInt(relation.q, 10) || 1),
+        label: relation.label || "",
+      });
+      dependencyCount += 1;
+    }
+
+    itemList.forEach((item) => {
+      (Array.isArray(item.ing) ? item.ing : []).forEach((relation) =>
+        appendDependency(item, relation, "recipe"),
+      );
+      (Array.isArray(relationsById[item.id]) ? relationsById[item.id] : []).forEach((relation) =>
+        appendDependency(item, relation, "source"),
+      );
+    });
+
+    const edges = Array.from(edgeByKey.values());
+    edges.forEach((edge) => {
+      nodeById[edge.from].outgoing.push(edge);
+      nodeById[edge.to].incoming.push(edge);
+    });
+
+    const adjacency = Object.create(null);
+    nodeOrder.forEach((id) => {
+      adjacency[id] = [];
+    });
+    edges.forEach((edge) => adjacency[edge.from].push(edge.to));
+    nodeOrder.forEach((id) => {
+      adjacency[id].sort(
+        (left, right) => nodeById[left].originalOrder - nodeById[right].originalOrder,
+      );
+    });
+
+    let visitIndex = 0;
+    const indexes = Object.create(null);
+    const lowLinks = Object.create(null);
+    const stack = [];
+    const onStack = new Set();
+    const components = [];
+    function strongConnect(id) {
+      indexes[id] = visitIndex;
+      lowLinks[id] = visitIndex;
+      visitIndex += 1;
+      stack.push(id);
+      onStack.add(id);
+      adjacency[id].forEach((nextId) => {
+        if (!Object.prototype.hasOwnProperty.call(indexes, nextId)) {
+          strongConnect(nextId);
+          lowLinks[id] = Math.min(lowLinks[id], lowLinks[nextId]);
+        } else if (onStack.has(nextId)) {
+          lowLinks[id] = Math.min(lowLinks[id], indexes[nextId]);
+        }
+      });
+      if (lowLinks[id] !== indexes[id]) return;
+      const ids = [];
+      let current;
+      do {
+        current = stack.pop();
+        onStack.delete(current);
+        ids.push(current);
+      } while (current !== id);
+      ids.sort((left, right) => nodeById[left].originalOrder - nodeById[right].originalOrder);
+      components.push({
+        id: components.length,
+        ids,
+        originalOrder: Math.min(...ids.map((nodeId) => nodeById[nodeId].originalOrder)),
+        incoming: new Set(),
+        outgoing: new Set(),
+        layer: 0,
+      });
+    }
+    nodeOrder.forEach((id) => {
+      if (!Object.prototype.hasOwnProperty.call(indexes, id)) strongConnect(id);
+    });
+
+    const componentByNodeId = Object.create(null);
+    components.forEach((component) => {
+      component.ids.forEach((id) => {
+        componentByNodeId[id] = component;
+      });
+    });
+    edges.forEach((edge) => {
+      const from = componentByNodeId[edge.from];
+      const to = componentByNodeId[edge.to];
+      if (from === to) return;
+      from.outgoing.add(to.id);
+      to.incoming.add(from.id);
+    });
+
+    const componentById = new Map(components.map((component) => [component.id, component]));
+    const indegrees = new Map(
+      components.map((component) => [component.id, component.incoming.size]),
+    );
+    const ready = components
+      .filter((component) => component.incoming.size === 0)
+      .sort((left, right) => left.originalOrder - right.originalOrder);
+    const orderedComponents = [];
+    while (ready.length) {
+      const component = ready.shift();
+      orderedComponents.push(component);
+      Array.from(component.outgoing)
+        .map((id) => componentById.get(id))
+        .sort((left, right) => left.originalOrder - right.originalOrder)
+        .forEach((next) => {
+          next.layer = Math.max(next.layer, component.layer + 1);
+          indegrees.set(next.id, indegrees.get(next.id) - 1);
+          if (indegrees.get(next.id) === 0) {
+            ready.push(next);
+            ready.sort((left, right) => left.originalOrder - right.originalOrder);
+          }
+        });
+    }
+
+    const itemDepthById = Object.create(null);
+    function itemDepth(id, path) {
+      if (Object.prototype.hasOwnProperty.call(itemDepthById, id)) return itemDepthById[id];
+      if (path.has(id)) return 0;
+      const item = itemsById[id];
+      if (!item) return 0;
+      const nextPath = new Set(path);
+      nextPath.add(id);
+      const relations = (Array.isArray(item.ing) ? item.ing : [])
+        .map((relation) => ({ relation, origin: "recipe" }))
+        .concat(
+          (Array.isArray(relationsById[id]) ? relationsById[id] : []).map((relation) => ({
+            relation,
+            origin: "source",
+          })),
+        );
+      if (!relations.length) {
+        itemDepthById[id] = 0;
+        return 0;
+      }
+      const requiredDepths = [];
+      const alternativeDepths = [];
+      relations.forEach(({ relation }) => {
+        const targetId = relationTarget(relation);
+        const depth = itemDepth(targetId, nextPath);
+        if (relation && relation.mode === "alternative") alternativeDepths.push(depth);
+        else requiredDepths.push(depth);
+      });
+      const requiredDepth = requiredDepths.length ? Math.max(...requiredDepths) : -1;
+      const alternativeDepth = alternativeDepths.length ? Math.min(...alternativeDepths) : -1;
+      itemDepthById[id] = 1 + Math.max(requiredDepth, alternativeDepth, -1);
+      return itemDepthById[id];
+    }
+    itemList.forEach((item) => {
+      if (item && item.id) itemDepth(String(item.id), new Set());
+    });
+
+    const productDepthStrategy =
+      settings.layerStrategy === "earliest-product" || settings.layerStrategy === "product-depth";
+    const requestedDepthPercentile = Number(settings.productDepthPercentile);
+    const depthPercentile = settings.layerStrategy === "earliest-product"
+      ? 0
+      : Number.isFinite(requestedDepthPercentile)
+        ? Math.min(1, Math.max(0, requestedDepthPercentile))
+        : 0.5;
+    nodeOrder.forEach((id) => {
+      const node = nodeById[id];
+      const component = componentByNodeId[id];
+      node.productDepths = node.productIds.map((productId) => itemDepthById[productId] || 0);
+      const sortedProductDepths = node.productDepths.slice().sort((left, right) => left - right);
+      node.layer = productDepthStrategy && sortedProductDepths.length
+        ? sortedProductDepths[Math.floor((sortedProductDepths.length - 1) * depthPercentile)]
+        : component.layer;
+      node.cycle = component.ids.length > 1;
+      node.incomingWeight = node.incoming.reduce((sum, edge) => sum + edge.weight, 0);
+      node.outgoingWeight = node.outgoing.reduce((sum, edge) => sum + edge.weight, 0);
+      node.connected = Boolean(node.incoming.length || node.outgoing.length);
+    });
+    if (productDepthStrategy) {
+      const sourceEdges = edges.filter((edge) => edge.sourceUses > 0);
+      const sourceAdjacency = Object.create(null);
+      nodeOrder.forEach((id) => {
+        sourceAdjacency[id] = [];
+      });
+      sourceEdges.forEach((edge) => sourceAdjacency[edge.from].push(edge.to));
+      function sourcePathExists(from, target, visited) {
+        if (from === target) return true;
+        if (visited.has(from)) return false;
+        visited.add(from);
+        return sourceAdjacency[from].some((nextId) => sourcePathExists(nextId, target, visited));
+      }
+      const acyclicSourceEdges = sourceEdges.filter(
+        (edge) => !sourcePathExists(edge.to, edge.from, new Set()),
+      );
+      for (let pass = 0; pass < nodeOrder.length; pass += 1) {
+        let changed = false;
+        acyclicSourceEdges.forEach((edge) => {
+          const from = nodeById[edge.from];
+          const to = nodeById[edge.to];
+          const nextLayer = Math.min(itemList.length, from.layer + 1);
+          if (to.layer < nextLayer) {
+            to.layer = nextLayer;
+            changed = true;
+          }
+        });
+        if (!changed) break;
+      }
+    }
+    const maxLayer = nodeOrder.reduce(
+      (maximum, id) => Math.max(maximum, nodeById[id].layer),
+      0,
+    );
+    const layers = Array.from({ length: maxLayer + 1 }, () => []);
+    nodeOrder.forEach((id) => layers[nodeById[id].layer].push(nodeById[id]));
+    layers.forEach((layer) => {
+      layer.sort(
+        (left, right) =>
+          Number(right.source) - Number(left.source) ||
+          right.outgoingWeight - left.outgoingWeight ||
+          left.originalOrder - right.originalOrder,
+      );
+    });
+    const sequence = layers.flat();
+    sequence.forEach((node, index) => {
+      node.sequence = index + 1;
+    });
+
+    return {
+      nodes: nodeOrder.map((id) => nodeById[id]),
+      nodeById,
+      edges,
+      layers,
+      sequence,
+      components,
+      dependencyCount,
+      itemDepthById,
+      layerStrategy: productDepthStrategy ? settings.layerStrategy : "dependency",
+      productDepthPercentile: productDepthStrategy ? depthPercentile : null,
+      connectedNodeCount: nodeOrder.filter((id) => nodeById[id].connected).length,
+      independentIds: nodeOrder.filter((id) => !nodeById[id].connected),
+      cycleIds: nodeOrder.filter((id) => nodeById[id].cycle),
+    };
+  }
+
   function expandProductionTree(network, rootId, options) {
     const graph = network && typeof network === "object" ? network : {};
     const settings = options && typeof options === "object" ? options : {};
@@ -903,6 +1225,7 @@
   }
 
   return {
+    analyzeBuildingFlow,
     analyzeProductionNetwork,
     allocateEvenInventory,
     allocateReadyQuantities,

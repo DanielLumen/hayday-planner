@@ -226,6 +226,55 @@ assert.deepEqual(network.cycles, [
 ]);
 assert.deepEqual(network.unrootedIds, ["cycle_a", "cycle_b"]);
 
+const flowItems = [
+  { id: "corn", bld: "field", ing: [] },
+  { id: "cow_feed", bld: "feed_mill", ing: [{ i: "corn", q: 1 }] },
+  { id: "milk", ing: [] },
+  { id: "cream", bld: "dairy", ing: [{ i: "milk", q: 1 }] },
+  { id: "bread", bld: "bakery", ing: [{ i: "cream", q: 1 }] },
+  { id: "sandwich", bld: "sandwich_bar", ing: [{ i: "bread", q: 2 }] },
+];
+const flowBuildings = [
+  { id: "field", nameCN: "耕地", kind: "source" },
+  { id: "feed_mill", nameCN: "饲料厂" },
+  { id: "animal_area", nameCN: "动物栏区", kind: "source" },
+  { id: "dairy", nameCN: "乳品厂" },
+  { id: "bakery", nameCN: "面包房" },
+  { id: "sandwich_bar", nameCN: "三明治店" },
+  { id: "standalone", nameCN: "独立设备" },
+];
+const originalFlowItems = JSON.parse(JSON.stringify(flowItems));
+const buildingFlow = core.analyzeBuildingFlow(flowItems, flowBuildings, {
+  producerByItemId: { milk: "animal_area" },
+  relationsById: { milk: [{ i: "cow_feed", q: 1, label: "喂养奶牛" }] },
+  sourceIds: ["field", "animal_area"],
+});
+assert.deepEqual(flowItems, originalFlowItems);
+assert.equal(buildingFlow.nodeById.field.layer, 0);
+assert.equal(buildingFlow.nodeById.feed_mill.layer, 1);
+assert.equal(buildingFlow.nodeById.animal_area.layer, 2);
+assert.equal(buildingFlow.nodeById.dairy.layer, 3);
+assert.equal(buildingFlow.nodeById.bakery.layer, 4);
+assert.equal(buildingFlow.nodeById.sandwich_bar.layer, 5);
+assert.equal(buildingFlow.nodeById.standalone.layer, 0);
+assert.deepEqual(buildingFlow.independentIds, ["standalone"]);
+assert.equal(buildingFlow.nodeById.animal_area.source, true);
+assert.equal(buildingFlow.edges.find((edge) => edge.from === "feed_mill" && edge.to === "animal_area").sourceUses, 1);
+assert.equal(buildingFlow.edges.find((edge) => edge.from === "animal_area" && edge.to === "dairy").recipeUses, 1);
+assert.deepEqual(buildingFlow.sequence.map((node) => node.sequence), [1, 2, 3, 4, 5, 6, 7]);
+const productDepthFlow = core.analyzeBuildingFlow(flowItems, flowBuildings, {
+  producerByItemId: { milk: "animal_area" },
+  relationsById: { milk: [{ i: "cow_feed", q: 1, label: "喂养奶牛" }] },
+  sourceIds: ["field", "animal_area"],
+  layerStrategy: "product-depth",
+  productDepthPercentile: 0.5,
+});
+assert.equal(productDepthFlow.layerStrategy, "product-depth");
+assert.equal(productDepthFlow.productDepthPercentile, 0.5);
+assert.equal(productDepthFlow.nodeById.feed_mill.layer, 1);
+assert.equal(productDepthFlow.nodeById.animal_area.layer, 2);
+assert.equal(productDepthFlow.nodeById.dairy.layer, 3);
+
 const cakeTree = core.expandProductionTree(network, "cake", { quantity: 2 });
 const creamNode = cakeTree.children.find((node) => node.id === "cream");
 const directWheatNode = cakeTree.children.find((node) => node.id === "wheat");
