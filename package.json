@@ -1,6 +1,6 @@
 {
   "name": "hayday-warehouse",
-  "version": "2.27.0",
+  "version": "2.28.0",
   "description": "卡通农场 · 库存助手",
   "scripts": {
     "start": "node server.js",

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>卡通农场 · 库存助手 v2.27.0</title>
+<title>卡通农场 · 库存助手 v2.28.0</title>
 <style>
 /* ====== 变量与重置 ====== */
 :root{--bg:#F4F7F4;--card:#FFFFFF;--surface-subtle:#F8FAF8;--surface-hover:#EEF5F0;--canvas:#F2F6F3;--image-wash:#EDF5EF;--text:#20242C;--text-secondary:#445249;--muted:#66736B;--accent:#16845B;--accent-hover:#116A49;--accent-light:#E8F4ED;--accent-border:#A9D8C2;--warn:#9A5700;--warn-light:#FFF6E8;--danger:#C43D3D;--danger-light:#FFF0F0;--info:#376FD0;--info-light:#EDF3FF;--border:#DDE4DF;--border-strong:#C8D2CB;--focus-ring:rgba(55,111,208,.55);--shadow-sm:0 1px 2px rgba(24,45,33,.05);--shadow-card:0 2px 8px rgba(24,45,33,.07);--shadow:0 8px 24px rgba(24,45,33,.11);--radius:8px;--radius-sm:6px;--transition:140ms ease}
@@ -428,6 +428,12 @@ body.relation-pseudo-fullscreen-active{overflow:hidden}
 .relation-selection{min-height:58px;padding:9px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;background:var(--card)}.relation-selection[hidden]{display:none}.relation-selection-body{display:flex;align-items:center;gap:10px;min-width:0;flex:1}.relation-selection.is-collapsed{min-height:38px;padding-top:4px;padding-bottom:4px}.relation-selection.is-collapsed .relation-selection-icon,.relation-selection.is-collapsed .relation-selection-copy,.relation-selection.is-collapsed .relation-selection-actions>.btn{display:none}.relation-selection.is-collapsed .relation-selection-actions{width:100%;justify-content:flex-end;padding-left:0}.relation-selection-icon{width:36px;height:36px;flex:0 0 36px;display:flex;align-items:center;justify-content:center;font-size:26px}.relation-selection-icon img{width:34px;height:34px;object-fit:contain}.relation-selection-copy{min-width:0;flex:1}.relation-selection-name{font-size:13px;font-weight:700}.relation-selection-meta,.relation-selection-recipe{margin-top:2px;color:var(--muted);font-size:11px;line-height:16px}.relation-selection-recipe{color:var(--text-secondary)}.relation-selection-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .relation-demand-planner{padding:9px 11px;border-bottom:1px solid var(--border);background:#FAFBFC}.relation-demand-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.relation-demand-title{display:flex;align-items:baseline;gap:8px;font-size:12px;font-weight:700}.relation-demand-target{color:var(--muted);font-size:11px;font-weight:500}.relation-demand-actions{display:flex;align-items:center;gap:7px}.relation-demand-controls{display:flex;align-items:center;gap:6px}.relation-demand-controls label{display:flex;align-items:center;gap:5px;color:var(--text-secondary);font-size:11px}.relation-demand-controls input{width:64px;height:32px;padding:4px 7px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-weight:700;text-align:center}.relation-demand-planner.is-collapsed{display:none}.relation-demand-result{margin-top:8px}.relation-demand-summary{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.relation-demand-pill{display:inline-flex;align-items:center;min-height:24px;padding:3px 8px;border-radius:999px;background:var(--card);border:1px solid var(--border);color:var(--text-secondary);font-size:10px}.relation-demand-pill.primary{border-color:rgba(22,132,91,.35);background:var(--accent-light);color:var(--accent);font-weight:700}.relation-demand-pill.warning{border-color:#F2D5A6;background:var(--warn-light);color:#76501A}.relation-demand-details{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:6px 14px;margin-top:7px}.relation-demand-line{min-width:0;color:var(--text-secondary);font-size:10px;line-height:16px}.relation-demand-line strong{color:var(--text);font-weight:700}.relation-demand-empty{color:var(--muted)}
 .relation-unplaced{padding:16px 0 4px}.relation-unplaced-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}.relation-unplaced h3{font-size:14px}.relation-unplaced p{margin:3px 0 9px;color:var(--muted);font-size:11px}.relation-unplaced.is-collapsed{padding-top:8px}.relation-unplaced.is-collapsed .relation-unplaced-body{display:none}.relation-group-count{font-size:11px;font-weight:500;color:var(--muted)}.relation-unplaced-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:6px}.relation-unplaced-item{min-height:38px;padding:5px 7px;border:1px dotted var(--border-strong);border-radius:6px;background:var(--card);display:flex;align-items:center;gap:6px;font-size:11px}.relation-unplaced-item img{width:24px;height:24px;object-fit:contain}.relation-unplaced-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ====== 设备生产动线 ====== */
+.machine-flow-shell{padding:12px 16px 28px;min-width:0}.machine-flow-heading{min-height:52px;padding-bottom:10px;border-bottom:2px solid var(--accent);display:flex;align-items:flex-end;justify-content:space-between;gap:16px}.machine-flow-title h2{font-size:18px;line-height:24px}.machine-flow-title p{margin-top:3px;color:var(--muted);font-size:11px;line-height:1.5}.machine-flow-summary{color:var(--text-secondary);font-size:11px;text-align:right;white-space:nowrap}.machine-flow-toolbar{min-height:58px;padding:10px 0;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}.machine-flow-search{width:min(330px,100%);height:36px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:12px;outline:none}.machine-flow-search:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(5,150,105,.12)}.machine-flow-toolbar-note{margin-left:auto;color:var(--muted);font-size:10px;line-height:1.45;text-align:right}.machine-flow-source-toggle[aria-pressed="true"]{border-color:rgba(22,132,91,.4);background:var(--accent-light);color:var(--accent)}
+.machine-flow-principle{margin:10px 0;padding:10px 12px;border:1px solid rgba(22,132,91,.22);border-radius:8px;background:linear-gradient(100deg,var(--accent-light),rgba(255,255,255,.86));display:flex;align-items:center;gap:10px;color:var(--text-secondary);font-size:11px;line-height:1.5}.machine-flow-principle strong{color:var(--accent);white-space:nowrap}.machine-flow-principle span{min-width:0}.machine-flow-route{display:grid;gap:8px}.machine-flow-lane{border:1px solid var(--border);border-radius:9px;background:var(--card);overflow:hidden;box-shadow:var(--shadow-sm)}.machine-flow-lane[hidden]{display:none}.machine-flow-lane-head{min-height:38px;padding:7px 10px;border-bottom:1px solid var(--border);background:#FAFBFC;display:flex;align-items:center;gap:8px}.machine-flow-lane-title{font-size:12px;font-weight:700}.machine-flow-lane-note{color:var(--muted);font-size:10px}.machine-flow-lane-direction{margin-left:auto;color:var(--accent);font-size:10px;font-weight:700;letter-spacing:.02em}.machine-flow-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:7px;padding:8px}.machine-flow-lane.reverse .machine-flow-grid{direction:rtl}.machine-flow-lane.reverse .machine-flow-card{direction:ltr}.machine-flow-card{position:relative;width:100%;min-height:86px;padding:9px 9px 8px;border:1px solid var(--border);border-radius:7px;background:var(--card);display:grid;grid-template-columns:34px minmax(0,1fr);gap:7px;text-align:left;cursor:pointer;transition:border-color var(--transition),background var(--transition),box-shadow var(--transition),opacity var(--transition)}.machine-flow-card:hover{border-color:var(--accent);background:#FCFEFD}.machine-flow-card:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}.machine-flow-card.is-source{border-style:dashed;background:#FAFCFB}.machine-flow-card.is-selected{border-color:var(--accent);background:var(--accent-light);box-shadow:0 0 0 1px rgba(22,132,91,.18)}.machine-flow-card.is-related{border-color:var(--info);background:var(--info-light)}.machine-flow-card.is-muted{opacity:.32}.machine-flow-card[hidden]{display:none}.machine-flow-icon{width:34px;height:34px;border-radius:7px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden}.machine-flow-icon img{width:30px;height:30px;object-fit:contain}.machine-flow-copy{min-width:0}.machine-flow-name{padding-right:24px;font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.machine-flow-position{position:absolute;right:7px;top:7px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--bg);color:var(--muted);font-size:9px;font-weight:700;line-height:20px;text-align:center}.machine-flow-meta{margin-top:3px;color:var(--muted);font-size:9px;line-height:1.45}.machine-flow-links{margin-top:6px;display:flex;gap:4px;flex-wrap:wrap}.machine-flow-link-pill{padding:2px 5px;border-radius:999px;background:var(--bg);color:var(--text-secondary);font-size:8px;line-height:1.35}.machine-flow-link-pill.out{background:var(--accent-light);color:var(--accent)}.machine-flow-source-badge{color:var(--muted)}
+.machine-flow-detail{margin:0 0 8px;border:1px solid var(--border);border-radius:9px;background:var(--card);overflow:hidden}.machine-flow-detail[hidden]{display:none}.machine-flow-detail-head{min-height:52px;padding:9px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px}.machine-flow-detail-title{min-width:0;flex:1}.machine-flow-detail-title strong{display:block;font-size:13px}.machine-flow-detail-title span{display:block;margin-top:2px;color:var(--muted);font-size:10px}.machine-flow-detail-body{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) minmax(0,.8fr);gap:0}.machine-flow-detail-column{min-width:0;padding:10px 11px;border-right:1px solid var(--border)}.machine-flow-detail-column:last-child{border-right:0}.machine-flow-detail-column h3{margin-bottom:6px;color:var(--muted);font-size:10px;font-weight:600}.machine-flow-neighbor-list,.machine-flow-product-list{display:flex;gap:5px;flex-wrap:wrap}.machine-flow-neighbor,.machine-flow-product{min-height:27px;padding:4px 7px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text-secondary);font-size:10px;cursor:pointer}.machine-flow-neighbor:hover,.machine-flow-product:hover{border-color:var(--accent);color:var(--accent)}.machine-flow-empty{color:var(--muted);font-size:10px;line-height:1.5}.machine-flow-independent{margin-top:10px}.machine-flow-independent .machine-flow-lane-head{background:var(--warn-light)}
+@media(max-width:760px){.machine-flow-shell{padding:8px 8px 20px}.machine-flow-heading{align-items:flex-start;flex-direction:column;gap:4px}.machine-flow-summary{text-align:left;white-space:normal}.machine-flow-toolbar{align-items:stretch;flex-wrap:wrap}.machine-flow-search{width:100%;flex:1 0 100%;min-height:40px}.machine-flow-toolbar .btn{min-height:40px}.machine-flow-toolbar-note{width:100%;margin-left:0;text-align:left}.machine-flow-principle{align-items:flex-start;flex-direction:column;gap:3px}.machine-flow-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:6px}.machine-flow-card{min-height:92px;padding:8px;grid-template-columns:30px minmax(0,1fr);gap:6px}.machine-flow-icon{width:30px;height:30px}.machine-flow-icon img{width:27px;height:27px}.machine-flow-detail-body{grid-template-columns:1fr}.machine-flow-detail-column{border-right:0;border-bottom:1px solid var(--border)}.machine-flow-detail-column:last-child{border-bottom:0}}
+@media(max-width:390px){.machine-flow-grid{grid-template-columns:1fr}.app-view-tab{min-width:0;flex:1;padding-left:7px;padding-right:7px}}
 /* ====== 数据校对与用户图片 ====== */
 .data-review{padding:0 16px 22px}.data-review[hidden]{display:none}.data-review-heading{min-height:58px;padding:12px 0;display:flex;align-items:center;justify-content:space-between;gap:16px}.data-review-heading h2{font-size:17px}.data-review-heading p{margin-top:3px;color:var(--muted);font-size:11px}.data-review-summary{display:grid;grid-template-columns:minmax(180px,1.4fr) repeat(3,minmax(120px,.7fr));border:1px solid var(--border);border-radius:var(--radius);background:var(--card);margin-bottom:10px;overflow:hidden}.review-summary-primary,.review-summary-stat{min-height:64px;padding:10px 14px;display:flex;flex-direction:column;justify-content:center}.review-summary-stat{border-left:1px solid var(--border)}.review-summary-label{font-size:11px;color:var(--muted)}.review-summary-value{margin-top:2px;font-size:19px;font-weight:700}.review-summary-track{height:6px;margin-top:7px;border-radius:999px;background:#E8ECF1;overflow:hidden}.review-summary-track span{display:block;height:100%;background:var(--accent);border-radius:inherit}.data-review-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(330px,.9fr);gap:10px;align-items:start}.data-review-list-panel,.data-review-detail{border:1px solid var(--border);border-radius:var(--radius);background:var(--card);overflow:hidden}.data-review-filters{display:flex;padding:10px;border-bottom:1px solid var(--border);gap:6px;overflow-x:auto}.review-filter{border:1px solid var(--border);border-radius:6px;background:var(--card);padding:6px 10px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer}.review-filter[aria-selected="true"]{color:var(--accent);border-color:rgba(22,132,91,.45);background:var(--accent-light)}.data-review-columns,.data-review-row{display:grid;grid-template-columns:minmax(180px,1.4fr) minmax(100px,.8fr) minmax(105px,.7fr);align-items:center;gap:10px}.data-review-columns{padding:7px 12px;background:var(--bg);border-bottom:1px solid var(--border);font-size:10px;color:var(--muted)}.data-review-list{max-height:calc(100vh - 270px);overflow:auto}.data-review-row{width:100%;min-height:52px;padding:7px 12px;border:0;border-bottom:1px solid #EEF1F4;background:var(--card);text-align:left;cursor:pointer}.data-review-row:hover{background:#FAFBFC}.data-review-row.is-selected{background:var(--accent-light);box-shadow:inset 3px 0 0 var(--accent)}.review-item-cell{display:flex;align-items:center;gap:9px;min-width:0}.review-item-image{width:34px;height:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:var(--bg);overflow:hidden;color:var(--muted);font-size:9px;text-align:center;line-height:1.2}.review-item-image img{width:100%;height:100%;object-fit:contain}.review-item-name{font-size:12px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.review-item-meta{font-size:10px;color:var(--muted)}.review-device{font-size:11px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.review-status{display:inline-flex;width:max-content;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:600}.review-status.pending{color:var(--warn);background:var(--warn-light)}.review-status.verified{color:var(--accent);background:var(--accent-light)}.review-status.system{color:var(--muted);background:#F1F3F6}.review-status.missing{color:var(--danger);background:var(--danger-light)}.data-review-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:12px}.data-review-detail{position:sticky;top:58px;min-height:420px}.review-detail-head{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.review-detail-head h3{font-size:15px}.review-detail-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}.review-detail-body{padding:14px}.review-image-area{display:grid;grid-template-columns:132px minmax(0,1fr);gap:14px;align-items:stretch}.review-image-preview{min-height:132px;border:1px dashed var(--border-strong);border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--muted);font-size:11px;text-align:center;padding:8px}.review-image-preview img{width:100%;height:100%;max-height:132px;object-fit:contain}.review-image-actions{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:7px}.review-image-actions p{font-size:10px;color:var(--muted);line-height:1.5}.review-local-note{margin-top:12px;padding:9px 10px;border:1px solid #F2D5A6;border-radius:7px;background:var(--warn-light);color:#76501A;font-size:10px;line-height:1.5}.review-data-table{margin-top:14px;border-top:1px solid var(--border)}.review-data-row{display:grid;grid-template-columns:76px minmax(0,1fr);gap:10px;padding:8px 0;border-bottom:1px solid #EEF1F4;font-size:11px}.review-data-row dt{color:var(--muted)}.review-data-row dd{margin:0;color:var(--text-secondary);line-height:1.55}.review-detail-actions{display:flex;gap:8px;justify-content:flex-end;padding-top:14px}.items-review-entry{margin:8px 10px 4px;padding:10px;border:1px solid rgba(22,132,91,.25);border-radius:7px;background:var(--accent-light);display:flex;align-items:center;justify-content:space-between;gap:10px}.items-review-entry strong{font-size:12px}.items-review-entry span{font-size:10px;color:var(--muted)}.edit-image-control{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:center;padding:9px;margin-bottom:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg)}.edit-image-preview{width:64px;height:64px;border:1px dashed var(--border-strong);border-radius:7px;background:var(--card);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--muted);font-size:9px;text-align:center}.edit-image-preview img{width:100%;height:100%;object-fit:contain}.edit-image-copy{min-width:0}.edit-image-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.edit-image-note{font-size:10px;color:var(--muted);line-height:1.4}.image-busy{opacity:.6;pointer-events:none}
 .data-review-tools{display:flex;align-items:center;gap:8px;padding:10px;border-bottom:1px solid var(--border)}.data-review-tools .data-review-filters{min-width:0;padding:0;border:0}.review-search{margin-left:auto;width:190px;flex:0 0 190px;padding:6px 9px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:11px;outline:none}.review-search:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(22,132,91,.12)}.review-item-meta{display:block;margin-top:1px}
@@ -466,6 +472,7 @@ body.relation-pseudo-fullscreen-active{overflow:hidden}
 <nav class="app-view-nav" role="tablist" aria-label="主视图">
 <button type="button" class="app-view-tab active" data-app-view="inventory" role="tab" aria-selected="true" aria-controls="inventoryView" onclick="switchAppView('inventory',this)">库存助手</button>
 <button type="button" class="app-view-tab" data-app-view="relations" role="tab" aria-selected="false" aria-controls="relationsView" onclick="switchAppView('relations',this)">关系网</button>
+<button type="button" class="app-view-tab" data-app-view="machine-flow" role="tab" aria-selected="false" aria-controls="machineFlowView" onclick="switchAppView('machine-flow',this)">设备动线</button>
 </nav>
 <main id="inventoryView" role="tabpanel" aria-label="库存助手">
 <div id="infoBar" class="info-bar">
@@ -590,6 +597,24 @@ body.relation-pseudo-fullscreen-active{overflow:hidden}
   <p class="sr-only" id="relationsKeyboardHelp">按 Tab 进入关系网，使用方向键在相邻产品间移动，按回车聚焦；鼠标使用右键拖动画面，触屏使用单指拖动；全屏时按 Escape 退出全屏，普通模式按 Escape 返回全景。</p>
 </div>
 <div id="relationsStandalone"></div>
+</section>
+</main>
+<main id="machineFlowView" role="tabpanel" aria-labelledby="machineFlowTitle" hidden>
+<section class="machine-flow-shell">
+  <header class="machine-flow-heading">
+    <div class="machine-flow-title"><h2 id="machineFlowTitle">设备生产动线</h2><p>按当前生效配方动态排列：尽量先安排通用原料，再巡视使用它们的设备。</p></div>
+    <div class="machine-flow-summary" id="machineFlowSummary">正在计算当前设备依赖…</div>
+  </header>
+  <div class="machine-flow-toolbar">
+    <input type="search" class="machine-flow-search" id="machineFlowSearch" placeholder="搜索设备或产品" aria-label="搜索设备动线" oninput="onMachineFlowSearch(this.value)">
+    <button type="button" class="btn btn-outline machine-flow-source-toggle" id="machineFlowSourceToggle" aria-pressed="true" onclick="toggleMachineFlowSources()">来源环节：显示</button>
+    <button type="button" class="btn btn-outline" id="machineFlowClearSelection" onclick="selectMachineFlowNode('')" hidden>清除高亮</button>
+    <div class="machine-flow-toolbar-note">同一段内没有强制先后，可按农场空间调整。</div>
+  </div>
+  <div class="machine-flow-principle"><strong>这是操作顺序，不是设备等级</strong><span>一台设备同时有浅层和深层产品时，会按它的整体产品位置折中安排。设备间配方依赖来自用户当前数据；饲料到动物产品、鱼饵与渔网到捕鱼结果作为“来源关系”单独计算。</span></div>
+  <section class="machine-flow-detail" id="machineFlowDetail" aria-live="polite" hidden></section>
+  <div class="machine-flow-route" id="machineFlowRoute" aria-label="建议的设备巡视顺序"></div>
+  <section class="machine-flow-independent" id="machineFlowIndependent" hidden></section>
 </section>
 </main>
 <footer class="legal-note">本工具为非官方粉丝内容，未经 Supercell 认可或背书。更多信息请参阅 <a href="https://supercell.com/en/fan-content-policy/" rel="external">Supercell 玩家内容条款</a>。</footer>
@@ -1139,6 +1164,13 @@ var _relationDemandTargetId='',_relationDemandResult=null;
 var _relationGraphView={x:0,y:0,scale:1,autoFit:true,mode:'overview'},_relationGraphDrag=null,_relationGraphPointerGesture=null,_relationGraphSuppressClick=false,_relationGraphTransformFrame=null,_relationResizeTimer=null,_relationFullscreenReturnFocus=null,_relationFullscreenWanted=false,_relationFullscreenEntering=false,_relationFullscreenCancelTimer=null;
 var _relationPanelStates=Object.create(null),_relationPanelExpandedHeights=Object.create(null),_relationCompactLayout=false;
 _relationPanelStates.demand=true;
+var MACHINE_FLOW_SOURCE_BUILDINGS=[
+  {id:'animal_area',nameCN:'动物栏区',emoji:'🐄',kind:'source'},
+  {id:'fishing_spot',nameCN:'捕鱼点',emoji:'🎣',kind:'source'},
+  {id:'beehive',nameCN:'蜂箱区',emoji:'🐝',kind:'source'}
+];
+var MACHINE_FLOW_SOURCE_IDS=['field','orchard','mine','animal_area','fishing_spot','beehive'];
+var _machineFlowModel=null,_machineFlowSelectedId='',_machineFlowQuery='',_machineFlowShowSources=true;
 var SERVER_PENDING_STORAGE='_hd_server_pending',SERVER_REVISION_STORAGE='_hd_server_revision';
 var PUBLIC_SHOWCASE_CAPACITY=8000,_publicShowcaseInventoryPending=false;
 var EDIT_HISTORY_STORAGE='hayday_local_edit_history_v1',EDIT_HISTORY_LIMIT=20,_editHistoryExpanded=false,_editHistorySequence=0;
@@ -1466,6 +1498,8 @@ function renderAll(){
   if(document.getElementById('planList').style.display!=='none') calcProductionPlan();
   var relationView=document.getElementById('relationsView');
   if(relationView&&!relationView.hidden&&_relationsDirty&&typeof renderRelations==='function') renderRelations({focusId:_relationsSelectedId});
+  var machineFlowView=document.getElementById('machineFlowView');
+  if(machineFlowView&&!machineFlowView.hidden&&typeof renderMachineFlow==='function') renderMachineFlow();
   var reviewPanel=document.getElementById('dataReviewPanel');
   if(reviewPanel&&!reviewPanel.hidden&&typeof renderDataReview==='function') renderDataReview();
 }
@@ -2338,16 +2372,138 @@ function onRelationsSearchKey(event){
   if(event.key!=='Enter')return;
   var matches=onRelationsSearch();if(matches.length){event.preventDefault();hideRelationsSearchResults();selectRelationNode(matches[0],true);}
 }
+/* ====== 设备生产动线 ====== */
+function machineFlowProducerMap(items){
+  var producers={};
+  (items||[]).forEach(function(item){
+    if(!item||!item.id)return;
+    if(!item.bld&&item.st==='silo_field')producers[item.id]='field';
+    else if(!item.bld&&item.st==='silo_tree')producers[item.id]='orchard';
+  });
+  ['coal','iron_ore','silver_ore','gold_ore','platinum_ore','diamond'].forEach(function(id){if(im[id]&&!im[id].bld)producers[id]='mine';});
+  ['milk','egg','bacon','wool','goat_milk','lamb_chop'].forEach(function(id){if(im[id]&&!im[id].bld)producers[id]='animal_area';});
+  if(im.fish_fillet&&!im.fish_fillet.bld)producers.fish_fillet='fishing_spot';
+  if(im.honeycomb&&!im.honeycomb.bld)producers.honeycomb='beehive';
+  producers.__nectar='orchard';
+  return producers;
+}
+function buildMachineFlowModel(){
+  init();
+  var items=D.items.map(function(item){return Object.assign({},item,{ing:(item.ing||[]).map(function(ingredient){return Object.assign({},ingredient);})});});
+  RELATION_VIRTUAL_ITEMS.forEach(function(item){if(!items.some(function(existing){return existing.id===item.id;}))items.push(Object.assign({},item));});
+  var itemMap={};items.forEach(function(item){itemMap[item.id]=item;});
+  var sourceLookup={};MACHINE_FLOW_SOURCE_IDS.forEach(function(id){sourceLookup[id]=true;});
+  var buildings=D.buildings.map(function(building){return Object.assign({},building,sourceLookup[building.id]?{kind:'source'}:{});});
+  MACHINE_FLOW_SOURCE_BUILDINGS.forEach(function(source){if(!buildings.some(function(building){return building.id===source.id;}))buildings.push(Object.assign({},source));});
+  _machineFlowModel=HayDayPlannerCore.analyzeBuildingFlow(items,buildings,{
+    producerByItemId:machineFlowProducerMap(items),
+    relationsById:buildRelationOverlay(itemMap),
+    sourceIds:MACHINE_FLOW_SOURCE_IDS,
+    layerStrategy:'product-depth',
+    productDepthPercentile:.5
+  });
+  return _machineFlowModel;
+}
+function machineFlowNodeIcon(node){
+  var source=ICONS[node.id]||'';
+  return source?'<img src="'+esc(source)+'" alt="">':esc(node.emoji||'🏭');
+}
+function machineFlowNodeMatches(node,query){
+  if(!query)return true;
+  var name=(node.nameCN||node.id).toLowerCase();
+  if(name.indexOf(query)>=0||String(node.id).toLowerCase().indexOf(query)>=0||_pyFL(name).indexOf(query)>=0)return true;
+  return (node.productIds||[]).some(function(id){
+    var item=im[id];if(!item)return false;
+    var itemName=(item.nameCN||item.id).toLowerCase();
+    return itemName.indexOf(query)>=0||String(item.id).toLowerCase().indexOf(query)>=0||_pyFL(itemName).indexOf(query)>=0;
+  });
+}
+function machineFlowCard(node,laneNumber,cardNumber){
+  var selected=node.id===_machineFlowSelectedId;
+  var related=false,muted=false;
+  if(_machineFlowSelectedId&&_machineFlowModel&&_machineFlowModel.nodeById[_machineFlowSelectedId]){
+    var current=_machineFlowModel.nodeById[_machineFlowSelectedId];
+    related=current.incoming.some(function(edge){return edge.from===node.id;})||current.outgoing.some(function(edge){return edge.to===node.id;});
+    muted=!selected&&!related;
+  }
+  var productNames=(node.productIds||[]).map(function(id){return im[id]&&(im[id].nameCN||im[id].id);}).filter(Boolean);
+  var meta=productNames.length?'生产 '+productNames.length+' 项':'不直接生产入库物品';
+  var links=[];
+  if(node.incoming.length)links.push('<span class="machine-flow-link-pill">来自 '+node.incoming.length+' 个环节</span>');
+  if(node.outgoing.length)links.push('<span class="machine-flow-link-pill out">提供给 '+node.outgoing.length+' 个环节</span>');
+  if(node.source)links.push('<span class="machine-flow-link-pill machine-flow-source-badge">来源环节</span>');
+  if(node.cycle)links.push('<span class="machine-flow-link-pill">含双向依赖</span>');
+  return '<button type="button" class="machine-flow-card'+(node.source?' is-source':'')+(selected?' is-selected':'')+(related?' is-related':'')+(muted?' is-muted':'')+'" data-machine-flow-id="'+esc(node.id)+'" onclick="selectMachineFlowNode(this.dataset.machineFlowId,this)" aria-pressed="'+(selected?'true':'false')+'"><span class="machine-flow-icon">'+machineFlowNodeIcon(node)+'</span><span class="machine-flow-copy"><span class="machine-flow-name">'+esc(node.nameCN||node.id)+'</span><span class="machine-flow-meta">'+esc(meta)+(productNames.length?' · '+esc(productNames.slice(0,2).join('、'))+(productNames.length>2?' 等':''):'')+'</span><span class="machine-flow-links">'+links.join('')+'</span></span><span class="machine-flow-position" title="第 '+laneNumber+' 段内的建议位置">'+laneNumber+'.'+cardNumber+'</span></button>';
+}
+function machineFlowNeighborButton(edge,direction){
+  var id=direction==='incoming'?edge.from:edge.to,node=_machineFlowModel.nodeById[id];
+  if(!node)return '';
+  var sourceOnly=edge.sourceUses>0&&edge.recipeUses===0;
+  return '<button type="button" class="machine-flow-neighbor" data-machine-flow-id="'+esc(id)+'" onclick="selectMachineFlowNode(this.dataset.machineFlowId)">'+(direction==='incoming'?'← ':'')+esc(node.nameCN||node.id)+(direction==='outgoing'?' →':'')+(sourceOnly?' · 来源关系':'')+'</button>';
+}
+function renderMachineFlowDetail(){
+  var panel=document.getElementById('machineFlowDetail'),clear=document.getElementById('machineFlowClearSelection');
+  if(!panel)return;
+  var node=_machineFlowModel&&_machineFlowModel.nodeById[_machineFlowSelectedId];
+  if(clear)clear.hidden=!node;
+  if(!node){panel.hidden=true;panel.innerHTML='';return;}
+  var products=(node.productIds||[]).filter(function(id){return im[id];});
+  var productButtons=products.map(function(id){return '<button type="button" class="machine-flow-product" onclick="openEditModal(\''+esc(id)+'\')">'+esc(im[id].nameCN||id)+'</button>';}).join('');
+  var incoming=node.incoming.map(function(edge){return machineFlowNeighborButton(edge,'incoming');}).join('');
+  var outgoing=node.outgoing.map(function(edge){return machineFlowNeighborButton(edge,'outgoing');}).join('');
+  var sourceRelations=node.incoming.concat(node.outgoing).reduce(function(total,edge){return total+edge.sourceUses;},0);
+  panel.innerHTML='<div class="machine-flow-detail-head"><span class="machine-flow-icon">'+machineFlowNodeIcon(node)+'</span><div class="machine-flow-detail-title"><strong>'+esc(node.nameCN||node.id)+'</strong><span>巡视第 '+(node.layer+1)+' 段 · '+products.length+' 项产品 · '+node.incoming.length+' 个上游环节 · '+node.outgoing.length+' 个下游环节'+(sourceRelations?' · 含 '+sourceRelations+' 条来源关系':'')+(node.cycle?' · 不同产品间存在双向依赖':'')+'</span></div><button type="button" class="collapse-toggle" onclick="selectMachineFlowNode(\'\')" aria-label="收起设备详情">收起</button></div><div class="machine-flow-detail-body"><div class="machine-flow-detail-column"><h3>巡视前先处理</h3><div class="machine-flow-neighbor-list">'+(incoming||'<span class="machine-flow-empty">没有更早的设备环节。</span>')+'</div></div><div class="machine-flow-detail-column"><h3>当前环节产品</h3><div class="machine-flow-product-list">'+(productButtons||'<span class="machine-flow-empty">这是来源或场地环节，没有独立的设备配方。</span>')+'</div></div><div class="machine-flow-detail-column"><h3>之后继续巡视</h3><div class="machine-flow-neighbor-list">'+(outgoing||'<span class="machine-flow-empty">当前产品没有再作为其他设备原料。</span>')+'</div></div></div>';
+  panel.hidden=false;
+}
+function renderMachineFlow(){
+  var model=buildMachineFlowModel(),route=document.getElementById('machineFlowRoute'),independent=document.getElementById('machineFlowIndependent');
+  if(!route)return;
+  if(_machineFlowSelectedId&&!model.nodeById[_machineFlowSelectedId])_machineFlowSelectedId='';
+  var visibleConnected=0,laneCount=0,html='';
+  model.layers.forEach(function(layer,layerIndex){
+    var nodes=layer.filter(function(node){return node.connected&&(_machineFlowShowSources||!node.source)&&machineFlowNodeMatches(node,_machineFlowQuery);});
+    if(!nodes.length)return;
+    laneCount+=1;visibleConnected+=nodes.length;
+    var reverse=layerIndex%2===1,direction=reverse?'← 向左巡视':'向右巡视 →';
+    html+='<section class="machine-flow-lane'+(reverse?' reverse':'')+'" data-machine-flow-layer="'+layerIndex+'"><div class="machine-flow-lane-head"><span class="machine-flow-lane-title">巡视第 '+(layerIndex+1)+' 段</span><span class="machine-flow-lane-note">'+(layerIndex===0?'从资源与独立原料起点开始':'建议在前面环节之后安排')+'</span><span class="machine-flow-lane-direction">'+direction+'</span></div><div class="machine-flow-grid">';
+    nodes.forEach(function(node,index){html+=machineFlowCard(node,layerIndex+1,index+1);});
+    html+='</div></section>';
+  });
+  route.innerHTML=html||'<div class="empty-state"><div class="big">🔎</div><p>没有找到匹配的设备或产品</p></div>';
+  var independentNodes=model.independentIds.map(function(id){return model.nodeById[id];}).filter(function(node){return (_machineFlowShowSources||!node.source)&&machineFlowNodeMatches(node,_machineFlowQuery);});
+  if(independent){
+    independent.hidden=!independentNodes.length;
+    independent.innerHTML=independentNodes.length?'<section class="machine-flow-lane"><div class="machine-flow-lane-head"><span class="machine-flow-lane-title">单独安排</span><span class="machine-flow-lane-note">当前数据中没有与其他设备形成直接生产依赖</span></div><div class="machine-flow-grid">'+independentNodes.map(function(node,index){return machineFlowCard(node,1,index+1);}).join('')+'</div></section>':'';
+  }
+  var summary=document.getElementById('machineFlowSummary');
+  if(summary)summary.textContent=_machineFlowQuery?'已显示 '+(visibleConnected+independentNodes.length)+' 个匹配环节':'共 '+model.nodes.length+' 个环节 · '+laneCount+' 段巡视 · '+model.edges.length+' 组跨设备关系';
+  var sourceToggle=document.getElementById('machineFlowSourceToggle');
+  if(sourceToggle){sourceToggle.setAttribute('aria-pressed',_machineFlowShowSources?'true':'false');sourceToggle.textContent='来源环节：'+(_machineFlowShowSources?'显示':'隐藏');}
+  renderMachineFlowDetail();
+}
+function selectMachineFlowNode(id,button){
+  _machineFlowSelectedId=id&&_machineFlowModel&&_machineFlowModel.nodeById[id]?id:'';
+  renderMachineFlow();
+  if(button&&_machineFlowSelectedId)requestAnimationFrame(function(){var next=Array.from(document.querySelectorAll('.machine-flow-card')).find(function(card){return card.dataset.machineFlowId===_machineFlowSelectedId;});if(next)next.focus();});
+}
+function onMachineFlowSearch(value){_machineFlowQuery=String(value||'').trim().toLowerCase();_machineFlowSelectedId='';renderMachineFlow();}
+function toggleMachineFlowSources(){
+  _machineFlowShowSources=!_machineFlowShowSources;
+  if(!_machineFlowShowSources&&_machineFlowSelectedId&&_machineFlowModel&&_machineFlowModel.nodeById[_machineFlowSelectedId]&&_machineFlowModel.nodeById[_machineFlowSelectedId].source)_machineFlowSelectedId='';
+  renderMachineFlow();
+}
 function switchAppView(view,button,preserveScroll){
-  var selected=view==='relations'?'relations':'inventory';
-  var inventory=document.getElementById('inventoryView'),relations=document.getElementById('relationsView');
+  var selected=view==='relations'?'relations':view==='machine-flow'?'machine-flow':'inventory';
+  var inventory=document.getElementById('inventoryView'),relations=document.getElementById('relationsView'),machineFlow=document.getElementById('machineFlowView');
   if(inventory) inventory.hidden=selected!=='inventory';
   if(relations) relations.hidden=selected!=='relations';
+  if(machineFlow) machineFlow.hidden=selected!=='machine-flow';
   document.querySelectorAll('.app-view-tab').forEach(function(tab){
     var active=tab.dataset.appView===selected;tab.classList.toggle('active',active);tab.setAttribute('aria-selected',active?'true':'false');
   });
   localStorage.setItem('hd_app_view',selected);
   if(selected==='relations') renderRelations();
+  if(selected==='machine-flow') renderMachineFlow();
   if(!preserveScroll) window.scrollTo(0,0);
 }
 function toggleOverviewSection(id,button){
@@ -3567,7 +3723,8 @@ async function bootstrap(){
   var savedTab=localStorage.getItem('hd_ui_tab')||'priority';
   var tabButton=document.querySelector('.tab[data-tab="'+savedTab+'"]');
   if(tabButton) switchSidebarTab(savedTab,tabButton);
-  var savedView=localStorage.getItem('hd_app_view')==='relations'?'relations':'inventory';
+  var storedView=localStorage.getItem('hd_app_view');
+  var savedView=storedView==='relations'?'relations':storedView==='machine-flow'?'machine-flow':'inventory';
   var viewButton=document.querySelector('.app-view-tab[data-app-view="'+savedView+'"]');
   switchAppView(savedView,viewButton,true);
   var savedScroll=nonNegativeInt(localStorage.getItem('hd_ui_scroll'),0);
