@@ -63,13 +63,13 @@ assert.deepEqual(loadData(seededDataFile), publicData);
 assert.equal(ensureDataFile(seededDataFile), false);
 fs.rmSync(seedDirectory, { recursive: true, force: true });
 
-assert.equal(isSameOrigin({ headers: { host: "127.0.0.1:8766" } }), true);
+assert.equal(isSameOrigin({ headers: { host: "127.0.0.1:4173" } }), true);
 assert.equal(
-  isSameOrigin({ headers: { host: "127.0.0.1:8766", origin: "http://127.0.0.1:8766" } }),
+  isSameOrigin({ headers: { host: "127.0.0.1:4173", origin: "http://127.0.0.1:4173" } }),
   true,
 );
 assert.equal(
-  isSameOrigin({ headers: { host: "127.0.0.1:8766", origin: "https://example.com" } }),
+  isSameOrigin({ headers: { host: "127.0.0.1:4173", origin: "https://example.com" } }),
   false,
 );
 

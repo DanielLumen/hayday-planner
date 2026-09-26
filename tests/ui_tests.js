@@ -36,19 +36,40 @@ async function testSyncRetry(browser) {
   });
   const syncPage = await browser.newPage();
   let attempts = 0;
+  let markFirstAttemptStarted;
+  let releaseFirstAttempt;
+  const firstAttemptStarted = new Promise((resolve) => { markFirstAttemptStarted = resolve; });
+  const firstAttemptRelease = new Promise((resolve) => { releaseFirstAttempt = resolve; });
   try {
     await syncPage.route("**/api/save", async (route) => {
       if (route.request().method() !== "POST") {
         await route.continue();
         return;
       }
+      const payload = route.request().postDataJSON();
+      if (!Object.prototype.hasOwnProperty.call(payload, "hd_review_sync")) {
+        await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
+        return;
+      }
       attempts++;
-      if (attempts === 1) await route.abort("failed");
+      if (attempts === 1) {
+        markFirstAttemptStarted();
+        await firstAttemptRelease;
+        await route.abort("failed");
+      }
       else await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
     });
     const port = server.address().port;
     await syncPage.goto(`http://127.0.0.1:${port}/`, { waitUntil: "networkidle" });
     await syncPage.evaluate(() => persistText("hd_review_sync", "saved"));
+    await firstAttemptStarted;
+    const inFlightState = await syncPage.evaluate(() => ({
+      pending: _serverPending.hd_review_sync,
+      persisted: JSON.parse(localStorage.getItem(SERVER_PENDING_STORAGE) || '{}').hd_review_sync,
+      saving: _serverSaving,
+    }));
+    check("同步请求进行中仍持久保留待发送数据", inFlightState.pending === "saved" && inFlightState.persisted === "saved" && inFlightState.saving, JSON.stringify(inFlightState));
+    releaseFirstAttempt();
     await syncPage.waitForTimeout(1700);
     const state = await syncPage.evaluate(() => ({
       local: localStorage.getItem("hd_review_sync"),
@@ -84,6 +105,27 @@ async function testSyncRetry(browser) {
       };
     });
     check("筛选顺序迁移进入服务器同步队列", migrationSyncState.marker === '2' && migrationSyncState.pending.includes('hd_filter_order') && migrationSyncState.pending.includes('hd_order') && migrationSyncState.pending.includes('hd_filter_order_version'), JSON.stringify(migrationSyncState));
+
+    const transientPage = await browser.newPage();
+    try {
+      await transientPage.addInitScript(() => {
+        localStorage.setItem('hd_inv', '{"wheat":{"n":7}}');
+        localStorage.setItem('_hd_server_pending', JSON.stringify({ hd_inv: '{"wheat":{"n":7}}' }));
+        localStorage.setItem('_hd_server_revision', 'last-known-revision');
+      });
+      await transientPage.route("**/api/save", (route) => route.abort("failed"));
+      await transientPage.goto(`http://127.0.0.1:${port}/`, { waitUntil: "networkidle" });
+      await transientPage.waitForTimeout(400);
+      const transientState = await transientPage.evaluate(() => ({
+        syncEnabled: _serverSyncEnabled,
+        pending: _serverPending.hd_inv,
+        persisted: JSON.parse(localStorage.getItem(SERVER_PENDING_STORAGE) || '{}').hd_inv,
+        local: localStorage.getItem('hd_inv'),
+      }));
+      check("启动时同步接口暂时失败不会丢弃本地待同步数据", transientState.syncEnabled && transientState.pending === transientState.local && transientState.persisted === transientState.local, JSON.stringify(transientState));
+    } finally {
+      await transientPage.close();
+    }
   } finally {
     await syncPage.close();
     await new Promise((resolve) => server.close(resolve));
@@ -233,6 +275,13 @@ async function run() {
     check("手抓酥皮派使用自己的专用图片", staticRuntimeState.handPiesIcon === 'icons/hand_pies.png', JSON.stringify(staticRuntimeState));
     check("羊排来源倍率使用实际物品编号", staticRuntimeState.lambMultiplier === 10 && !staticRuntimeState.staleMuttonMultiplier, JSON.stringify(staticRuntimeState));
     check("鸭毛和龙虾尾关联各自的专用设备", staticRuntimeState.duckFeatherBuilding === 'duck_salon' && staticRuntimeState.lobsterTailBuilding === 'lobster_pool', JSON.stringify(staticRuntimeState));
+    const specialInventoryCards = await page.evaluate(() => ({
+      duck: Boolean(document.querySelector('.item-tile[data-id="duck_feather"]')),
+      lobster: Boolean(document.querySelector('.item-tile[data-id="lobster_tail"]')),
+      visibleCount: document.querySelectorAll('.item-tile').length,
+      itemCount: D.items.length,
+    }));
+    check("库存清单显示鸭毛、龙虾尾以及全部有效物品", specialInventoryCards.duck && specialInventoryCards.lobster && specialInventoryCards.visibleCount === specialInventoryCards.itemCount, JSON.stringify(specialInventoryCards));
     check("公开页面包含非官方声明和玩家内容条款链接", staticRuntimeState.fanDisclaimer.includes('非官方') && staticRuntimeState.fanDisclaimer.includes('未经 Supercell 认可或背书') && staticRuntimeState.fanPolicyUrl === 'https://supercell.com/en/fan-content-policy/', JSON.stringify(staticRuntimeState));
     const controlSemantics = await page.evaluate(() => {
       const buttons = Array.from(document.querySelectorAll('button'));
@@ -283,6 +332,30 @@ async function run() {
       return { lobster, duck };
     });
     check("编辑物品时可选择龙虾池和小鸭沙龙", specialBuildingEditState.lobster.value === 'lobster_pool' && specialBuildingEditState.duck.value === 'duck_salon' && specialBuildingEditState.lobster.options.includes('duck_salon') && specialBuildingEditState.duck.options.includes('lobster_pool'), JSON.stringify(specialBuildingEditState));
+    const effectiveTargetState = await page.evaluate(() => {
+      if (!S.wheat) S.wheat = { n: 0, tg: 30 };
+      const original = S.wheat.tg;
+      S.wheat.tg = 119;
+      openEditModal('wheat');
+      const modalTarget = document.querySelector('#emTg')?.value;
+      closeEditModal();
+      S.wheat.tg = original;
+      return { modalTarget };
+    });
+    check("编辑对话框显示用户当前生效的目标库存", effectiveTargetState.modalTarget === '119', JSON.stringify(effectiveTargetState));
+    const feedCompletionState = await page.evaluate(() => {
+      const snapshot = JSON.stringify(S);
+      S.corn = { n: 1, tg: gt('corn') };
+      S.soyabean = { n: 2, tg: gt('soyabean') };
+      S.cow_feed = { n: 0, tg: gt('cow_feed') };
+      completeProduction('cow_feed', 3);
+      const result = { corn: gs('corn'), soyabean: gs('soyabean'), feed: gs('cow_feed') };
+      S = JSON.parse(snapshot);
+      sv();
+      renderAll();
+      return result;
+    });
+    check("完成一批奶牛饲料只扣一份配方并入库三袋", feedCompletionState.corn === 0 && feedCompletionState.soyabean === 0 && feedCompletionState.feed === 3, JSON.stringify(feedCompletionState));
     const overviewToggleInitial = await page.evaluate(() => ({
       text: document.querySelector('#infoToggle')?.textContent?.trim(),
       expanded: document.querySelector('#infoToggle')?.getAttribute('aria-expanded'),
