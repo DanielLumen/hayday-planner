@@ -863,7 +863,11 @@
     };
   }
 
-  function calculateNeeds(items, state) {
+  function calculateNeeds(items, state, options) {
+    const settings = options && typeof options === "object" ? options : {};
+    const batchOutputs = settings.batchOutputs && typeof settings.batchOutputs === "object"
+      ? settings.batchOutputs
+      : {};
     const dependents = new Map(items.map((item) => [item.id, []]));
     for (const item of items) {
       for (const ingredient of item.ing || []) {
@@ -878,10 +882,14 @@
       if (Object.prototype.hasOwnProperty.call(needs, itemId)) return needs[itemId];
       if (visiting.has(itemId)) return 0;
       visiting.add(itemId);
-      const downstream = (dependents.get(itemId) || []).reduce(
-        (total, dependent) => total + get(dependent.id) * dependent.q,
-        0,
-      );
+      const downstream = (dependents.get(itemId) || []).reduce((total, dependent) => {
+        const dependentNeed = get(dependent.id);
+        const outputPerBatch = Math.max(
+          1,
+          Number.parseInt(batchOutputs[dependent.id], 10) || 1,
+        );
+        return total + Math.ceil(dependentNeed / outputPerBatch) * dependent.q;
+      }, 0);
       visiting.delete(itemId);
       const itemState = state[itemId] || {};
       const stock = Math.max(0, Number.parseInt(itemState.stock, 10) || 0);
@@ -1016,10 +1024,14 @@
 
       const item = itemsById[id];
       const relations = Array.isArray(ingredientsById[id]) ? ingredientsById[id] : [];
-      if (!item || !relations.length) {
+      if (!item) {
         total.shortage += remaining;
-        if (!item) state.unknownIds.add(id);
-        return { ids: [id], seconds: item ? Math.max(0, Number(item.t) || 0) : 0 };
+        state.unknownIds.add(id);
+        return { ids: [id], seconds: 0 };
+      }
+      if (!relations.length && !item.bld) {
+        total.shortage += remaining;
+        return { ids: [id], seconds: Math.max(0, Number(item.t) || 0) };
       }
 
       const outputPerBatch = Math.max(1, Number.parseInt(batchOutputs[id], 10) || 1);
@@ -1162,7 +1174,11 @@
     );
   }
 
-  function allocateReadyQuantities(candidates, stock) {
+  function allocateReadyQuantities(candidates, stock, options) {
+    const settings = options && typeof options === "object" ? options : {};
+    const batchOutputs = settings.batchOutputs && typeof settings.batchOutputs === "object"
+      ? settings.batchOutputs
+      : {};
     const available = {};
     for (const [id, quantity] of Object.entries(stock || {})) {
       available[id] = Math.max(0, Number.parseInt(quantity, 10) || 0);
@@ -1171,29 +1187,39 @@
     return (Array.isArray(candidates) ? candidates : []).map((candidate) => {
       const shortage = Math.max(0, Number.parseInt(candidate.shortage, 10) || 0);
       const ingredients = normalizeIngredients(candidate.ing);
-      let readyQty = shortage;
+      const outputPerBatch = Math.max(1, Number.parseInt(batchOutputs[candidate.id], 10) || 1);
+      const requestedBatches = Math.ceil(shortage / outputPerBatch);
+      let readyBatches = requestedBatches;
       if (ingredients.length) {
-        readyQty = Math.min(
-          shortage,
+        readyBatches = Math.min(
+          requestedBatches,
           ...ingredients.map((ingredient) =>
             Math.floor((available[ingredient.i] || 0) / ingredient.q),
           ),
         );
       }
-      readyQty = Math.max(0, readyQty);
+      readyBatches = Math.max(0, readyBatches);
+      const readyQty = readyBatches * outputPerBatch;
       for (const ingredient of ingredients) {
         available[ingredient.i] = Math.max(
           0,
-          (available[ingredient.i] || 0) - readyQty * ingredient.q,
+          (available[ingredient.i] || 0) - readyBatches * ingredient.q,
         );
       }
-      const readiness = readyQty >= shortage ? "ready" : readyQty > 0 ? "partial" : "blocked";
-      return { ...candidate, ing: ingredients, readyQty, readiness };
+      const readiness = readyBatches >= requestedBatches ? "ready" : readyBatches > 0 ? "partial" : "blocked";
+      return {
+        ...candidate,
+        ing: ingredients,
+        outputPerBatch,
+        readyBatches,
+        readyQty,
+        readiness,
+      };
     });
   }
 
-  function rankShortages(items, state) {
-    const needs = calculateNeeds(items, state);
+  function rankShortages(items, state, options) {
+    const needs = calculateNeeds(items, state, options);
     const useCounts = new Map(items.map((item) => [item.id, 0]));
     for (const item of items) {
       for (const ingredient of item.ing || []) {

@@ -161,15 +161,15 @@ def apply_edits(base_items, edits):
     added = edits.get("add", []) if isinstance(edits.get("add"), list) else []
     deleted = set(edits.get("del", []) if isinstance(edits.get("del"), list) else [])
 
-    for item in items:
-        if isinstance(modified.get(item["id"]), dict):
-            item.update(copy.deepcopy(modified[item["id"]]))
-
     known_ids = {item["id"] for item in items}
     for item in added:
         if isinstance(item, dict) and item.get("id") and item["id"] not in known_ids:
             items.append(copy.deepcopy(item))
             known_ids.add(item["id"])
+
+    for item in items:
+        if isinstance(modified.get(item["id"]), dict):
+            item.update(copy.deepcopy(modified[item["id"]]))
 
     duplicate_ingredients = []
     for item in items:

@@ -113,6 +113,20 @@ const needs = core.calculateNeeds(items, {
 });
 
 assert.deepEqual(needs, { sandwich: 1, bread: 5, wheat: 5 });
+assert.deepEqual(
+  core.calculateNeeds(
+    [
+      { id: "corn", ing: [] },
+      { id: "cow_feed", ing: [{ i: "corn", q: 1 }] },
+    ],
+    {
+      corn: { stock: 0, target: 1 },
+      cow_feed: { stock: 0, target: 5 },
+    },
+    { batchOutputs: { cow_feed: 3 } },
+  ),
+  { cow_feed: 5, corn: 3 },
+);
 assert.deepEqual(core.normalizeIngredients([{ i: "wheat", q: 2 }, { i: "wheat", q: 3 }]), [
   { i: "wheat", q: 5 },
 ]);
@@ -128,6 +142,21 @@ assert.equal(ranked[0].id, "wheat");
 assert.deepEqual(
   ranked.find((item) => item.id === "wheat"),
   { id: "wheat", totalNeed: 14, ownShortage: 2, downstreamNeed: 12, useCount: 1, score: 52 },
+);
+const allocatedFeedBatches = core.allocateReadyQuantities(
+  [
+    { id: "cow_feed", shortage: 5, ing: [{ i: "corn", q: 1 }, { i: "wheat", q: 2 }] },
+    { id: "corn_product", shortage: 1, ing: [{ i: "corn", q: 1 }] },
+  ],
+  { corn: 2, wheat: 4 },
+  { batchOutputs: { cow_feed: 3 } },
+);
+assert.deepEqual(
+  allocatedFeedBatches.map(({ id, readyQty, readyBatches, readiness }) => ({ id, readyQty, readyBatches, readiness })),
+  [
+    { id: "cow_feed", readyQty: 6, readyBatches: 2, readiness: "ready" },
+    { id: "corn_product", readyQty: 0, readyBatches: 0, readiness: "blocked" },
+  ],
 );
 
 const allocated = core.allocateReadyQuantities(
@@ -337,7 +366,7 @@ const demandItems = [
   { id: "corn", nameCN: "玉米", t: 300, ing: [] },
   { id: "cow_feed", nameCN: "奶牛饲料", bld: "feed_mill", t: 600, ing: [{ i: "wheat", q: 2 }, { i: "corn", q: 1 }] },
   { id: "milk", nameCN: "牛奶", bld: "cow", t: 1200, ing: [] },
-  { id: "red_lure", nameCN: "红色鱼饵", t: 1800, ing: [] },
+  { id: "red_lure", nameCN: "红色鱼饵", bld: "lure_workbench", t: 1800, ing: [] },
   { id: "fishing_net", nameCN: "渔网", t: 3600, ing: [] },
   { id: "fish_fillet", nameCN: "鱼片", t: 0, ing: [] },
 ];
@@ -371,6 +400,16 @@ assert.deepEqual(milkDemand.equipment.map(({ id, batches }) => ({ id, batches })
 ]);
 assert.deepEqual(milkDemand.criticalPath.ids, ["milk", "cow_feed", "corn"]);
 assert.equal(milkDemand.nodeIds.includes("wheat") && milkDemand.edgeKeys.includes("milk\u0000cow_feed"), true);
+
+const redLureDemand = core.simulateProductionDemand(demandNetwork, "red_lure", 2, {});
+assert.deepEqual(
+  redLureDemand.tasks.map(({ id, productionNeeded, produced, batches }) => ({ id, productionNeeded, produced, batches })),
+  [{ id: "red_lure", productionNeeded: 2, produced: 2, batches: 2 }],
+);
+assert.deepEqual(redLureDemand.shortages, []);
+assert.deepEqual(redLureDemand.equipment.map(({ id, batches }) => ({ id, batches })), [
+  { id: "lure_workbench", batches: 2 },
+]);
 
 const fishDemand = core.simulateProductionDemand(
   demandNetwork,

@@ -1,16 +1,16 @@
 {
   "name": "hayday-warehouse",
-  "version": "2.28.0",
+  "version": "2.29.0",
   "description": "卡通农场 · 库存助手",
   "scripts": {
     "start": "node server.js",
     "test:core": "node tests/core_tests.js",
     "test:server": "node tests/server_tests.js",
-    "test:data": "python3 validate.py",
+    "test:data": "python3 validate.py && python3 tests/validate_tests.py",
     "test:self": "python3 -m http.server 4173",
     "test:ui": "node tests/ui_tests.js",
-    "test:all": "node tests/core_tests.js && node tests/server_tests.js && python3 validate.py && node tests/ui_tests.js",
-    "test": "node tests/core_tests.js && node tests/server_tests.js && python3 validate.py && node tests/ui_tests.js"
+    "test:all": "node tests/core_tests.js && node tests/server_tests.js && python3 validate.py && python3 tests/validate_tests.py && node tests/ui_tests.js",
+    "test": "node tests/core_tests.js && node tests/server_tests.js && python3 validate.py && python3 tests/validate_tests.py && node tests/ui_tests.js"
   },
   "license": "MIT",
   "devDependencies": {

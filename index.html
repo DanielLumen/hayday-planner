@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>卡通农场 · 库存助手 v2.28.0</title>
+<title>卡通农场 · 库存助手 v2.29.0</title>
 <style>
 /* ====== 变量与重置 ====== */
 :root{--bg:#F4F7F4;--card:#FFFFFF;--surface-subtle:#F8FAF8;--surface-hover:#EEF5F0;--canvas:#F2F6F3;--image-wash:#EDF5EF;--text:#20242C;--text-secondary:#445249;--muted:#66736B;--accent:#16845B;--accent-hover:#116A49;--accent-light:#E8F4ED;--accent-border:#A9D8C2;--warn:#9A5700;--warn-light:#FFF6E8;--danger:#C43D3D;--danger-light:#FFF0F0;--info:#376FD0;--info-light:#EDF3FF;--border:#DDE4DF;--border-strong:#C8D2CB;--focus-ring:rgba(55,111,208,.55);--shadow-sm:0 1px 2px rgba(24,45,33,.05);--shadow-card:0 2px 8px rgba(24,45,33,.07);--shadow:0 8px 24px rgba(24,45,33,.11);--radius:8px;--radius-sm:6px;--transition:140ms ease}
@@ -1156,6 +1156,8 @@ var ICONS={"wheat":"icons/wheat.png","corn":"icons/corn.png","soyabean":"icons/s
 var S, im={}, bm={}, dm={};
 var RELATION_EXTERNAL_IDS=['axe','saw','pickaxe','dynamite','tnt_barrel','shovel','plank','duct_tape','bolt','screw','wood_panel','nail','hammer','land_deed','mallet','marker_stake','hand_drill','map_piece','expansion_permit','green_voucher','blue_voucher','purple_voucher','gold_voucher'];
 var RELATION_BATCH_OUTPUTS={cow_feed:3,chicken_feed:3,pig_feed:3,sheep_feed:3,goat_feed:3,lamb_feed:3};
+function batchOutputFor(id){return Math.max(1,nonNegativeInt(RELATION_BATCH_OUTPUTS[id],1));}
+function productionBatches(id,quantity){return Math.ceil(Math.max(1,nonNegativeInt(quantity,1))/batchOutputFor(id));}
 var RELATION_VIRTUAL_ITEMS=[
   {id:'__nectar',nameCN:'花蜜',emoji:DEFAULT_ITEM_EMOJI,ing:[],st:'source',relationVirtual:true,sourceNote:'花蜜灌木采集 · 不进入货仓'}
 ];
@@ -2518,14 +2520,14 @@ function computeRecursiveNeeds(){
   init();
   var state={};
   D.items.forEach(function(item){ state[item.id]={stock:gs(item.id),target:gt(item.id)}; });
-  return HayDayPlannerCore.calculateNeeds(D.items,state);
+  return HayDayPlannerCore.calculateNeeds(D.items,state,{batchOutputs:RELATION_BATCH_OUTPUTS});
 }
 /* ====== Priority ====== */
 function calcPriority(){
   init();
   var state={};
   D.items.forEach(function(item){state[item.id]={stock:gs(item.id),target:gt(item.id)};});
-  var ranked=HayDayPlannerCore.rankShortages(D.items,state).slice(0,50).map(function(r){r.item=im[r.id];return r;});
+  var ranked=HayDayPlannerCore.rankShortages(D.items,state,{batchOutputs:RELATION_BATCH_OUTPUTS}).slice(0,50).map(function(r){r.item=im[r.id];return r;});
   var list=document.getElementById('priorityList');
   if(ranked.length===0){
     list.innerHTML='<div class="empty-state"><div class="big">✅</div><p>所有物品库存充足！</p></div>';
@@ -2607,7 +2609,10 @@ function calcBuyRecommendations(){
   container.innerHTML = h;
 }
 function getOrder(){
-  var defaults=['silo_field','silo_tree'].concat(FILTER_ORDER_V2,['barn_animal','barn_tools','barn_ores','barn_expand','barn_other']);
+  var defaults=['silo_field','silo_tree'].concat(FILTER_ORDER_V2);
+  D.buildings.forEach(function(building){if(defaults.indexOf(building.id)<0)defaults.push(building.id);});
+  D.items.forEach(function(item){var group=itemGroupKey(item);if(defaults.indexOf(group)<0)defaults.push(group);});
+  defaults=defaults.concat(['barn_animal','barn_tools','barn_ores','barn_expand','barn_other'].filter(function(group){return defaults.indexOf(group)<0;}));
   var saved=localStorage.getItem('hd_order');
   var requested=[];
   if(saved)try{var parsed=JSON.parse(saved);if(Array.isArray(parsed))requested=parsed;}catch(e){}
@@ -2804,23 +2809,24 @@ function completeProduction(id,quantity){
   var item=im[id];
   var amount=Math.max(1,nonNegativeInt(quantity,1));
   if(!item) return;
-  var missing=(item.ing||[]).filter(function(ing){ return gs(ing.i)<ing.q*amount; });
+  var batches=productionBatches(id,amount),produced=batches*batchOutputFor(id);
+  var missing=(item.ing||[]).filter(function(ing){ return gs(ing.i)<ing.q*batches; });
   if(missing.length){
     alert('原料库存不足：'+missing.map(function(ing){
       var ingredient=im[ing.i];
-      return (ingredient?ingredient.nameCN:ing.i)+' 缺'+(ing.q*amount-gs(ing.i));
+      return (ingredient?ingredient.nameCN:ing.i)+' 缺'+(ing.q*batches-gs(ing.i));
     }).join('、'));
     return;
   }
   (item.ing||[]).forEach(function(ing){
     if(!S[ing.i]) S[ing.i]={n:0,tg:(im[ing.i]&&im[ing.i].tg)||5};
-    S[ing.i].n=Math.max(0,gs(ing.i)-ing.q*amount);
+    S[ing.i].n=Math.max(0,gs(ing.i)-ing.q*batches);
   });
   if(!S[id]) S[id]={n:0,tg:item.tg||5};
-  S[id].n=gs(id)+amount;
+  S[id].n=gs(id)+produced;
   sv();
   renderAll();
-  toast('已记录生产 '+amount+' 个'+(item.nameCN||item.id));
+  toast('已记录生产 '+produced+' 个'+(item.nameCN||item.id)+(batchOutputFor(id)>1?'（'+batches+'批）':''));
 }
 function calcProductionPlan(){
   try{
@@ -2852,20 +2858,21 @@ function calcProductionPlan(){
       var need=needs[it.id]||0;
       var ownShort=Math.max(0,gt(it.id)-gs(it.id));
       if(need>0){
-        var readyQty=need;
+        var outputPerBatch=batchOutputFor(it.id),neededBatches=Math.ceil(need/outputPerBatch),readyBatches=neededBatches;
         if(it.ing&&it.ing.length){
-          readyQty=Math.min.apply(null,it.ing.map(function(ing){return Math.floor(gs(ing.i)/ing.q);}));
-          readyQty=Math.max(0,Math.min(need,readyQty));
+          readyBatches=Math.min.apply(null,it.ing.map(function(ing){return Math.floor(gs(ing.i)/ing.q);}));
+          readyBatches=Math.max(0,Math.min(neededBatches,readyBatches));
         }
-        var readiness=readyQty>=need?'ready':(readyQty>0?'partial':'blocked');
-        needed.push({id:it.id,nameCN:(it.nameCN||it.id),shortage:need,ownShortage:ownShort,time:it.t,ing:it.ing,individualReadyQty:readyQty,readyQty:readyQty,readiness:readiness});
+        var readyQty=readyBatches*outputPerBatch;
+        var readiness=readyBatches>=neededBatches?'ready':(readyBatches>0?'partial':'blocked');
+        needed.push({id:it.id,nameCN:(it.nameCN||it.id),shortage:need,ownShortage:ownShort,time:it.t,ing:it.ing,outputPerBatch:outputPerBatch,neededBatches:neededBatches,individualReadyQty:readyQty,readyQty:readyQty,readiness:readiness});
         totalNeeded+=need;
       }
     });
     if(needed.length>0){
       var slots=bld.slots||1;
       var totalTime=0;
-      needed.forEach(function(ni){totalTime+=ni.shortage*ni.time;});
+      needed.forEach(function(ni){totalTime+=ni.neededBatches*ni.time;});
       var readinessOrder={ready:0,partial:1,blocked:2};
       needed.sort(function(a,b){
         var readinessDiff=readinessOrder[a.readiness]-readinessOrder[b.readiness];if(readinessDiff)return readinessDiff;
@@ -2887,7 +2894,7 @@ function calcProductionPlan(){
   }
   var stock={};D.items.forEach(function(item){stock[item.id]=gs(item.id);});
   var ordered=[];keys.forEach(function(groupId){plan[groupId].items.forEach(function(item){ordered.push(item);});});
-  var allocated=HayDayPlannerCore.allocateReadyQuantities(ordered,stock),allocationIndex=0;
+  var allocated=HayDayPlannerCore.allocateReadyQuantities(ordered,stock,{batchOutputs:RELATION_BATCH_OUTPUTS}),allocationIndex=0;
   keys.forEach(function(groupId){plan[groupId].items=plan[groupId].items.map(function(){return allocated[allocationIndex++];});});
   var h='<div class="plan-summary">共需生产 '+(totalNeeded?totalNeeded:0)+' 件次 · 已按列表顺序预留现有原料</div>';
   keys.forEach(function(bldId){
@@ -2901,7 +2908,7 @@ function calcProductionPlan(){
     h+='</div>';
     p.items.forEach(function(ni){
       var ingInfo=ni.ing.map(function(ing){
-        var ii=im[ing.i],ingStock=gs(ing.i),required=ing.q*ni.shortage;
+        var ii=im[ing.i],ingStock=gs(ing.i),required=ing.q*Math.ceil(ni.shortage/ni.outputPerBatch);
         var ingShort=ingStock<required?'缺'+(required-ingStock)+'（现有'+ingStock+'）':'现有'+ingStock;
         return esc(ii?ii.nameCN:ing.i)+'×'+required+' · '+ingShort;
       }).join('；');
@@ -2913,7 +2920,7 @@ function calcProductionPlan(){
         h+=' <span style="font-size:9px;color:var(--warn)">(自需'+ni.ownShortage+'+下游'+(ni.shortage-ni.ownShortage)+')</span>';
       }
       h+='</div>';
-      h+='<div class="plan-item-detail">需产 '+ni.shortage+' · '+fmt(ni.time)+'/个 · 共 '+fmt(ni.shortage*ni.time)+'</div>';
+      h+='<div class="plan-item-detail">需补 '+ni.shortage+(ni.outputPerBatch>1?' · 实际 '+(Math.ceil(ni.shortage/ni.outputPerBatch)*ni.outputPerBatch)+'（每批 '+ni.outputPerBatch+'）':'')+' · '+fmt(ni.time)+(ni.outputPerBatch>1?'/批':'/个')+' · 共 '+fmt(Math.ceil(ni.shortage/ni.outputPerBatch)*ni.time)+'</div>';
       if(ingInfo) h+='<div class="plan-item-detail">'+ingInfo+'</div>';
       h+='</div>';
       h+='<div class="plan-item-action">';
@@ -3300,7 +3307,7 @@ function openEditModal(id){
   document.getElementById('editModalTitle').textContent='编辑: '+(it.nameCN||it.id);
   document.getElementById('emName').value=(it.nameCN||it.id);
   var totalMin=Math.round(it.t/60); document.getElementById('emTimeH').value=Math.floor(totalMin/60); document.getElementById('emTimeM').value=totalMin%60;
-  document.getElementById('emTg').value=it.tg;
+  document.getElementById('emTg').value=gt(id);
   renderEditImageControl();
   document.getElementById('emDelete').style.display='inline-block';
   var bld=document.getElementById('emBld'); bld.innerHTML='<option value="">无（非设备生产）</option>';
@@ -3658,7 +3665,7 @@ function applyStoredSnapshot(data,editsOnly,excludedKeys){
 }
 async function fetchStoredSnapshot(url){
   var response=await fetch(url,{cache:'no-store'});
-  if(!response.ok) throw new Error('HTTP '+response.status);
+  if(!response.ok){var error=new Error('HTTP '+response.status);error.status=response.status;throw error;}
   return {data:await response.json(),revision:response.headers.get('X-Hayday-Revision')||''};
 }
 async function hydrateStoredData(){
@@ -3681,7 +3688,18 @@ async function hydrateStoredData(){
       }
       return;
     }
-  }catch(e){}
+  }catch(e){
+    if(!(e&&(e.status===404||e.status===405||e.status===501))){
+      _serverSyncEnabled=true;
+      _serverRevision=storedRevision;
+      if(!hadLocalAppData){
+        try{if(applyStoredSnapshot((await fetchStoredSnapshot('public-data.json')).data,false,pendingKeys))_publicShowcaseInventoryPending=true;}catch(publicError){}
+      }else if(localStorage.getItem('hd_edits')===null){
+        try{applyStoredSnapshot((await fetchStoredSnapshot('public-data.json')).data,true,pendingKeys);}catch(publicError){}
+      }
+      return;
+    }
+  }
   _serverSyncEnabled=false;
   _serverPending={};
   localStorage.removeItem(SERVER_PENDING_STORAGE);
@@ -3806,7 +3824,6 @@ function flushServerSave(){
   var keys=Object.keys(_serverPending);
   if(keys.length===0) return;
   var payload=Object.assign({},_serverPending);
-  _serverPending={};
   persistServerPending();
   _serverSaving=true;
   var succeeded=false;
@@ -3821,6 +3838,8 @@ function flushServerSave(){
     succeeded=true;
     var nextRevision=response.headers.get('X-Hayday-Revision');
     if(nextRevision){_serverRevision=nextRevision;localStorage.setItem(SERVER_REVISION_STORAGE,nextRevision);}
+    Object.keys(payload).forEach(function(key){if(_serverPending[key]===payload[key])delete _serverPending[key];});
+    persistServerPending();
     _serverRetryDelay=1000;
     showSaveStatus('已同步');
   }).catch(function(error){
@@ -3832,7 +3851,6 @@ function flushServerSave(){
       showSaveStatus('已保存到本机');
       return;
     }
-    _serverPending=Object.assign({},payload,_serverPending);
     persistServerPending();
     if(error&& (error.status===409||error.status===428)){
       _serverConflict=true;
